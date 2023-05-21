@@ -22,6 +22,8 @@ public:
 	const QString			&	tableName()			const { return _tableName; }
 	const ColumnDefinitions	&	columnDefinitions()	const { return _columnDefinitions;}
 
+	QString		dbplyrCode() const;
+
 private:
   Database			*   _db;
   QString				_tableName;

@@ -110,6 +110,13 @@ qt_add_qml_module(qmlR
 #        img/world.png
 )
 
+qt_add_resources(qmlR "R"
+	PREFIX "/"
+	FILES
+	   R/writeImage.R
+	   R/main.R
+)
+
 
 target_link_libraries(
 	qmlR

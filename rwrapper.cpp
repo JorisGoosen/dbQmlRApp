@@ -1,26 +1,90 @@
 #include "rwrapper.h"
 
 RWrapper::RWrapper(QObject *parent)
-    : QObject{parent}
+	: QObject{parent}, R(new RInside(0, nullptr, true, false, false))
 {
 
 }
 
 QString RWrapper::runRCommand(QString command)
 {
-  RInside::Proxy res = R.parseEvalNT("paste0(" + command.toStdString() + ")");
+	std::cout << "Running R command:\n" << command.toStdString() << std::endl;
 
-  std::string out;
+	RInside::Proxy res = R->parseEvalNT(command.toStdString());
 
-  if(!Rf_isString(res))
-    out = "???";
-  else
-    for(Rcpp::String str : Rcpp::StringVector(res))
-      {
-        out += str;
-        out += "\n";
-      }
+	std::function<QString(SEXP sexp)> f;
+
+	f = [&](SEXP res)
+	{
+		QStringList out;
+
+		if(Rf_isString(res))
+			for(Rcpp::String str : Rcpp::StringVector(res))
+				out.append(QString::fromStdString(str));
+		else if(Rf_isInteger(res))
+			for(int r : Rcpp::IntegerVector(res))
+				out.append(QString::number(r));
+		else if(Rf_isReal(res))
+			for(double r : Rcpp::DoubleVector(res))
+				out.append(QString::number(r));
+		else if(Rf_isNull(res))
+			out.append("NULL");
+		else if(Rf_isList(res))
+			for(SEXP s : Rcpp::List(res))
+				out.append(f(s));
+		else
+			out.append("???");
 
 
-  return QString::fromStdString(out);
+		return out.join("\n");
+	};
+
+	QString outQ = f(res);
+
+	std::cout << ": " << outQ.toStdString() << std::endl;
+
+	_prevOutput.append(outQ);
+	emit prevOutputChanged();
+
+	return outQ;
+}
+
+QStringList RWrapper::prevOutput() const
+{
+	return _prevOutput;
+}
+
+void RWrapper::setPrevOutput(const QStringList & newPrevOutput)
+{
+	if (_prevOutput == newPrevOutput)
+		return;
+
+	_prevOutput = newPrevOutput;
+	emit prevOutputChanged();
+}
+
+int RWrapper::plotWidth() const
+{
+	return std::max(10, _plotWidth);
+}
+
+void RWrapper::setPlotWidth(int newPlotWidth)
+{
+	if (_plotWidth == newPlotWidth)
+		return;
+	_plotWidth = newPlotWidth;
+	emit plotWidthChanged();
+}
+
+int RWrapper::plotHeight() const
+{
+	return std::max(10, _plotHeight);
+}
+
+void RWrapper::setPlotHeight(int newPlotHeight)
+{
+	if (_plotHeight == newPlotHeight)
+		return;
+	_plotHeight = newPlotHeight;
+	emit plotHeightChanged();
 }
