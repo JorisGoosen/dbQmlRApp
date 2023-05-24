@@ -72,8 +72,9 @@ void RWrapper::setPlotWidth(int newPlotWidth)
 {
 	if (_plotWidth == newPlotWidth)
 		return;
+
 	_plotWidth = newPlotWidth;
-	emit plotWidthChanged();
+	emit plotWidthChanged(_plotWidth);
 }
 
 int RWrapper::plotHeight() const
@@ -85,6 +86,7 @@ void RWrapper::setPlotHeight(int newPlotHeight)
 {
 	if (_plotHeight == newPlotHeight)
 		return;
+
 	_plotHeight = newPlotHeight;
-	emit plotHeightChanged();
+	emit plotHeightChanged(_plotHeight);
 }

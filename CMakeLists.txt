@@ -95,9 +95,9 @@ elseif ( CMAKE_BUILD_TYPE STREQUAL "RELEASE" )
 endif()
 
 #Set up our actual application
-set(sources main.cpp rwrapper.cpp database.cpp tablemodel.cpp columndefinition.cpp)
+set(sources main.cpp rwrapper.cpp database.cpp tablemodel.cpp columndefinition.cpp settings.cpp plotrenderer.cpp)
 
-set(headers rwrapper.h database.h tablemodel.h enumutilities.h stringutils.h columndefinition.h)
+set(headers rwrapper.h database.h tablemodel.h enumutilities.h stringutils.h columndefinition.h settings.h plotrenderer.h)
 
 qt_add_executable(qmlR ${sources} ${headers})
 
@@ -115,6 +115,8 @@ qt_add_resources(qmlR "R"
 	FILES
 	   R/writeImage.R
 	   R/main.R
+	   R/pie.R
+	   R/lines.R
 )
 
 

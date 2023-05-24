@@ -407,7 +407,9 @@ QVariant Database::tableValue(const QString & tableName, const ColumnDefinition 
 
 	runStatements(query, bindParams, processRow);
 
+#ifdef SIR_LOG_A_LOT
 	std::cout << query << " for id " << id << " returned " << returnMe.toString().toStdString() << std::endl;
+#endif
 
 	return returnMe;
 

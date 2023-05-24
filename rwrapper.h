@@ -30,8 +30,8 @@ public:
 
 signals:
 	void prevOutputChanged();
-	void plotWidthChanged();
-	void plotHeightChanged();
+	void plotWidthChanged(int w);
+	void plotHeightChanged(int h);
 
 private:
 	RInside		*	R = nullptr;

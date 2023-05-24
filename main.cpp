@@ -13,6 +13,8 @@
 #include "rwrapper.h"
 #include "database.h"
 #include "tablemodel.h"
+#include "settings.h"
+#include "plotrenderer.h"
 #include <QDir>
 #include <QTimer>
 
@@ -20,10 +22,17 @@ int main(int argc, char *argv[])
 {
 	QGuiApplication				app(argc, argv);
 
+	QCoreApplication::setOrganizationName(	"JorisGoosen");
+	QCoreApplication::setOrganizationDomain("jorisgoosen.nl");
+	QCoreApplication::setApplicationName(	"dbQmlRApp");
+
 	QQmlApplicationEngine		mainEng;
 
+	Settings					settings;
 	RWrapper					rWrapper;
 	Database					database("qmlR.sqlite");
+
+	//Create table, with columnsdefs:
 	typedef ColumnDefinition	CD;
 	ColumnDefinitions			mainColumns = {
 		new CD("Hello", "hello",	ColumnType::Text),
@@ -34,6 +43,7 @@ int main(int argc, char *argv[])
 	};
 	TableModel					mainTable(&database, "HelloWorld",	mainColumns);
 
+	//Some dummy data:
 	mainTable.appendRows({
 							 {"Hello world!",	1,	  1,	10.01,		arc4random()%256},
 							 {"Well well...",	2,	  2,	20.0332,	arc4random()%256},
@@ -43,55 +53,38 @@ int main(int argc, char *argv[])
 							 {"Hello world!",	6,	 32,	160.06,		arc4random()%256},
 							 {"Well well...",	7,	 64,	120.32107,	arc4random()%256},
 							 {"Well well...",	8,	128,	250.02,		arc4random()%256},
-							 {"Well well...",	9,	256,	210.02,	arc4random()%256},
-							 {"And 3rd!",		10, 512,	123.03,	arc4random()%256}
+							 {"Well well...",	9,	256,	210.02,		arc4random()%256},
+							 {"And 3rd!",		10, 512,	123.03,		arc4random()%256}
 						 });
 
+	//Tell QML whatsup:
+	mainEng.rootContext()->setContextProperty("settings",	&settings);
 	mainEng.rootContext()->setContextProperty("R",			&rWrapper);
 	mainEng.rootContext()->setContextProperty("database",	&database);
 	mainEng.rootContext()->setContextProperty("mainTable",	&mainTable);
-	mainEng.rootContext()->setContextProperty("plots",		QStringList({"pie.png", "lines.png"}));
 
-	QFile	rMain(		":/R/main.R"			),
+	QFile	//rMain(		":/R/main.R"			),
 			rWriteImage(":/R/writeImage.R"	);
 
-	rMain.open(			QIODeviceBase::ReadOnly);
+	//rMain.open(			QIODeviceBase::ReadOnly);
 	rWriteImage.open(	QIODeviceBase::ReadOnly);
 
 	rWrapper.runRCommand(rWriteImage.readAll());
 	rWrapper.runRCommand(mainTable.dbplyrCode());
 
-	QString mainCode = rMain.readAll();
+	PlotRenderer piePlot	(QFile(":/R/pie.R"),	"pie.png");
+	PlotRenderer linesPlot	(QFile(":/R/lines.R"), "lines.png");
 
-	auto runMainCode = [&]()
-	{
-		static int w = 0, h = 0;
+	QObject::connect(&rWrapper, &RWrapper::plotWidthChanged,	&piePlot,	&PlotRenderer::setWidth);
+	QObject::connect(&rWrapper, &RWrapper::plotWidthChanged,	&linesPlot, &PlotRenderer::setWidth);
+	QObject::connect(&rWrapper, &RWrapper::plotHeightChanged,	&piePlot,	&PlotRenderer::setHeight);
+	QObject::connect(&rWrapper, &RWrapper::plotHeightChanged,	&linesPlot, &PlotRenderer::setHeight);
 
-		if(w != rWrapper.plotWidth() || h != rWrapper.plotHeight())
-		{
-			rWrapper.runRCommand("WIDTH  <- " + QString::number(rWrapper.plotWidth())  + ";\n" +
-								 "HEIGHT <- " + QString::number(rWrapper.plotHeight()) + ";\n" +
-								 mainCode);
+	QObject::connect(&piePlot,		&PlotRenderer::runRCommand,		&rWrapper,	&RWrapper::runRCommand);
+	QObject::connect(&linesPlot,	&PlotRenderer::runRCommand,		&rWrapper,	&RWrapper::runRCommand);
 
-			mainEng.rootContext()->setContextProperty("plots",		QStringList({}));
-			QTimer::singleShot(10, [&](){ mainEng.rootContext()->setContextProperty("plots",		QStringList({"pie.png", "lines.png"})); });
-		}
-
-		w = rWrapper.plotWidth();
-		h = rWrapper.plotHeight();
-	};
-
-	runMainCode();
-
-	QTimer delayR;
-	delayR.setInterval(100);
-	delayR.setSingleShot(false);
-	delayR.callOnTimeout(runMainCode);
-
-	QObject::connect(&rWrapper, &RWrapper::plotWidthChanged,	&delayR,	qOverload<>(&QTimer::start));
-	QObject::connect(&rWrapper, &RWrapper::plotHeightChanged,	&delayR,	qOverload<>(&QTimer::start));
-
-	mainEng.rootContext()->setContextProperty("plotFolder",	QDir::currentPath());
+	mainEng.rootContext()->setContextProperty("piePlot",	&piePlot);
+	mainEng.rootContext()->setContextProperty("linesPlot",	&linesPlot);
 
 
 	mainEng.load(":/main.qml");

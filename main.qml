@@ -23,11 +23,11 @@ Window
 
 		Repeater
 		{
-			model:	plots
+			model:	2
 
 			TabButton
 			{
-				text:	modelData
+				text:	(index == 0 ? piePlot : linesPlot).fileName
 			}
 		}
 	}
@@ -44,13 +44,16 @@ Window
 
 		Repeater
 		{
-			model:	plots
+			model:	2
 
 			Image
 			{
 				id:		plotImg
-				source:	plotFolder + "/" + modelData
+				source:	plotObj.plotUrl
 				cache:	false
+				mipmap:	false
+
+				property var plotObj: (index == 0 ? piePlot : linesPlot)
 			}
 		}
 

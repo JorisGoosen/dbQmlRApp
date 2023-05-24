@@ -14,14 +14,19 @@ openGrDevice <- function(...) {
   ragg::agg_png(...)
 }
 
-writeImage <- function(plot, relativePathpng = "plot.png", width = 500, height = 500, ppi = 300, backgroundColor = "transparent")
+writeImage <- function(plot, plotFolder=".", plotFile = "plot.png", width = 500, height = 500, ppi = 300, backgroundColor = "transparent")
 {
 
     width  <- width  * (ppi / 96)
 	height <- height * (ppi / 96)
 
-    openGrDevice(file = relativePathpng, width = width, height = height, res = 72 * (ppi / 96), background = backgroundColor)
-	on.exit(dev.off(), add = TRUE)
+    oldWd <- getwd();
+	setwd(plotFolder);
+
+print(getwd());
+
+    openGrDevice(file = plotFile, width = width, height = height, res = 72 * (ppi / 96), background = backgroundColor)
+	on.exit({dev.off(); setwd(oldWd)}, add = TRUE)
 
     if (ggplot2::is.ggplot(plot) || inherits(plot, c("gtable", "gTree")))
 	{
@@ -54,7 +59,7 @@ writeImage <- function(plot, relativePathpng = "plot.png", width = 500, height =
 
     }
 
-    return(file.path(getwd(),relativePathpng))
+    return(plotFile)
 }
 
 # This ensures that functions can also be found in jasptools (it needs to search in the package namespace)
