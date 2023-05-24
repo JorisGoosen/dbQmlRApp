@@ -20,8 +20,7 @@ PlotRenderer::PlotRenderer(QString rCode, QString fileName, QDir outputFolder, Q
 
 QString PlotRenderer::plotUrl() const
 {
-	return	_running	? ""
-						: _plotFolder.absoluteFilePath(_fileName) + "?" + QString::number(revision());
+	return	_plotFolder.absoluteFilePath(_fileName) + "?" + QString::number(revision());
 }
 
 void PlotRenderer::init()
@@ -42,7 +41,6 @@ void PlotRenderer::init()
 
 void PlotRenderer::runRCodeDelayed()
 {
-	_running = true;
 	emit plotUrlChanged();
 
 	_timer.start();
@@ -50,17 +48,14 @@ void PlotRenderer::runRCodeDelayed()
 
 void PlotRenderer::runRCode()
 {
-	std::cout << "RUNNING RCODE!" << std::endl;
+//	std::cout << "RUNNING RCODE!" << std::endl;
 	emit runRCommand(	"WIDTH       <- "  + QString::number(width())	+  ";\n"
 						"HEIGHT      <- "  + QString::number(height())	+  ";\n"
 						"PLOTFILE    <- '" + _fileName					+ "';\n"
 						"PLOTFOLDER  <- '" + _plotFolder.absolutePath()	+ "';\n" +
 						 _rCode);
 
-	_running = false;
 	incRevision();
-
-	std::cout << "PlotUrl: " << plotUrl().toStdString() << std::endl;
 }
 
 void PlotRenderer::setRCode(const QString & newRCode)

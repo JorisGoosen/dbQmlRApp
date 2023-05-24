@@ -63,7 +63,6 @@ private:
 							_revision	= 0;
 				QDir		_plotFolder;
 				QTimer		_timer;
-				bool		_running	= false;
 };
 
 #endif // PLOTRENDERER_H
