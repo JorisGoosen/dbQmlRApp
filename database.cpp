@@ -428,7 +428,7 @@ QVariant Database::tableValue(const QString & tableName, const ColumnDefinition 
 
 	QVariant returnMe;
 
-	processRowType processRow = [&](size_t row, sqlite3_stmt *stmt)
+	processRowType processRow = [&](size_t, sqlite3_stmt *stmt)
 	{
 		returnMe = tableExtractColumnDefValue(stmt, 0, col);
 	};
@@ -447,6 +447,7 @@ void Database::tableBindColumnDefParameter(sqlite3_stmt * stmt, size_t param, co
 {
 	switch(colDef->columnType())
 	{
+	case ColumnType::PrimaryKey:
 	case ColumnType::NumInt:
 	case ColumnType::DateTime: //unix epoch
 		sqlite3_bind_int(stmt, param, val.toInt());
@@ -456,6 +457,14 @@ void Database::tableBindColumnDefParameter(sqlite3_stmt * stmt, size_t param, co
 	case ColumnType::NumDbl:
 		sqlite3_bind_double(stmt, param, val.toDouble());
 		return;
+
+	case ColumnType::Label:
+		if(val.typeId() == QMetaType::Int)
+		{
+			sqlite3_bind_int(stmt, param, val.toInt());
+			return;
+		}
+		[[fallthrough]];
 
 	case ColumnType::Text:
 		{
@@ -470,6 +479,7 @@ QVariant Database::tableExtractColumnDefValue(sqlite3_stmt * stmt, size_t param,
 {
 	switch(colDef->columnType())
 	{
+	case ColumnType::PrimaryKey:
 	case ColumnType::NumInt:
 	case ColumnType::DateTime: //unix epoch
 		return QVariant(sqlite3_column_int(stmt, param));
@@ -480,6 +490,12 @@ QVariant Database::tableExtractColumnDefValue(sqlite3_stmt * stmt, size_t param,
 
 	case ColumnType::Text:
 		return QVariant(QString::fromStdString(_wrap_sqlite3_column_text(stmt, param)));
+
+	case ColumnType::Label:
+		if(sqlite3_column_type(stmt, param) == SQLITE_INTEGER)
+			return QVariant(sqlite3_column_int(stmt, param));
+		else
+			return QVariant(QString::fromStdString(_wrap_sqlite3_column_text(stmt, param)));
 	}
 }
 

@@ -100,7 +100,6 @@ set(sources
 	labels.cpp
 	rwrapper.cpp
 	database.cpp
-	importer.cpp
 	settings.cpp
 	mainmodel.cpp
 	tablemodel.cpp
@@ -113,7 +112,6 @@ set(headers
 	settings.h
 	rwrapper.h
 	database.h
-	importer.h
 	mainmodel.h
 	tablemodel.h
 	stringutils.h
