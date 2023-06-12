@@ -18,6 +18,9 @@ bool MainModel::loadDatabase(const QString & dbPath)
 	_db->setDbFile(std::filesystem::path(dbPath.toStdString()));
 
 	_labels			= new Labels(_db);
+	_schoolTable	= new SchoolScannerTable(_db);
+
+	emit loadInQml(_labels, _schoolTable);
 
 	return true;
 }
@@ -30,6 +33,11 @@ bool MainModel::selectDatabase()
 bool MainModel::testDatabase()
 {
 	loadDatabase(":memory:");
+
+	if(_schoolTable->rowCount() > 0)
+		setQmlsShown({"Data", "Filter", "Import"});
+	else
+		setQmlsShown({"Import"});
 
 	return true;
 }

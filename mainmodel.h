@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "labels.h"
+#include "schoolscannertable.h"
 
 class Database;
 
@@ -25,6 +26,7 @@ public slots:
 
 signals:
 	void		qmlsShownChanged();
+	void		loadInQml(Labels * labels, SchoolScannerTable * schoolTable);
 
 private:
 	void		setQmlsShown(const QStringList & newQmlsShown);
@@ -34,6 +36,7 @@ private:
 	QStringList				_qmlsShown		= { "Init" };
 
 	Labels				*	_labels			= nullptr;
+	SchoolScannerTable	*	_schoolTable	= nullptr;
 
 };
 

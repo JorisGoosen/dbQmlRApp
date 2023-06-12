@@ -106,6 +106,8 @@ set(sources
 	tablemodel.cpp
 	plotrenderer.cpp
 	columndefinition.cpp
+	schoolscannertable.cpp
+	schoolscannerdefinities.cpp
 )
 
 set(headers
@@ -120,6 +122,8 @@ set(headers
 	plotrenderer.h
 	enumutilities.h
 	columndefinition.h
+	schoolscannertable.h
+	schoolscannerdefinities.h
 )
 
 qt_add_executable(qmlR ${sources} ${headers})
@@ -132,7 +136,10 @@ qt_add_qml_module(qmlR
 		Data.qml
 		Plot.qml
 		Tafel.qml
+		Filter.qml
+		Import.qml
 		RectButton.qml
+		FileBrowser.qml
 	NO_RESOURCE_TARGET_PATH
 #    RESOURCES
 #        img/world.png

@@ -17,6 +17,7 @@
 #include "labels.h"
 #include "mainmodel.h"
 #include <QDir>
+#include "schoolscannertable.h"
 #include <QTimer>
 #include <QQuickStyle>
 
@@ -38,11 +39,19 @@ int main(int argc, char *argv[])
 	Settings					settings;
 	RWrapper					rWrapper;
 
+	QObject::connect(&mainModel, &MainModel::loadInQml, &mainEng, [&](Labels * labels, SchoolScannerTable * table)
+	{
+		mainEng.rootContext()->setContextProperty("schoolScannerTable",			table);
+		mainEng.rootContext()->setContextProperty("labels",						labels);
+
+	});
+
 	//Tell QML whatsup:
 	mainEng.rootContext()->setContextProperty("settings",			&settings);
 	mainEng.rootContext()->setContextProperty("R",					&rWrapper);
 	mainEng.rootContext()->setContextProperty("database",			&database);
 	mainEng.rootContext()->setContextProperty("mainModel",			&mainModel);
+	mainEng.rootContext()->setContextProperty("importer",			&importer);
 
 	mainEng.rootContext()->setContextProperty("backgroundColor",			"black");
 	mainEng.rootContext()->setContextProperty("foregroundColor",			"white");
