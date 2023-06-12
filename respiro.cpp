@@ -40,6 +40,7 @@ void Respiro::startSession()
 
 
 	loadModels();
+	emit start();
 }
 
 void Respiro::loadOldSession(const QString & oldOutputFolder)

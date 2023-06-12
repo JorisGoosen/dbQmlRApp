@@ -228,6 +228,7 @@ void RWrapper::startRespiro(QList<int> channels, int runtimeSec, int channelRunt
 	(*R)[".initialHsFlush"]		= initialHsFlush;
 
 	const QString startR =
+			"library(respiro)\n"
 			"channels = " + [channels](){ QStringList l; for(int channel : channels) l.append(QString::number(channel)); return ("c(" + l.join(",") + ")"); }() + "\n"
 			"rc = RespiroControl$new(channels)\n"
 			"rc$start(\n"
@@ -238,12 +239,9 @@ void RWrapper::startRespiro(QList<int> channels, int runtimeSec, int channelRunt
 			"  InitialHsFlush=.initialHsFlush\n)";
 
 	setRunning(true);
-	runRCommand(startR);
+	runRCommand(startR); //This will probably take a while ;)
 	setRunning(false);
 }
-
-
-
 
 bool RWrapper::running() const
 {

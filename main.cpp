@@ -58,6 +58,9 @@ int main(int argc, char *argv[])
 	QObject::connect(&respiro,	&Respiro::instantPauseChanged,		&rWrapper,	&RWrapper::setInstantPause		);
 	QObject::connect(&respiro,	&Respiro::delayedPauseChanged,		&rWrapper,	&RWrapper::setDelayedPause		);
 	QObject::connect(&respiro,	&Respiro::controlWantedChanged,		&rWrapper,	&RWrapper::setControlWanted		);
+	QObject::connect(&respiro,	&Respiro::start,					&rWrapper,	&RWrapper::startRespiro			);
+
+	QObject::connect(&respiro,	&Respiro::modelsLoaded,				&mainModel,	&MainModel::modelsLoaded		);
 
 
 	//Tell QML whatsup:
@@ -98,6 +101,7 @@ int main(int argc, char *argv[])
 	};
 
 	QObject::connect(&respiro, &Respiro::modelsLoaded, respiroModelsLoadedHandler);
+
 
 
 	/*PlotRenderer piePlot	(QFile(":/R/pie.R"),	"pie.png");

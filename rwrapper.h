@@ -63,12 +63,12 @@ public:
 
 public slots:
 	void startRespiro(
-			QList<int>	channels			= {1,2,3,4,5,6,7,8,9,10,11,12},
-			int			runtimeSec			= 365 * 24 * 60 * 60,
-			int			channelRuntimeSec	= 5 * 60,
-			bool		calibrateCO2		= true,
-			bool		internalLeakTest	= true,
-			bool		initialHsFlush		= false
+			QList<int>	channels,
+			int			runtimeSec,
+			int			channelRuntimeSec,
+			bool		calibrateCO2,
+			bool		internalLeakTest,
+			bool		initialHsFlush
 	);
 
 signals:
