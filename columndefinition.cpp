@@ -43,6 +43,7 @@ QString ColumnDefinition::dbColType() const
 		return "INTEGER PRIMARY KEY";
 
 	case ColumnType::NumInt:
+	case ColumnType::NumBool:
 	case ColumnType::DateTime:
 	case ColumnType::Label:
 		return "INT";
@@ -63,6 +64,9 @@ QString ColumnDefinition::convertQVariantToDbValue(QVariant val) const
 	case ColumnType::NumInt:
 	case ColumnType::PrimaryKey:
 		return QString::number(val.toInt());
+
+	case ColumnType::NumBool:
+		return val.toInt() == 0 ? "False" : "True";
 
 	case ColumnType::NumDbl:
 	case ColumnType::Duration: //seconds?

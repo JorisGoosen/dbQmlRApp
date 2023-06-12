@@ -26,8 +26,9 @@ void Database::setDbFile(const std::filesystem::path & file)
 
 void Database::create()
 {
-
   assert(!_db);
+
+  std::cout << "Creating database at '" << dbFile() << "'" << std::endl;
 
   if(std::filesystem::exists(dbFile()))
     {
@@ -48,8 +49,9 @@ void Database::create()
 
 void Database::load()
 {
-
   assert(!_db);
+
+  std::cout << "Loading database from '" << dbFile() << "'" << std::endl;
 
   if(!std::filesystem::exists(dbFile()))
     throw std::runtime_error("Trying to load '" + dbFile() + "' but it doesn't exist!");
@@ -453,6 +455,18 @@ void Database::tableBindColumnDefParameter(sqlite3_stmt * stmt, size_t param, co
 		sqlite3_bind_int(stmt, param, val.toInt());
 		return;
 
+	case ColumnType::NumBool:
+		if(val.typeId() == QMetaType::QString)
+		{
+			std::string str = val.toString().toStdString();
+			sqlite3_bind_text(stmt, param, str.c_str(), str.size(), SQLITE_TRANSIENT);
+			return;
+		}
+
+		sqlite3_bind_int(stmt, param, val.toInt());
+		return;
+
+
 	case ColumnType::Duration:
 	case ColumnType::NumDbl:
 		sqlite3_bind_double(stmt, param, val.toDouble());
@@ -481,6 +495,7 @@ QVariant Database::tableExtractColumnDefValue(sqlite3_stmt * stmt, size_t param,
 	{
 	case ColumnType::PrimaryKey:
 	case ColumnType::NumInt:
+	case ColumnType::NumBool:
 	case ColumnType::DateTime: //unix epoch
 		return QVariant(sqlite3_column_int(stmt, param));
 

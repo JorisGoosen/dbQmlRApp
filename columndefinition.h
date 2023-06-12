@@ -5,7 +5,7 @@
 #include "enumutilities.h"
 #include <QVariant>
 
-DECLARE_ENUM(ColumnType, NumDbl, NumInt, DateTime, Duration, Text, Label, PrimaryKey)
+DECLARE_ENUM(ColumnType, NumDbl, NumInt, NumBool, DateTime, Duration, Text, Label, PrimaryKey)
 
 class ColumnDefinition : public QObject
 {

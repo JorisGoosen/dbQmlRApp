@@ -2,10 +2,6 @@
 #define MAINMODEL_H
 
 #include <QObject>
-#include "labels.h"
-
-class Database;
-
 
 class MainModel : public QObject
 {
@@ -13,28 +9,20 @@ class MainModel : public QObject
 	Q_PROPERTY(QStringList qmlsShown READ qmlsShown NOTIFY qmlsShownChanged)
 
 public:
-	explicit	MainModel(Database * db, QObject *parent = nullptr);
+	explicit MainModel(QObject *parent = nullptr);
 
 	QStringList qmlsShown() const;
 
 public slots:
-	bool		loadDatabase(const QString & dbPath);
-	bool		selectDatabase();
-	bool		testDatabase();
-
+	void modelsLoaded() { setQmlsShown( {"Data", "Hardware" }); }
 
 signals:
-	void		qmlsShownChanged();
+	void qmlsShownChanged();
 
 private:
-	void		setQmlsShown(const QStringList & newQmlsShown);
+	void setQmlsShown(const QStringList & newQmlsShown);
 
-	Database			*	_db				= nullptr;
-
-	QStringList				_qmlsShown		= { "Init" };
-
-	Labels				*	_labels			= nullptr;
-
+	QStringList _qmlsShown = { "Init", "Hardware" };
 };
 
 #endif // MAINMODEL_H

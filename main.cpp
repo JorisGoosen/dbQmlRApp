@@ -14,11 +14,12 @@
 #include "database.h"
 #include "settings.h"
 #include "plotrenderer.h"
-#include "labels.h"
 #include "mainmodel.h"
+#include "respiro.h"
 #include <QDir>
 #include <QTimer>
 #include <QQuickStyle>
+#include <QThread>
 
 
 int main(int argc, char *argv[])
@@ -33,20 +34,41 @@ int main(int argc, char *argv[])
 
 	QQuickStyle::setStyle("Basic");
 
-	Database					database;
-	MainModel					mainModel(&database);
+	MainModel					mainModel;
 	Settings					settings;
 	RWrapper					rWrapper;
+	Respiro						respiro;
+
+	QThread rThread;
+	rWrapper.moveToThread(&rThread);
+	rThread.start();
+
+	QObject::connect(&rWrapper,	&RWrapper::push_raw_data,			&respiro,	&Respiro::push_raw_data			);
+	QObject::connect(&rWrapper,	&RWrapper::push_current_channel,	&respiro,	&Respiro::push_current_channel	);
+	QObject::connect(&rWrapper,	&RWrapper::push_valve_state,		&respiro,	&Respiro::push_valve_state		);
+	QObject::connect(&rWrapper,	&RWrapper::push_pump_state,			&respiro,	&Respiro::push_pump_state		);
+	QObject::connect(&rWrapper,	&RWrapper::push_o2_state,			&respiro,	&Respiro::push_o2_state			);
+	QObject::connect(&rWrapper,	&RWrapper::push_co2_state,			&respiro,	&Respiro::push_co2_state		);
+	QObject::connect(&rWrapper,	&RWrapper::push_ch4_state,			&respiro,	&Respiro::push_ch4_state		);
+	QObject::connect(&rWrapper,	&RWrapper::push_error,				&respiro,	&Respiro::push_error			);
+	QObject::connect(&rWrapper,	&RWrapper::push_warning,			&respiro,	&Respiro::push_warning			);
+	QObject::connect(&rWrapper,	&RWrapper::push_info,				&respiro,	&Respiro::push_info				);
+	QObject::connect(&rWrapper,	&RWrapper::push_loading_feedback,	&respiro,	&Respiro::push_loading_feedback	);
+
+	QObject::connect(&respiro,	&Respiro::instantPauseChanged,		&rWrapper,	&RWrapper::setInstantPause		);
+	QObject::connect(&respiro,	&Respiro::delayedPauseChanged,		&rWrapper,	&RWrapper::setDelayedPause		);
+	QObject::connect(&respiro,	&Respiro::controlWantedChanged,		&rWrapper,	&RWrapper::setControlWanted		);
+
 
 	//Tell QML whatsup:
 	mainEng.rootContext()->setContextProperty("settings",			&settings);
 	mainEng.rootContext()->setContextProperty("R",					&rWrapper);
-	mainEng.rootContext()->setContextProperty("database",			&database);
 	mainEng.rootContext()->setContextProperty("mainModel",			&mainModel);
+	mainEng.rootContext()->setContextProperty("respiro",			&respiro);
 
-	mainEng.rootContext()->setContextProperty("backgroundColor",			"black");
-	mainEng.rootContext()->setContextProperty("foregroundColor",			"white");
-	mainEng.rootContext()->setContextProperty("windowBackgroundColor",		"grey");
+	mainEng.rootContext()->setContextProperty("backgroundColor",		"black");
+	mainEng.rootContext()->setContextProperty("foregroundColor",		"white");
+	mainEng.rootContext()->setContextProperty("windowBackgroundColor",	"grey");
 
 	mainEng.rootContext()->setContextProperty("controlBackgroundNeutral",	"lightgrey");
 	mainEng.rootContext()->setContextProperty("controlBackgroundFocus",		"white");
@@ -57,17 +79,28 @@ int main(int argc, char *argv[])
 
 	mainEng.rootContext()->setContextProperty("generalMargin",		20);
 
-/*
-	QFile	//rMain(		":/R/main.R"			),
-			rWriteImage(":/R/writeImage.R"	);
+	auto respiroModelsLoadedHandler = [&]()
+	{
+		mainEng.rootContext()->setContextProperty("database",			respiro.db());
+		mainEng.rootContext()->setContextProperty("labels",				respiro.labels());
+		mainEng.rootContext()->setContextProperty("respiroData",		respiro.data());
+		mainEng.rootContext()->setContextProperty("respiroMsgs",		respiro.msgs());
 
-	//rMain.open(			QIODeviceBase::ReadOnly);
-	rWriteImage.open(	QIODeviceBase::ReadOnly);
+		QFile	//rMain(		":/R/main.R"			),
+				rWriteImage(":/R/writeImage.R"	);
 
-	rWrapper.runRCommand(rWriteImage.readAll());
-	rWrapper.runRCommand(mainTable.dbplyrCode());
+		//rMain.open(			QIODeviceBase::ReadOnly);
+		rWriteImage.open(	QIODeviceBase::ReadOnly);
 
-	PlotRenderer piePlot	(QFile(":/R/pie.R"),	"pie.png");
+		rWrapper.runRCommand(rWriteImage.readAll());
+		rWrapper.runRCommand(respiro.data()->dbplyrCode());
+		rWrapper.runRCommand(respiro.msgs()->dbplyrCode());
+	};
+
+	QObject::connect(&respiro, &Respiro::modelsLoaded, respiroModelsLoadedHandler);
+
+
+	/*PlotRenderer piePlot	(QFile(":/R/pie.R"),	"pie.png");
 	PlotRenderer linesPlot	(QFile(":/R/lines.R"), "lines.png");
 
 	QObject::connect(&rWrapper, &RWrapper::plotWidthChanged,	&piePlot,	&PlotRenderer::setWidth);
@@ -80,9 +113,14 @@ int main(int argc, char *argv[])
 
 	mainEng.rootContext()->setContextProperty("piePlot",	&piePlot);
 	mainEng.rootContext()->setContextProperty("linesPlot",	&linesPlot);
-
 */
+
 	mainEng.load(":/main.qml");
 
-	return app.exec();
+	int returnCode = app.exec();
+
+	rThread.quit();
+	rThread.wait();
+
+	return returnCode;
 }

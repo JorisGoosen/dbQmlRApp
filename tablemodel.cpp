@@ -3,7 +3,8 @@
 TableModel::TableModel(Database * db, const QString & tableName, const ColumnDefinitions & columnDefinitions)
 	: QAbstractTableModel(db), _db(db), _tableName(tableName), _columnDefinitions(columnDefinitions)
 {
-	_db->tableCreate(_tableName, _columnDefinitions);
+	if(!_db->tableExists(_tableName))
+		_db->tableCreate(_tableName, _columnDefinitions);
 }
 
 int TableModel::rowCount(const QModelIndex &) const

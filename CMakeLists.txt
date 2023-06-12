@@ -98,6 +98,7 @@ endif()
 set(sources
 	main.cpp
 	labels.cpp
+	respiro.cpp
 	rwrapper.cpp
 	database.cpp
 	settings.cpp
@@ -109,6 +110,7 @@ set(sources
 
 set(headers
 	labels.h
+	respiro.h
 	settings.h
 	rwrapper.h
 	database.h
@@ -126,10 +128,12 @@ qt_add_qml_module(qmlR
 	URI qmlRModule
 	QML_FILES
 	    main.qml
+		Hardware.qml
+		ChannelButton.qml
+		HWFeedbackButton.qml
 		Init.qml
+		Loading.qml
 		Data.qml
-		Plot.qml
-		Tafel.qml
 		RectButton.qml
 	NO_RESOURCE_TARGET_PATH
 #    RESOURCES
