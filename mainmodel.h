@@ -14,7 +14,7 @@ public:
 	QStringList qmlsShown() const;
 
 public slots:
-	void modelsLoaded() { setQmlsShown( {"Data", "Hardware" }); }
+	void modelsLoaded() { setQmlsShown( {"Loading", "Data", "Hardware" }); }
 
 signals:
 	void qmlsShownChanged();

@@ -31,6 +31,7 @@ class RWrapper : public QObject
 	Q_PROPERTY(bool			delayedPause		READ delayedPause		WRITE setDelayedPause	NOTIFY delayedPauseChanged	)
 	Q_PROPERTY(bool			controlWanted		READ controlWanted		WRITE setControlWanted	NOTIFY controlWantedChanged	)
 	Q_PROPERTY(bool			running				READ running			WRITE setRunning		NOTIFY runningChanged		)
+	Q_PROPERTY(QString		outputFolder		READ outputFolder		WRITE setOutputFolder	NOTIFY outputFolderChanged	)
 
 
 
@@ -60,6 +61,9 @@ public:
 	void setDelayedPause(bool newDelayedPause);
 	void setControlWanted(bool newControlWanted);
 	void setRunning(bool newRunning);
+
+	QString outputFolder() const;
+	void setOutputFolder(const QString & newOutputFolder);
 
 public slots:
 	void startRespiro(
@@ -95,6 +99,8 @@ signals:
 	void runningChanged();
 
 
+	void outputFolderChanged();
+
 private:
 	RInside			*	R				= nullptr;
 	QStringList			_prevOutput		= { };
@@ -104,7 +110,8 @@ private:
 	bool				_instantPause	= false,
 						_delayedPause	= false,
 						_controlWanted	= false,
-						_running		= false;
+	_running		= false;
+	QString _outputFolder;
 };
 
 #endif // RWRAPPER_H

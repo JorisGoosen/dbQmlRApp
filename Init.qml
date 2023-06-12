@@ -6,6 +6,8 @@ import QtCore
 
 ColumnLayout
 {
+	Layout.alignment: Qt.AlignHCenter
+
 	FolderDialog
 	{
 		id:					oldSessionSelector

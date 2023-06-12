@@ -3,7 +3,7 @@
 RWrapper * RWrapper::_singleton = nullptr;
 
 RWrapper::RWrapper(QObject *parent)
-	: QObject{parent}, R(new RInside(0, nullptr, true, false, false))
+	: QObject{parent}, R(new RInside(0, nullptr, true, true, false))
 {
 	assert(!_singleton);
 	_singleton = this;
@@ -36,7 +36,11 @@ QString RWrapper::runRCommand(QString command)
 	{
 		QStringList out;
 
-		if(Rf_isString(res))
+		if(!res)
+			out.append("NULL");
+		else if(Rf_isNull(res))
+			out.append("NULL");
+		else if(Rf_isString(res))
 			for(Rcpp::String str : Rcpp::StringVector(res))
 				out.append(QString::fromStdString(str));
 		else if(Rf_isInteger(res))
@@ -45,8 +49,6 @@ QString RWrapper::runRCommand(QString command)
 		else if(Rf_isReal(res))
 			for(double r : Rcpp::DoubleVector(res))
 				out.append(QString::number(r));
-		else if(Rf_isNull(res))
-			out.append("NULL");
 		else if(Rf_isList(res))
 			for(SEXP s : Rcpp::List(res))
 				out.append(f(s));
@@ -109,7 +111,7 @@ void RWrapper::setPlotHeight(int newPlotHeight)
 	emit plotHeightChanged(_plotHeight);
 }
 
-void respiroGui_push_raw_data(			int			o2, int ch4, int co2, int pressure, float temp1, float temp2)
+void respiroGui_push_raw_data(int o2, int ch4, int co2, int pressure, float temp1, float temp2)
 {
 	emit RWrapper::singleton()->push_raw_data(o2, ch4, co2, pressure, temp1, temp2);
 }
@@ -226,17 +228,22 @@ void RWrapper::startRespiro(QList<int> channels, int runtimeSec, int channelRunt
 	(*R)[".calibrateCO2"]		= calibrateCO2;
 	(*R)[".internalLeakTest"]	= internalLeakTest;
 	(*R)[".initialHsFlush"]		= initialHsFlush;
+	(*R)[".outputFolder"]		= _outputFolder.toStdString();
 
 	const QString startR =
+			"setwd(.outputFolder)\n"
 			"library(respiro)\n"
-			"channels = " + [channels](){ QStringList l; for(int channel : channels) l.append(QString::number(channel)); return ("c(" + l.join(",") + ")"); }() + "\n"
-			"rc = RespiroControl$new(channels)\n"
-			"rc$start(\n"
-			"  runtime=.runtimeSec,\n"
-			"  channelRuntime=.channelRuntimeSec,\n"
-			"  CalibrateCO2=.calibrateCO2,\n"
-			"  Internalleaktest=.internalLeakTest,\n"
-			"  InitialHsFlush=.initialHsFlush\n)";
+			"withCallingHandlers(\n{\n"
+			//"  channels = " + [channels](){ QStringList l; for(int channel : channels) l.append(QString::number(channel)); return ("c(" + l.join(",") + ")"); }() + "\n"
+			"  rc = RespiroControl$new(1:12)\n"
+			"  rc$start(\n"
+			"    runtime=.runtimeSec,\n"
+			"    channelRuntime=.channelRuntimeSec,\n"
+			"    CalibrateCO2=.calibrateCO2,\n"
+			"    Internalleaktest=.internalLeakTest,\n"
+			"    InitialHsFlush=.initialHsFlush\n)"
+			"\n},error=function(error) { print(sys.calls()); print(paste(error)); respiroGui_push_error(paste(error))}\n)"
+			;
 
 	setRunning(true);
 	runRCommand(startR); //This will probably take a while ;)
@@ -254,4 +261,17 @@ void RWrapper::setRunning(bool newRunning)
 		return;
 	_running = newRunning;
 	emit runningChanged();
+}
+
+QString RWrapper::outputFolder() const
+{
+	return _outputFolder;
+}
+
+void RWrapper::setOutputFolder(const QString & newOutputFolder)
+{
+	if (_outputFolder == newOutputFolder)
+		return;
+	_outputFolder = newOutputFolder;
+	emit outputFolderChanged();
 }

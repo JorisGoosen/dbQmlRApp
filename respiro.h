@@ -51,6 +51,10 @@ public:
 	Q_INVOKABLE	void	startSession();
 	Q_INVOKABLE	void	loadOldSession(const QString & oldOutputFolder);
 
+	Q_INVOKABLE	bool	feedbackFinished(	const QString & feedbackMsg);
+	Q_INVOKABLE	QString	feedbackError(		const QString & feedbackMsg);
+
+
 	Database	*		db()			const	{ return _db;		}
 	TableModel	*		data()			const	{ return _data;		}
 	TableModel	*		msgs()			const	{ return _msgs;		}
@@ -127,7 +131,7 @@ signals:
 	void				instantPauseChanged(bool);
 	void				delayedPauseChanged(bool);
 	void				controlWantedChanged(bool);
-	void				outputFolderChanged();
+	void				outputFolderChanged(QString);
 	void				modelsLoaded();
 	void				cantFindOldDatabase();
 	void				feedbackChanged();
@@ -165,9 +169,10 @@ private:
 						_o2On,
 						_co2On,
 						_ch4On,
-						_instantPause	= false,
-						_delayedPause	= false,
-						_controlWanted	= false;
+						_instantPause		= false,
+						_delayedPause		= false,
+						_controlWanted		= false,
+						_hardResetFeedback	= false;
 
 	ColumnDefinitions	_dataDefs,
 						_msgsDefs;

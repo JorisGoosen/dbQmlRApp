@@ -55,12 +55,12 @@ Window
 		onWidthChanged:		R.plotWidth		= width
 		onHeightChanged:	R.plotHeight	= height
 
-		onCurrentIndexChanged: if(tabBar.currentIndex != currentIndex)	tabBar.currentIndex = currentIndex
-
 		Repeater
 		{
 			id:		swipeRepeater
 			model:	mainModel.qmlsShown
+
+			onModelChanged:	tabBar.setCurrentIndex(0)
 
 			Loader
 			{

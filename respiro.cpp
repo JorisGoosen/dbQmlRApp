@@ -4,6 +4,7 @@
 #include <QDir>
 #include <QUrl>
 #include "database.h"
+#include <iostream>
 
 Respiro::Respiro()
 	: QObject{}
@@ -51,6 +52,16 @@ void Respiro::loadOldSession(const QString & oldOutputFolder)
 		emit cantFindOldDatabase();
 	else
 		loadModels();
+}
+
+bool Respiro::feedbackFinished(const QString & feedbackMsg)
+{
+	return _feedbackMap.contains(feedbackMsg) ? _feedbackMap[feedbackMsg]->finished : false;
+}
+
+QString Respiro::feedbackError(const QString & feedbackMsg)
+{
+	return _feedbackMap.contains(feedbackMsg) ? _feedbackMap[feedbackMsg]->error : "???";
 }
 
 const QString & Respiro::dbPath() const
@@ -332,11 +343,13 @@ void Respiro::push_ch4_state(bool ch4_on)
 
 void Respiro::push_error(QString error)
 {
+	std::cerr << error.toStdString() << std::endl;
 	_msgs->appendRows({{"Error", error, QDateTime::currentDateTimeUtc().toSecsSinceEpoch()}}, &_msgsDefs);
 }
 
 void Respiro::push_warning(QString warning)
 {
+	std::cout << warning.toStdString() << std::endl;
 	_msgs->appendRows({{"Warning", warning, QDateTime::currentDateTimeUtc().toSecsSinceEpoch()}}, &_msgsDefs);
 }
 
@@ -347,6 +360,8 @@ void Respiro::push_info(QString info)
 
 void Respiro::push_loading_feedback(QString feedback, bool finished, QString error)
 {
+	std::cout << "push_loading_feedback('" << feedback.toStdString() << "', '" << (finished ? "finished" : "not finished") << "', '" << error.toStdString() << "')" << std::endl;
+
 	if(_feedbackMap.contains(feedback))
 	{
 		_feedbackMap[feedback]->error		= error;
@@ -358,6 +373,9 @@ void Respiro::push_loading_feedback(QString feedback, bool finished, QString err
 		_feedbacks.push_back(fb);
 		_feedbackMap[feedback] = fb;
 	}
+	_hardResetFeedback = true;
+	emit feedbackChanged();
+	_hardResetFeedback = false;
 	emit feedbackChanged();
 }
 
@@ -372,13 +390,14 @@ void Respiro::setOutputFolder(const QString & newOutputFolder)
 		return;
 
 	_outputFolder = newOutputFolder.startsWith("file:") ? QUrl(newOutputFolder).toLocalFile() : newOutputFolder;
-	emit outputFolderChanged();
+	emit outputFolderChanged(_outputFolder);
 }
 
 QStringList Respiro::feedback() const
 {
 	QStringList fbs;
-	for(Feedback * fb : _feedbacks)
-		fbs.append(fb->feedback);
+	if(!_hardResetFeedback)
+		for(Feedback * fb : _feedbacks)
+			fbs.append(fb->feedback);
 	return fbs;
 }

@@ -55,6 +55,7 @@ int main(int argc, char *argv[])
 	QObject::connect(&rWrapper,	&RWrapper::push_info,				&respiro,	&Respiro::push_info				);
 	QObject::connect(&rWrapper,	&RWrapper::push_loading_feedback,	&respiro,	&Respiro::push_loading_feedback	);
 
+	QObject::connect(&respiro,	&Respiro::outputFolderChanged,		&rWrapper,	&RWrapper::setOutputFolder		);
 	QObject::connect(&respiro,	&Respiro::instantPauseChanged,		&rWrapper,	&RWrapper::setInstantPause		);
 	QObject::connect(&respiro,	&Respiro::delayedPauseChanged,		&rWrapper,	&RWrapper::setDelayedPause		);
 	QObject::connect(&respiro,	&Respiro::controlWantedChanged,		&rWrapper,	&RWrapper::setControlWanted		);
