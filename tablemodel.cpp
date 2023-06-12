@@ -1,7 +1,7 @@
 #include "tablemodel.h"
 
 TableModel::TableModel(Database * db, const QString & tableName, const ColumnDefinitions & columnDefinitions)
-	: _db(db), _tableName(tableName), _columnDefinitions(columnDefinitions)
+	: QAbstractTableModel(db), _db(db), _tableName(tableName), _columnDefinitions(columnDefinitions)
 {
 	_db->tableCreate(_tableName, _columnDefinitions);
 }

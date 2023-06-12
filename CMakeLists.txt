@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.21)
 
 project(qmlR)
 find_package(Qt6 REQUIRED)
-find_package(Qt6 REQUIRED COMPONENTS Core Quick Gui)
+find_package(Qt6 REQUIRED COMPONENTS Core Quick Gui QuickControls2)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_MESSAGE_CONTEXT_SHOW ON)
@@ -95,9 +95,32 @@ elseif ( CMAKE_BUILD_TYPE STREQUAL "RELEASE" )
 endif()
 
 #Set up our actual application
-set(sources main.cpp rwrapper.cpp database.cpp tablemodel.cpp columndefinition.cpp settings.cpp plotrenderer.cpp)
+set(sources
+	main.cpp
+	labels.cpp
+	rwrapper.cpp
+	database.cpp
+	importer.cpp
+	settings.cpp
+	mainmodel.cpp
+	tablemodel.cpp
+	plotrenderer.cpp
+	columndefinition.cpp
+)
 
-set(headers rwrapper.h database.h tablemodel.h enumutilities.h stringutils.h columndefinition.h settings.h plotrenderer.h)
+set(headers
+	labels.h
+	settings.h
+	rwrapper.h
+	database.h
+	importer.h
+	mainmodel.h
+	tablemodel.h
+	stringutils.h
+	plotrenderer.h
+	enumutilities.h
+	columndefinition.h
+)
 
 qt_add_executable(qmlR ${sources} ${headers})
 
@@ -105,6 +128,11 @@ qt_add_qml_module(qmlR
 	URI qmlRModule
 	QML_FILES
 	    main.qml
+		Init.qml
+		Data.qml
+		Plot.qml
+		Tafel.qml
+		RectButton.qml
 	NO_RESOURCE_TARGET_PATH
 #    RESOURCES
 #        img/world.png
@@ -125,6 +153,7 @@ target_link_libraries(
 	PRIVATE
 	Qt6::Core
 	Qt6::Quick
+	Qt6::QuickControls2
 	Qt6::Gui
 	${BLAS_LIBS}
 	${LAPACK_LIBS}

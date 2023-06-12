@@ -39,8 +39,12 @@ QString ColumnDefinition::dbColType() const
 {
 	switch(_columnType)
 	{
+	case ColumnType::PrimaryKey:
+		return "INTEGER PRIMARY KEY";
+
 	case ColumnType::NumInt:
 	case ColumnType::DateTime:
+	case ColumnType::Label:
 		return "INT";
 
 	case ColumnType::Duration:
@@ -57,6 +61,7 @@ QString ColumnDefinition::convertQVariantToDbValue(QVariant val) const
 	switch(_columnType)
 	{
 	case ColumnType::NumInt:
+	case ColumnType::PrimaryKey:
 		return QString::number(val.toInt());
 
 	case ColumnType::NumDbl:
@@ -68,6 +73,19 @@ QString ColumnDefinition::convertQVariantToDbValue(QVariant val) const
 
 	case ColumnType::Text:
 		return val.toString();
+
+	case ColumnType::Label:
+		//Depending on the query we might get an actual int-value, representing either ID or order, or we might get the actual labelstring...
+		switch(val.typeId())
+		{
+		case QMetaType::Int:
+			return QString::number(val.toInt());
+
+		default:
+		case QMetaType::QString:
+			return val.toString();
+		}
+
 	}
 }
 

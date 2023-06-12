@@ -2,13 +2,27 @@
 #include <iostream>
 
 Database::Database(const std::filesystem::path & file, QObject *parent)
-    : QObject{parent}, _dbFile(file)
+	: QObject{parent}
 {
-  //if(!std::filesystem::exists(dbFile()))
-    create();
-  //else
-  //  load();
+  setDbFile(file);
 }
+
+Database::Database(QObject *parent)
+	: QObject{parent}
+{
+}
+
+void Database::setDbFile(const std::filesystem::path & file)
+{
+	assert(_dbFile == "");
+	_dbFile = file;
+
+	if(!std::filesystem::exists(dbFile()))
+		create();
+	 else
+		load();
+}
+
 
 void Database::create()
 {
@@ -334,9 +348,23 @@ bool Database::tableExists(const QString & tableName)
 	return runStatementsId("SELECT count(name) FROM sqlite_master WHERE type='table' AND name='" + tableName.toStdString() + "';");
 }
 
+void Database::tableDrop(const QString & tableName)
+{
+	return runStatements("DROP TABLE " + tableName.toStdString() + ";");
+}
+
 void Database::tableCreate(const QString & tableName, const ColumnDefinitions & cols)
 {
-	QString query = "CREATE TABLE " + tableName + " ( id INTEGER PRIMARY KEY ASC, " + tableColumnQueryFrag(cols, true) + ");";
+	QString optionalIdFrag = "id INTEGER PRIMARY KEY ASC,";
+
+	for(ColumnDefinition * cd : cols)
+		if(cd->columnType() == ColumnType::PrimaryKey)
+		{
+			optionalIdFrag = "";
+			break;
+		}
+
+	QString query = "CREATE TABLE " + tableName + " (" + optionalIdFrag + " " + tableColumnQueryFrag(cols, true) + ");";
 
 	runStatements(query.toStdString());
 }

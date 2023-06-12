@@ -12,11 +12,14 @@
 #include <QFile>
 #include "rwrapper.h"
 #include "database.h"
-#include "tablemodel.h"
 #include "settings.h"
 #include "plotrenderer.h"
+#include "labels.h"
+#include "mainmodel.h"
 #include <QDir>
 #include <QTimer>
+#include <QQuickStyle>
+
 
 int main(int argc, char *argv[])
 {
@@ -24,45 +27,37 @@ int main(int argc, char *argv[])
 
 	QCoreApplication::setOrganizationName(	"JorisGoosen");
 	QCoreApplication::setOrganizationDomain("jorisgoosen.nl");
-	QCoreApplication::setApplicationName(	"dbQmlRApp");
+	QCoreApplication::setApplicationName(	"School Scanner");
 
 	QQmlApplicationEngine		mainEng;
 
+	QQuickStyle::setStyle("Basic");
+
+	Database					database;
+	MainModel					mainModel(&database);
 	Settings					settings;
 	RWrapper					rWrapper;
-	Database					database("qmlR.sqlite");
-
-	//Create table, with columnsdefs:
-	typedef ColumnDefinition	CD;
-	ColumnDefinitions			mainColumns = {
-		new CD("Hello", "hello",	ColumnType::Text),
-		new CD("World", "world",	ColumnType::DateTime),
-		new CD("This",	"this",		ColumnType::Duration),
-		new CD("is a",	"isa",		ColumnType::NumDbl),
-		new CD("table", "tafel",	ColumnType::NumInt)
-	};
-	TableModel					mainTable(&database, "HelloWorld",	mainColumns);
-
-	//Some dummy data:
-	mainTable.appendRows({
-							 {"Hello world!",	1,	  1,	10.01,		arc4random()%256},
-							 {"Well well...",	2,	  2,	20.0332,	arc4random()%256},
-							 {"Hello world!",	3,	  4,	30.03,		arc4random()%256},
-							 {"Hello world!",	4,	  8,	10.014,		arc4random()%256},
-							 {"Hello world!",	5,	 16,	120.035,	arc4random()%256},
-							 {"Hello world!",	6,	 32,	160.06,		arc4random()%256},
-							 {"Well well...",	7,	 64,	120.32107,	arc4random()%256},
-							 {"Well well...",	8,	128,	250.02,		arc4random()%256},
-							 {"Well well...",	9,	256,	210.02,		arc4random()%256},
-							 {"And 3rd!",		10, 512,	123.03,		arc4random()%256}
-						 });
 
 	//Tell QML whatsup:
-	mainEng.rootContext()->setContextProperty("settings",	&settings);
-	mainEng.rootContext()->setContextProperty("R",			&rWrapper);
-	mainEng.rootContext()->setContextProperty("database",	&database);
-	mainEng.rootContext()->setContextProperty("mainTable",	&mainTable);
+	mainEng.rootContext()->setContextProperty("settings",			&settings);
+	mainEng.rootContext()->setContextProperty("R",					&rWrapper);
+	mainEng.rootContext()->setContextProperty("database",			&database);
+	mainEng.rootContext()->setContextProperty("mainModel",			&mainModel);
 
+	mainEng.rootContext()->setContextProperty("backgroundColor",			"black");
+	mainEng.rootContext()->setContextProperty("foregroundColor",			"white");
+	mainEng.rootContext()->setContextProperty("windowBackgroundColor",		"grey");
+
+	mainEng.rootContext()->setContextProperty("controlBackgroundNeutral",	"lightgrey");
+	mainEng.rootContext()->setContextProperty("controlBackgroundFocus",		"white");
+	mainEng.rootContext()->setContextProperty("controlBackgroundPressed",	"black");
+	mainEng.rootContext()->setContextProperty("controlForegroundNeutral",	"black");
+	mainEng.rootContext()->setContextProperty("controlForegroundFocus",		"black");
+	mainEng.rootContext()->setContextProperty("controlForegroundPressed",	"white");
+
+	mainEng.rootContext()->setContextProperty("generalMargin",		20);
+
+/*
 	QFile	//rMain(		":/R/main.R"			),
 			rWriteImage(":/R/writeImage.R"	);
 
@@ -86,7 +81,7 @@ int main(int argc, char *argv[])
 	mainEng.rootContext()->setContextProperty("piePlot",	&piePlot);
 	mainEng.rootContext()->setContextProperty("linesPlot",	&linesPlot);
 
-
+*/
 	mainEng.load(":/main.qml");
 
 	return app.exec();

@@ -7,7 +7,7 @@ Window
 	width:		1280
 	height:		720
 	visible:	true
-	color:		"#A06"
+	color:		windowBackgroundColor
 
 
 	TabBar
@@ -18,16 +18,31 @@ Window
 		{
 			top:	parent.top
 			left:	parent.left
-			right:	parent.horizontalCenter
+			right:	parent.right
 		}
 
 		Repeater
 		{
-			model:	2
+			model:	mainModel.qmlsShown
 
 			TabButton
 			{
-				text:	(index == 0 ? piePlot : linesPlot).fileName
+				id:		tabButton
+				text:	modelData
+
+				property bool selected: index == tabBar.currentIndex
+
+				contentItem:	Text
+				{
+					color:				tabButton.selected ? controlBackgroundPressed : controlBackgroundNeutral
+					text:				tabButton.text
+					anchors.centerIn:	parent
+				}
+
+				background: Rectangle
+				{
+						color:	tabButton.selected ? controlForegroundPressed : controlForegroundNeutral
+				}
 			}
 		}
 	}
@@ -44,16 +59,13 @@ Window
 
 		Repeater
 		{
-			model:	2
+			id:		swipeRepeater
+			model:	mainModel.qmlsShown
 
-			Image
+			Loader
 			{
-				id:		plotImg
-				source:	plotObj.plotUrl
-				cache:	false
-				mipmap:	false
-
-				property var plotObj: (index == 0 ? piePlot : linesPlot)
+				id:				qmlLoader
+				source:			modelData + ".qml"
 			}
 		}
 
@@ -61,132 +73,27 @@ Window
 		{
 			top:	tabBar.bottom
 			left:	parent.left
-			right:	parent.horizontalCenter
-			bottom:	parent.verticalCenter
-		}
-	}
-
-	ScrollView
-	{
-		id:				outputText
-		contentWidth:	width
-
-
-		Text
-		{
-			width:		outputText.width
-			text:		R.prevOutputConcat
-			color:		"yellow"
-			wrapMode:	Text.Wrap
-
-		}
-
-		anchors
-		{
-			top:	parent.verticalCenter
-			left:	parent.left
-			right:	parent.horizontalCenter
-			bottom:	inputText.top
-		}
-	}
-
-	Item
-	{
-
-		anchors
-		{
-			top:	parent.top
-			left:	parent.horizontalCenter
 			right:	parent.right
-			bottom:	inputText.top
-		}
-
-		HorizontalHeaderView
-		{
-			id:				horizontalHeader
-			syncView:		mainTableView
-			clip:			true
-			anchors
-			{
-				top:		parent.top
-				left:		mainTableView.left
-				right:		parent.right
-			}
-
-			delegate: Rectangle
-			{
-				implicitWidth:	100
-				implicitHeight: 50
-				color:			"transparent"
-				border.color:	"yellow"
-				border.width:	1
-				Text
-				{
-					text:				display;
-					anchors.centerIn:	parent
-					color:				"yellow"
-				}
-			}
-		}
-
-		VerticalHeaderView
-		{
-			id:				verticalHeader
-			syncView:		mainTableView
-			clip:			true
-			anchors
-			{
-				top:		mainTableView.top
-				left:		parent.left
-				bottom:		parent.bottom
-			}
-
-			delegate: Rectangle
-			{
-				implicitWidth:	100
-				implicitHeight: 50
-				color:			"transparent"
-				border.color:	"yellow"
-				border.width:	1
-				Text
-				{
-					text:				display;
-					anchors.centerIn:	parent
-					color:				"yellow"
-				}
-			}
-		}
-
-		TableView
-		{
-			id:		mainTableView
-			model:	mainTable
-			clip:	true
-
-			anchors
-			{
-				top:	horizontalHeader.bottom
-				left:	verticalHeader.right
-				right:	parent.right
-				bottom:	parent.bottom
-			}
-
-			delegate: Rectangle
-			{
-				implicitWidth:	100
-				implicitHeight: 50
-				color:			"transparent"
-				border.color:	"yellow"
-				border.width:	1
-				Text
-				{
-					text:				display;
-					anchors.centerIn:	parent
-					color:				"yellow"
-				}
-			}
+			bottom:	parent.bottom
 		}
 	}
+
+	readonly property Item _toolTipOverrideItem: Item
+	{
+		//These properties override those for ALL attached ToolTips in the application
+		//ToolTip.toolTip shouldn't be changed anywhere else otherwise we get hard to debug behaviour
+		ToolTip.toolTip.background:		Rectangle { color: backgroundColor; border.width: 1; border.color: foregroundColor }
+		ToolTip.toolTip.contentItem:	Text
+		{
+			//font:			jaspTheme.font
+			wrapMode:		Text.WrapAtWordBoundaryOrAnywhere
+			text:			ToolTip.toolTip.text
+		}
+		ToolTip.toolTip.z:						1234
+	}
+
+	/*
+
 
 	TextInput
 	{
@@ -205,5 +112,5 @@ Window
 
 		onEditingFinished: R.runRCommand(text)
 	}
-
+	*/
 }
