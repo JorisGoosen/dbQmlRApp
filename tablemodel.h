@@ -22,7 +22,7 @@ public:
 	const QString			&	tableName()			const { return _tableName; }
 	const ColumnDefinitions	&	columnDefinitions()	const { return _columnDefinitions;}
 
-	QString		dbplyrCode() const;
+	QString		dbplyrCode(bool doInit=true) const;
 
 private:
   Database			*   _db;

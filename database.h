@@ -6,7 +6,7 @@
 #include <sqlite3.h>
 #include "columndefinition.h"
 
-//#define SIR_LOG_A_LOT
+#define SIR_LOG_A_LOT
 
 class Database : public QObject
 {

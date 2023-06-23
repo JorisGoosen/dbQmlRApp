@@ -50,16 +50,21 @@ void TableModel::appendRows(const std::vector<QVariantList> & values, const Colu
 	endInsertRows();
 }
 
-QString TableModel::dbplyrCode() const
+QString TableModel::dbplyrCode(bool doInit) const
 {
-	QStringList code =
-	{
+	QStringList code;
+
+	if(doInit)
+		code.append({
 							"library(dplyr);",
-							"con <- DBI::dbConnect(RSQLite::SQLite(), dbname = '" + QString::fromStdString(_db->dbFile()) + "');",
+							"con <- DBI::dbConnect(RSQLite::SQLite(), dbname = '" + QString::fromStdString(_db->dbFile()) + "');"
+					});
+
+	code.append({
 							_tableName + "sql <- tbl(con, '"+_tableName+"');",
 							"'sql table is called: " + _tableName + "sql'",
 							_tableName + " <- " + _tableName + "sql %>% collect()"
-	};
+	});
 
 	return code.join("\n");
 }

@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
 
 		rWrapper.runRCommand(rWriteImage.readAll());
 		rWrapper.runRCommand(respiro.data()->dbplyrCode());
-		rWrapper.runRCommand(respiro.msgs()->dbplyrCode());
+		rWrapper.runRCommand(respiro.msgs()->dbplyrCode(false));
 	};
 
 	QObject::connect(&respiro, &Respiro::modelsLoaded, respiroModelsLoadedHandler);
