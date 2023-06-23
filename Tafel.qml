@@ -4,7 +4,21 @@ import QtQuick.Layouts
 
 Item
 {
-	property alias model: mainTableView.model
+	property alias model:				mainTableView.model
+	property alias columnWidthProvider:	mainTableView.columnWidthProvider
+	property alias rowHeightProvider:	mainTableView.rowHeightProvider
+
+	width:			implicitWidth
+	height:			implicitHeight
+	implicitWidth:	mainTableView.implicitWidth		+ verticalCenter.implicitWidth
+	implicitHeight:	mainTableView.implicitHeight	+ horizontalHeader.implicitHeight
+
+	Text
+	{
+		id:						metricFontSetter
+		visible:				false
+		Component.onCompleted:	mainTableView.model.metricFont = metricFontSetter.font
+	}
 
 	HorizontalHeaderView
 	{
@@ -23,13 +37,24 @@ Item
 			implicitWidth:	100
 			implicitHeight: 50
 			color:			"transparent"
-			border.color:	"yellow"
+			border.color:	foregroundHColor
 			border.width:	1
+
 			Text
 			{
-				text:				display;
-				anchors.centerIn:	parent
-				color:				"yellow"
+				text:					display;
+				anchors.centerIn:		parent
+				color:					foregroundHColor
+				wrapMode:				Text.WrapAtWordBoundaryOrAnywhere
+				horizontalAlignment:	Text.AlignHCenter
+				verticalAlignment:		Text.AlignVCenter
+				height:					contentHeight  + generalMargin
+				anchors
+				{
+					left:		parent.left
+					right:		parent.right
+					margins:	model.cellMargin / 2
+				}
 			}
 		}
 	}
@@ -51,13 +76,23 @@ Item
 			implicitWidth:	100
 			implicitHeight: 50
 			color:			"transparent"
-			border.color:	"yellow"
+			border.color:	foregroundHColor
 			border.width:	1
 			Text
 			{
-				text:				display;
-				anchors.centerIn:	parent
-				color:				"yellow"
+				text:					display;
+				anchors.centerIn:		parent
+				color:					foregroundHColor
+				wrapMode:				Text.WrapAtWordBoundaryOrAnywhere
+				horizontalAlignment:	Text.AlignHCenter
+				verticalAlignment:		Text.AlignVCenter
+				height:					contentHeight  + generalMargin
+				anchors
+				{
+					left:		parent.left
+					right:		parent.right
+					margins:	model.cellMargin / 2
+				}
 			}
 		}
 	}
@@ -66,6 +101,9 @@ Item
 	{
 		id:		mainTableView
 		clip:	true
+
+		columnWidthProvider:	function() { return -1; }
+		rowHeightProvider: 		function() { return -1; }
 
 		anchors
 		{
@@ -80,13 +118,23 @@ Item
 			implicitWidth:	100
 			implicitHeight: 50
 			color:			"transparent"
-			border.color:	"yellow"
+			border.color:	foregroundColor
 			border.width:	1
 			Text
 			{
-				text:				display;
-				anchors.centerIn:	parent
-				color:				"yellow"
+				text:					display;
+				anchors.centerIn:		parent
+				color:					foregroundColor
+				wrapMode:				Text.WrapAtWordBoundaryOrAnywhere
+				horizontalAlignment:	Text.AlignHCenter
+				verticalAlignment:		Text.AlignVCenter
+				height:					contentHeight  + generalMargin
+				anchors
+				{
+					left:		parent.left
+					right:		parent.right
+					margins:	model.cellMargin / 2
+				}
 			}
 		}
 	}

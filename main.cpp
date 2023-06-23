@@ -61,10 +61,11 @@ int main(int argc, char *argv[])
 	QObject::connect(&respiro,	&Respiro::controlWantedChanged,		&rWrapper,	&RWrapper::setControlWanted		);
 	QObject::connect(&respiro,	&Respiro::start,					&rWrapper,	&RWrapper::startRespiro			);
 
-	QObject::connect(&respiro,	&Respiro::modelsLoaded,				&mainModel,	&MainModel::modelsLoaded		);
+	QObject::connect(&respiro,	&Respiro::modelsLoaded,				&mainModel,	&MainModel::modelsLoaded,		Qt::QueuedConnection);
 
 
 	//Tell QML whatsup:
+	mainEng.rootContext()->setContextProperty("outputFolder",		respiro.outputFolder());
 	mainEng.rootContext()->setContextProperty("settings",			&settings);
 	mainEng.rootContext()->setContextProperty("R",					&rWrapper);
 	mainEng.rootContext()->setContextProperty("mainModel",			&mainModel);
@@ -72,6 +73,7 @@ int main(int argc, char *argv[])
 
 	mainEng.rootContext()->setContextProperty("backgroundColor",		"black");
 	mainEng.rootContext()->setContextProperty("foregroundColor",		"white");
+	mainEng.rootContext()->setContextProperty("foregroundHColor",		"lightgrey");
 	mainEng.rootContext()->setContextProperty("windowBackgroundColor",	"grey");
 
 	mainEng.rootContext()->setContextProperty("controlBackgroundNeutral",	"lightgrey");
@@ -90,13 +92,14 @@ int main(int argc, char *argv[])
 		mainEng.rootContext()->setContextProperty("respiroData",		respiro.data());
 		mainEng.rootContext()->setContextProperty("respiroMsgs",		respiro.msgs());
 
-		QFile	//rMain(		":/R/main.R"			),
+		/*QFile	//rMain(		":/R/main.R"			),
 				rWriteImage(":/R/writeImage.R"	);
 
 		//rMain.open(			QIODeviceBase::ReadOnly);
 		rWriteImage.open(	QIODeviceBase::ReadOnly);
 
 		rWrapper.runRCommand(rWriteImage.readAll());
+		*/
 		rWrapper.runRCommand(respiro.data()->dbplyrCode());
 		rWrapper.runRCommand(respiro.msgs()->dbplyrCode(false));
 	};

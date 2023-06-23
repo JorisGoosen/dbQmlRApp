@@ -137,8 +137,8 @@ qt_add_qml_module(qmlR
 		Tafel.qml
 		RectButton.qml
 	NO_RESOURCE_TARGET_PATH
-#    RESOURCES
-#        img/world.png
+	RESOURCES
+	    dummy.png
 )
 
 qt_add_resources(qmlR "R"

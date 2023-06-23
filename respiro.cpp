@@ -30,6 +30,17 @@ Respiro::Respiro()
 	};
 }
 
+void Respiro::loadModels()
+{
+	_db		= new Database(dbPath().toStdString());
+	_labels	= new Labels(		_db, this);
+	_data	= new TableModel(	_db, "RespiroData",	_dataDefs);
+	_msgs	= new TableModel(	_db, "RespiroMsgs",	_msgsDefs);
+
+	emit modelsLoaded();
+}
+
+
 void Respiro::startSession()
 {
 	QDir	newOutputFolder = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation).at(0);
@@ -71,15 +82,6 @@ const QString & Respiro::dbPath() const
 	return dbPath;
 }
 
-void Respiro::loadModels()
-{
-	_db		= new Database(dbPath().toStdString());
-	_labels	= new Labels(		_db, this);
-	_data	= new TableModel(	_db, "RespiroData",	_dataDefs);
-	_msgs	= new TableModel(	_db, "RespiroMsgs",	_msgsDefs);
-
-	emit modelsLoaded();
-}
 
 
 int Respiro::o2() const

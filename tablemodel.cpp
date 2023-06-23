@@ -1,7 +1,8 @@
 #include "tablemodel.h"
 
+
 TableModel::TableModel(Database * db, const QString & tableName, const ColumnDefinitions & columnDefinitions)
-	: QAbstractTableModel(db), _db(db), _tableName(tableName), _columnDefinitions(columnDefinitions)
+	: QAbstractTableModel(db), _db(db), _tableName(tableName), _columnDefinitions(columnDefinitions), _metrics(_metricFont)
 {
 	if(!_db->tableExists(_tableName))
 		_db->tableCreate(_tableName, _columnDefinitions);
@@ -67,4 +68,71 @@ QString TableModel::dbplyrCode(bool doInit) const
 	});
 
 	return code.join("\n");
+}
+
+int TableModel::columnWidthProvider(int col)
+{
+	QString header = headerData(col, Qt::Horizontal).toString();
+
+	QRect bounds = _metrics.boundingRect(_maxBounds, Qt::TextWordWrap, header);
+
+	int largestVal = bounds.width();
+
+	for(int row=0; row<rowCount(); row++)
+		largestVal = std::max(largestVal, _metrics.boundingRect(_maxBounds, Qt::TextWordWrap, data(index(row, col)).toString()).width());
+
+	return std::min(largestVal, _maxBounds.width()) + _cellMargin;
+}
+
+int TableModel::rowHeightProvider(int row)
+{
+
+
+	QString header = headerData(row, Qt::Vertical).toString();
+
+	QRect bounds = _metrics.boundingRect(_maxBounds, Qt::TextWordWrap, header);
+
+	int largestVal = bounds.height();
+
+	for(int column=0; column<columnCount(); column++)
+	{
+		const QString & val = data(index(row, column)).toString();
+		largestVal = std::max(largestVal, _metrics.boundingRect(_maxBounds, Qt::TextWordWrap, val).height());
+	}
+
+	return largestVal + _cellMargin;
+}
+
+QFont TableModel::metricFont() const
+{
+	return _metricFont;
+}
+
+void TableModel::setMetricFont(const QFont & newMetricFont)
+{
+	if (_metricFont == newMetricFont)
+	{
+
+		_metricFont = newMetricFont;
+		emit metricFontChanged();
+	}
+
+	_metrics = QFontMetrics(_metricFont);
+
+	_textOption.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
+
+	_maxBounds = _metrics.boundingRect(QString(_maxWidthCol, 'X'), _textOption);
+}
+
+int TableModel::cellMargin() const
+{
+	return _cellMargin;
+}
+
+void TableModel::setCellMargin(int newCellMargin)
+{
+	if (_cellMargin == newCellMargin)
+		return;
+	_cellMargin = newCellMargin;
+	emit cellMarginChanged();
 }
