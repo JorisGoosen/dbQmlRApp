@@ -4,11 +4,13 @@ import QtQuick.Layouts
 
 ColumnLayout
 {
+	id:		columns
+
 	FileBrowser
 	{
 		id:				selecteerBestand
 		nameFilters:	["CSV files (*.csv)"]
-		onAccepted:		mainModel.importCSV(currentFile)
+		onAccepted:		importer.importCsv(currentFile)
 	}
 
 	RectButton
@@ -20,7 +22,12 @@ ColumnLayout
 
 	Tafel
 	{
-		model:	mainModel.importModel
+		model:					importer
+		columnWidthProvider:	importer.columnWidthProvider
+		rowHeightProvider:		importer.rowHeightProvider
+
+		implicitWidth:	columns.width
+		implicitHeight:	(columns.height / 3) * 2
 	}
 
 

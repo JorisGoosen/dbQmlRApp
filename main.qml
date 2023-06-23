@@ -9,6 +9,8 @@ Window
 	visible:	true
 	color:		windowBackgroundColor
 
+	Component.onCompleted: importer.cellMargin = Qt.binding(function(){return generalMargin;});
+
 
 	TabBar
 	{
@@ -66,6 +68,8 @@ Window
 			{
 				id:				qmlLoader
 				source:			modelData + ".qml"
+				width:			swiper.width
+				height:			swiper.height
 			}
 		}
 

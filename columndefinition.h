@@ -5,7 +5,7 @@
 #include "enumutilities.h"
 #include <QVariant>
 
-DECLARE_ENUM(ColumnType, NumDbl, NumInt, DateTime, Duration, Text, Label, PrimaryKey)
+DECLARE_ENUM(ColumnType, NumDbl, NumInt, DateTime, Duration, Text, Label, Labels, PrimaryKey)
 
 class ColumnDefinition : public QObject
 {
@@ -30,6 +30,8 @@ public:
 	void setFriendlyName(	const QString & newFriendlyName);
 	void setDbName(			const QString & newDbName);
 	void setColumnType(		const ColumnType & newColumnType);
+
+	bool csvColumnIsForMe(const QString & csvColName) const { return friendlyName() == csvColName; }
 
 
 

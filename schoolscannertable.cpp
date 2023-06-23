@@ -6,3 +6,11 @@ SchoolScannerTable::SchoolScannerTable(Database * db)
 {
 
 }
+
+const ColumnDefinition * SchoolScannerTable::findDbColumn(const QString & csvName)
+{
+	for(const auto * cd : SchoolScannerDefinities::columnDefs())
+		if(cd->csvColumnIsForMe(csvName))
+			return cd;
+	return nullptr;
+}

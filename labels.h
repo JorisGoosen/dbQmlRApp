@@ -10,12 +10,15 @@ struct Label
 {
 	int		id,
 			value;
-	QString label;
+	QString label,
+			column;
 
-	Label(int id, int value, QString label)
-	: id(id), value(value), label(label)
+	Label(int id, int value, QString label, QString column)
+	: id(id), value(value), label(label), column(column)
 	{}
 };
+
+typedef std::map<QString, std::map<QString, Label*>> columnLabelMap;
 
 class Labels : public QObject
 {
@@ -28,10 +31,10 @@ public:
 
 	QString label(	int				id);
 	int		value(	int				id);
-	int		id(		const QString &	label);
+	int		id(		const QString &	label, const QString & column);
 
 public slots:
-	int addLabel(const QString & label, int value);
+	int addLabel(const QString & column, const QString & label, int value=-1);
 	int addLabel(Label * label);
 
 signals:
@@ -46,7 +49,7 @@ private:
 	const QString					_tableName	= "Labels";
 	std::vector<Label*>				_labels;
 	std::map<int, Label*>			_idLabelMap;
-	std::map<QString, Label*>		_labelMap;
+	columnLabelMap					_labelMap;
 };
 
 #endif // LABELS_H

@@ -4,13 +4,24 @@ import QtQuick.Layouts
 
 Item
 {
-	property alias model: mainTableView.model
+	property alias model:				mainTableView.model
+	property alias columnWidthProvider:	mainTableView.columnWidthProvider
+	property alias rowHeightProvider:	mainTableView.rowHeightProvider
+
+	Text
+	{
+		id:						metricFontSetter
+		visible:				false
+		Component.onCompleted:	importer.metricFont = metricFontSetter.font
+	}
 
 	HorizontalHeaderView
 	{
 		id:				horizontalHeader
 		syncView:		mainTableView
 		clip:			true
+		//height:			importer.columnHeaderHeight
+
 		anchors
 		{
 			top:		parent.top
@@ -20,16 +31,27 @@ Item
 
 		delegate: Rectangle
 		{
-			implicitWidth:	100
-			implicitHeight: 50
 			color:			"transparent"
 			border.color:	"yellow"
 			border.width:	1
+			implicitHeight:	colText.height
+
 			Text
 			{
-				text:				display;
-				anchors.centerIn:	parent
-				color:				"yellow"
+				id:						colText
+				text:					display;
+				//anchors.fill:			parent
+				color:					"yellow"
+				wrapMode:				Text.WrapAtWordBoundaryOrAnywhere
+				horizontalAlignment:	Text.AlignHCenter
+				verticalAlignment:		Text.AlignVCenter
+				height:					contentHeight  + generalMargin
+				anchors
+				{
+					left:		parent.left
+					right:		parent.right
+					margins:	importer.cellMargin / 2
+				}
 			}
 		}
 	}
@@ -39,6 +61,8 @@ Item
 		id:				verticalHeader
 		syncView:		mainTableView
 		clip:			true
+		//width:			importer.rowHeaderWidth
+
 		anchors
 		{
 			top:		mainTableView.top
@@ -48,16 +72,27 @@ Item
 
 		delegate: Rectangle
 		{
-			implicitWidth:	100
-			implicitHeight: 50
 			color:			"transparent"
 			border.color:	"yellow"
 			border.width:	1
+			implicitWidth:	rowText.width
+
 			Text
 			{
-				text:				display;
-				anchors.centerIn:	parent
-				color:				"yellow"
+				id:						rowText
+				text:					display;
+				//anchors.fill:			parent
+				color:					"yellow"
+				wrapMode:				Text.WrapAtWordBoundaryOrAnywhere
+				horizontalAlignment:	Text.AlignHCenter
+				verticalAlignment:		Text.AlignVCenter
+				width:					rowText.contentWidth  + generalMargin
+				anchors
+				{
+					top:		parent.top
+					bottom:		parent.bottom
+					margins:	importer.cellMargin / 2
+				}
 			}
 		}
 	}
@@ -66,6 +101,9 @@ Item
 	{
 		id:		mainTableView
 		clip:	true
+
+		columnWidthProvider:	function() { return -1; }
+		rowHeightProvider: 		function() { return -1; }
 
 		anchors
 		{
@@ -77,16 +115,18 @@ Item
 
 		delegate: Rectangle
 		{
-			implicitWidth:	100
-			implicitHeight: 50
 			color:			"transparent"
 			border.color:	"yellow"
 			border.width:	1
 			Text
 			{
-				text:				display;
-				anchors.centerIn:	parent
-				color:				"yellow"
+				id:						itemText
+				text:					display;
+				anchors.fill:			parent
+				color:					"yellow"
+				wrapMode:				Text.WrapAtWordBoundaryOrAnywhere
+				horizontalAlignment:	Text.AlignHCenter
+				verticalAlignment:		Text.AlignVCenter
 			}
 		}
 	}

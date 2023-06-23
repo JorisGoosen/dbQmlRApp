@@ -14,6 +14,7 @@
 #include "database.h"
 #include "settings.h"
 #include "plotrenderer.h"
+#include "importer.h"
 #include "labels.h"
 #include "mainmodel.h"
 #include <QDir>
@@ -39,10 +40,13 @@ int main(int argc, char *argv[])
 	Settings					settings;
 	RWrapper					rWrapper;
 
+
 	QObject::connect(&mainModel, &MainModel::loadInQml, &mainEng, [&](Labels * labels, SchoolScannerTable * table)
 	{
+		Importer * importer = new Importer(table, labels);
 		mainEng.rootContext()->setContextProperty("schoolScannerTable",			table);
 		mainEng.rootContext()->setContextProperty("labels",						labels);
+		mainEng.rootContext()->setContextProperty("importer",					importer);
 
 	});
 
@@ -51,7 +55,7 @@ int main(int argc, char *argv[])
 	mainEng.rootContext()->setContextProperty("R",					&rWrapper);
 	mainEng.rootContext()->setContextProperty("database",			&database);
 	mainEng.rootContext()->setContextProperty("mainModel",			&mainModel);
-	mainEng.rootContext()->setContextProperty("importer",			&importer);
+
 
 	mainEng.rootContext()->setContextProperty("backgroundColor",			"black");
 	mainEng.rootContext()->setContextProperty("foregroundColor",			"white");

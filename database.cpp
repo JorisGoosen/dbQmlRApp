@@ -448,6 +448,7 @@ void Database::tableBindColumnDefParameter(sqlite3_stmt * stmt, size_t param, co
 	switch(colDef->columnType())
 	{
 	case ColumnType::NumInt:
+	case ColumnType::PrimaryKey:
 	case ColumnType::DateTime: //unix epoch
 		sqlite3_bind_int(stmt, param, val.toInt());
 		return;
@@ -458,11 +459,18 @@ void Database::tableBindColumnDefParameter(sqlite3_stmt * stmt, size_t param, co
 		return;
 
 	case ColumnType::Text:
+	case ColumnType::Labels:
 		{
 			std::string str = val.toString().toStdString();
 			sqlite3_bind_text(stmt, param, str.c_str(), str.size(), SQLITE_TRANSIENT);
 			return;
 		}
+
+
+	case ColumnType::Label:
+		if(val.typeId() != QMetaType::Int)
+			throw std::runtime_error("Didnt get an integer for label!");
+		sqlite3_bind_int(stmt, param, val.toInt());
 	}
 }
 
@@ -470,7 +478,9 @@ QVariant Database::tableExtractColumnDefValue(sqlite3_stmt * stmt, size_t param,
 {
 	switch(colDef->columnType())
 	{
+	case ColumnType::PrimaryKey:
 	case ColumnType::NumInt:
+	case ColumnType::Label:
 	case ColumnType::DateTime: //unix epoch
 		return QVariant(sqlite3_column_int(stmt, param));
 
@@ -479,6 +489,7 @@ QVariant Database::tableExtractColumnDefValue(sqlite3_stmt * stmt, size_t param,
 		return QVariant(sqlite3_column_double(stmt, param));
 
 	case ColumnType::Text:
+	case ColumnType::Labels:
 		return QVariant(QString::fromStdString(_wrap_sqlite3_column_text(stmt, param)));
 	}
 }

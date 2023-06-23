@@ -52,6 +52,7 @@ QString ColumnDefinition::dbColType() const
 		return "REAL";
 
 	case ColumnType::Text:
+	case ColumnType::Labels: //A string consisting of each label present in column separated by spaces, so "1" "" "1 4" "2 4 12" etc
 		return "TEXT";
 	}
 }
@@ -82,6 +83,27 @@ QString ColumnDefinition::convertQVariantToDbValue(QVariant val) const
 			return QString::number(val.toInt());
 
 		default:
+		case QMetaType::QString:
+			return val.toString();
+		}
+
+	case ColumnType::Labels:
+		switch(val.typeId())
+		{
+		case QMetaType::QVariantList:
+		{
+			QStringList dbStr;
+
+			//should be integers then!
+			for(const QVariant & var : val.toList())
+				dbStr.append(var.toString() );
+
+			return dbStr.join(' ');
+		}
+
+		default:
+			[[fallthrough]];
+
 		case QMetaType::QString:
 			return val.toString();
 		}
