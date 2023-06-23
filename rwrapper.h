@@ -75,6 +75,8 @@ public slots:
 			bool		initialHsFlush
 	);
 
+	void exitR();
+
 signals:
 	void prevOutputChanged();
 	void plotWidthChanged(int w);

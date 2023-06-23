@@ -5,7 +5,7 @@ Rectangle
 {
 	property string text:		""
 	property string	value:		""
-	property bool	horizontal:	width > height
+	property bool	horizontal:	width >= height
 	property alias	checked:	button.checked
 
 	id:				feedbackRoot

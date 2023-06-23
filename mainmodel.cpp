@@ -11,6 +11,13 @@ QStringList MainModel::qmlsShown() const
 	return _qmlsShown;
 }
 
+void MainModel::closing()
+{
+	setQmlsShown({});
+
+	emit exitR();
+}
+
 void MainModel::setQmlsShown(const QStringList & newQmlsShown)
 {
 	if (_qmlsShown == newQmlsShown)

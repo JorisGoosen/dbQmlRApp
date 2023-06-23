@@ -15,9 +15,11 @@ public:
 
 public slots:
 	void modelsLoaded() { setQmlsShown( {"Loading", "Data", "Hardware" }); }
+	void closing();
 
 signals:
 	void qmlsShownChanged();
+	void exitR();
 
 private:
 	void setQmlsShown(const QStringList & newQmlsShown);

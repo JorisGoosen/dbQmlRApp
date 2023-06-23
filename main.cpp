@@ -43,25 +43,27 @@ int main(int argc, char *argv[])
 	rWrapper.moveToThread(&rThread);
 	rThread.start();
 
-	QObject::connect(&rWrapper,	&RWrapper::push_raw_data,			&respiro,	&Respiro::push_raw_data			);
-	QObject::connect(&rWrapper,	&RWrapper::push_current_channel,	&respiro,	&Respiro::push_current_channel	);
-	QObject::connect(&rWrapper,	&RWrapper::push_valve_state,		&respiro,	&Respiro::push_valve_state		);
-	QObject::connect(&rWrapper,	&RWrapper::push_pump_state,			&respiro,	&Respiro::push_pump_state		);
-	QObject::connect(&rWrapper,	&RWrapper::push_o2_state,			&respiro,	&Respiro::push_o2_state			);
-	QObject::connect(&rWrapper,	&RWrapper::push_co2_state,			&respiro,	&Respiro::push_co2_state		);
-	QObject::connect(&rWrapper,	&RWrapper::push_ch4_state,			&respiro,	&Respiro::push_ch4_state		);
-	QObject::connect(&rWrapper,	&RWrapper::push_error,				&respiro,	&Respiro::push_error			);
-	QObject::connect(&rWrapper,	&RWrapper::push_warning,			&respiro,	&Respiro::push_warning			);
-	QObject::connect(&rWrapper,	&RWrapper::push_info,				&respiro,	&Respiro::push_info				);
-	QObject::connect(&rWrapper,	&RWrapper::push_loading_feedback,	&respiro,	&Respiro::push_loading_feedback	);
+	QObject::connect(&rWrapper,		&RWrapper::push_raw_data,			&respiro,	&Respiro::push_raw_data			);
+	QObject::connect(&rWrapper,		&RWrapper::push_current_channel,	&respiro,	&Respiro::push_current_channel	);
+	QObject::connect(&rWrapper,		&RWrapper::push_valve_state,		&respiro,	&Respiro::push_valve_state		);
+	QObject::connect(&rWrapper,		&RWrapper::push_pump_state,			&respiro,	&Respiro::push_pump_state		);
+	QObject::connect(&rWrapper,		&RWrapper::push_o2_state,			&respiro,	&Respiro::push_o2_state			);
+	QObject::connect(&rWrapper,		&RWrapper::push_co2_state,			&respiro,	&Respiro::push_co2_state		);
+	QObject::connect(&rWrapper,		&RWrapper::push_ch4_state,			&respiro,	&Respiro::push_ch4_state		);
+	QObject::connect(&rWrapper,		&RWrapper::push_error,				&respiro,	&Respiro::push_error			);
+	QObject::connect(&rWrapper,		&RWrapper::push_warning,			&respiro,	&Respiro::push_warning			);
+	QObject::connect(&rWrapper,		&RWrapper::push_info,				&respiro,	&Respiro::push_info				);
+	QObject::connect(&rWrapper,		&RWrapper::push_loading_feedback,	&respiro,	&Respiro::push_loading_feedback	);
 
-	QObject::connect(&respiro,	&Respiro::outputFolderChanged,		&rWrapper,	&RWrapper::setOutputFolder		);
-	QObject::connect(&respiro,	&Respiro::instantPauseChanged,		&rWrapper,	&RWrapper::setInstantPause		);
-	QObject::connect(&respiro,	&Respiro::delayedPauseChanged,		&rWrapper,	&RWrapper::setDelayedPause		);
-	QObject::connect(&respiro,	&Respiro::controlWantedChanged,		&rWrapper,	&RWrapper::setControlWanted		);
-	QObject::connect(&respiro,	&Respiro::start,					&rWrapper,	&RWrapper::startRespiro			);
+	QObject::connect(&respiro,		&Respiro::outputFolderChanged,		&rWrapper,	&RWrapper::setOutputFolder		);
+	QObject::connect(&respiro,		&Respiro::instantPauseChanged,		&rWrapper,	&RWrapper::setInstantPause		);
+	QObject::connect(&respiro,		&Respiro::delayedPauseChanged,		&rWrapper,	&RWrapper::setDelayedPause		);
+	QObject::connect(&respiro,		&Respiro::controlWantedChanged,		&rWrapper,	&RWrapper::setControlWanted		);
+	QObject::connect(&respiro,		&Respiro::start,					&rWrapper,	&RWrapper::startRespiro			);
 
-	QObject::connect(&respiro,	&Respiro::modelsLoaded,				&mainModel,	&MainModel::modelsLoaded,		Qt::QueuedConnection);
+	QObject::connect(&respiro,		&Respiro::modelsLoaded,				&mainModel,	&MainModel::modelsLoaded,		Qt::QueuedConnection);
+
+	QObject::connect(&mainModel,	&MainModel::exitR,					&rWrapper,	&RWrapper::exitR,				Qt::DirectConnection);
 
 
 	//Tell QML whatsup:

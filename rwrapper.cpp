@@ -1,4 +1,5 @@
 #include "rwrapper.h"
+#include <QThread>
 
 RWrapper * RWrapper::_singleton = nullptr;
 
@@ -247,7 +248,24 @@ void RWrapper::startRespiro(QList<int> channels, int runtimeSec, int channelRunt
 
 	setRunning(true);
 	runRCommand(startR); //This will probably take a while ;)
+	//runRCommand("while(!respiroGui_poll_control_wanted()) Sys.sleep(1);"); //Can be used to test that control wanted gets set
 	setRunning(false);
+}
+
+//From a direct connection so running in different thread than RWrapper itself!
+void RWrapper::exitR()
+{
+	setControlWanted(true);
+
+	int attempts = 20;
+
+	while(_running && attempts-- > 0)
+		QThread::msleep(200);
+
+	if(_running)
+		std::cerr << "Couldnt exit R cleanly by asking control..." << std::endl;
+	else
+		std::cout << "R exited cleanly" <<std::endl;
 }
 
 bool RWrapper::running() const
