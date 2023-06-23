@@ -46,20 +46,42 @@ Item
 			leftMargin:		widthRemain / 4
 		}
 
-		Repeater
+		HWFeedbackButton
 		{
+			width:			gasFeedback.boxWidth
+			height:			gasFeedback.height
 
-			model:	["co2", "ch4", "o2"]
+			text:			"co2"
+			value:			respiro.co2
+			checked:		respiro.co2On
 
-			HWFeedbackButton
-			{
-				width:			gasFeedback.boxWidth
-				height:			gasFeedback.height
-
-				text:			modelData
-				value:			1234
-			}
+			onClicked:		(newChecked)=>{ respiro.co2On = newChecked; }
 		}
+
+		HWFeedbackButton
+		{
+			width:			gasFeedback.boxWidth
+			height:			gasFeedback.height
+
+			text:			"ch4"
+			value:			respiro.ch4
+			checked:		respiro.ch4On
+
+			onClicked:		(newChecked)=>{ respiro.ch4On = newChecked; }
+		}
+
+		HWFeedbackButton
+		{
+			width:			gasFeedback.boxWidth
+			height:			gasFeedback.height
+
+			text:			"o2"
+			value:			respiro.o2
+			checked:		respiro.o2On
+
+			onClicked:		(newChecked)=>{ respiro.o2On = newChecked; }
+		}
+
 	}
 
 	//Pump:
@@ -70,7 +92,9 @@ Item
 		width:			gasFeedback.height
 		height:			gasFeedback.boxWidth
 		text:			"Pump"
-		value:			"ON"
+		value:			respiro.pumpOn ? "ON" : "OFF"
+		checked:		respiro.pumpOn
+		onClicked:		(newChecked)=>{ respiro.pumpOn = newChecked; }
 
 		anchors
 		{
@@ -127,6 +151,9 @@ Item
 					id:				inButton
 					width:			channelButtonsItem.width
 
+					checked:		respiro.valvesOpened[index]
+					onClicked:		(newChecked)=>{ respiro.push_valve_state(index, newChecked); }
+
 					anchors
 					{
 						top:				channelButtonsItem.top
@@ -171,6 +198,9 @@ Item
 				{
 					id:				outButton
 					width:			channelButtonsItem.width
+
+					checked:		respiro.valvesOpened[index]
+					onClicked:		(newChecked)=>{ respiro.push_valve_state(index, newChecked); }
 
 					anchors
 					{
@@ -252,7 +282,7 @@ Item
 		Text
 		{
 			id:					temperaturePressureText
-			text:				"<b>Temperature:</b>&nbsp;12<sup>c</sup><br><b>Pressure:</b>&nbsp;1bar"
+			text:				"<b>Temperature1:</b>&nbsp;" + respiro.temp1 + "<sup>c</sup><br><b>Temperature2:</b>&nbsp;" + respiro.temp2 + "<sup>c</sup><br><b>Pressure:</b>&nbsp;" + respiro.pressure + "bar"
 			anchors.centerIn:	parent
 			color:				foregroundColor
 		}
