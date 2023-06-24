@@ -1,5 +1,5 @@
-import QtQuick 2
-import QtQuick.Controls 2
+import QtQuick
+import QtQuick.Controls
 import QtQuick.Layouts
 
 Item
@@ -25,14 +25,14 @@ Item
 		anchors
 		{
 			top:		parent.top
-			left:		mainTableView.left
+			left:		mainTableScrollView.left
 			right:		parent.right
 		}
 
 		delegate: Rectangle
 		{
-			color:			"transparent"
-			border.color:	"yellow"
+			color:			controlBackgroundNeutral
+			border.color:	controlForegroundNeutral
 			border.width:	1
 			implicitHeight:	colText.height
 
@@ -41,7 +41,7 @@ Item
 				id:						colText
 				text:					display;
 				//anchors.fill:			parent
-				color:					"yellow"
+				color:					controlForegroundNeutral
 				wrapMode:				Text.WrapAtWordBoundaryOrAnywhere
 				horizontalAlignment:	Text.AlignHCenter
 				verticalAlignment:		Text.AlignVCenter
@@ -65,15 +65,15 @@ Item
 
 		anchors
 		{
-			top:		mainTableView.top
+			top:		mainTableScrollView.top
 			left:		parent.left
 			bottom:		parent.bottom
 		}
 
 		delegate: Rectangle
 		{
-			color:			"transparent"
-			border.color:	"yellow"
+			color:			controlBackgroundNeutral
+			border.color:	controlForegroundNeutral
 			border.width:	1
 			implicitWidth:	rowText.width
 
@@ -82,11 +82,11 @@ Item
 				id:						rowText
 				text:					display;
 				//anchors.fill:			parent
-				color:					"yellow"
+				color:					controlForegroundNeutral
 				wrapMode:				Text.WrapAtWordBoundaryOrAnywhere
 				horizontalAlignment:	Text.AlignHCenter
 				verticalAlignment:		Text.AlignVCenter
-				width:					rowText.contentWidth  + generalMargin
+				padding: 				generalMargin
 				anchors
 				{
 					top:		parent.top
@@ -97,13 +97,9 @@ Item
 		}
 	}
 
-	TableView
+	ScrollView
 	{
-		id:		mainTableView
-		clip:	true
-
-		columnWidthProvider:	function() { return -1; }
-		rowHeightProvider: 		function() { return -1; }
+		id:		mainTableScrollView
 
 		anchors
 		{
@@ -113,20 +109,36 @@ Item
 			bottom:	parent.bottom
 		}
 
-		delegate: Rectangle
+		TableView
 		{
-			color:			"transparent"
-			border.color:	"yellow"
-			border.width:	1
-			Text
+			id:		mainTableView
+			clip:	true
+
+			columnWidthProvider:	function() { return -1; }
+			rowHeightProvider: 		function() { return -1; }
+
+			onTopRowChanged:		importer.setTopLeft(	leftColumn,		topRow);
+			onLeftColumnChanged:	importer.setTopLeft(	leftColumn,		topRow);
+			onBottomRowChanged:		importer.setBottomRight(rightColumn,	bottomRow);
+			onRightColumnChanged:	importer.setBottomRight(rightColumn,	bottomRow);
+
+
+
+			delegate: Rectangle
 			{
-				id:						itemText
-				text:					display;
-				anchors.fill:			parent
-				color:					"yellow"
-				wrapMode:				Text.WrapAtWordBoundaryOrAnywhere
-				horizontalAlignment:	Text.AlignHCenter
-				verticalAlignment:		Text.AlignVCenter
+				color:			backgroundColor
+				border.color:	controlForegroundNeutral
+				border.width:	1
+				Text
+				{
+					id:						itemText
+					text:					display;
+					anchors.fill:			parent
+					color:					controlForegroundNeutral
+					wrapMode:				Text.WrapAtWordBoundaryOrAnywhere
+					horizontalAlignment:	Text.AlignHCenter
+					verticalAlignment:		Text.AlignVCenter
+				}
 			}
 		}
 	}

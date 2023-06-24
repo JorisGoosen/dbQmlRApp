@@ -57,16 +57,19 @@ int main(int argc, char *argv[])
 	mainEng.rootContext()->setContextProperty("mainModel",			&mainModel);
 
 
-	mainEng.rootContext()->setContextProperty("backgroundColor",			"black");
+	mainEng.rootContext()->setContextProperty("backgroundColor",			"#BCE2D7");
 	mainEng.rootContext()->setContextProperty("foregroundColor",			"white");
 	mainEng.rootContext()->setContextProperty("windowBackgroundColor",		"grey");
 
-	mainEng.rootContext()->setContextProperty("controlBackgroundNeutral",	"lightgrey");
+	mainEng.rootContext()->setContextProperty("controlBackgroundDisabled",	"black");
+	mainEng.rootContext()->setContextProperty("controlBackgroundNeutral",	"#FFF798");
 	mainEng.rootContext()->setContextProperty("controlBackgroundFocus",		"white");
-	mainEng.rootContext()->setContextProperty("controlBackgroundPressed",	"black");
+	mainEng.rootContext()->setContextProperty("controlBackgroundPressed",	"#DFD778");
+
+	mainEng.rootContext()->setContextProperty("controlForegroundDisabled",	"pink");
 	mainEng.rootContext()->setContextProperty("controlForegroundNeutral",	"black");
 	mainEng.rootContext()->setContextProperty("controlForegroundFocus",		"black");
-	mainEng.rootContext()->setContextProperty("controlForegroundPressed",	"white");
+	mainEng.rootContext()->setContextProperty("controlForegroundPressed",	"#111");
 
 	mainEng.rootContext()->setContextProperty("generalMargin",		20);
 

@@ -9,12 +9,15 @@ Window
 	visible:	true
 	color:		windowBackgroundColor
 
-	Component.onCompleted: importer.cellMargin = Qt.binding(function(){return generalMargin;});
 
 
 	TabBar
 	{
 		id:		tabBar
+
+		property bool importerExists: importer
+
+		onImporterExistsChanged: if(importer) importer.cellMargin = Qt.binding(function(){return generalMargin;});
 
 		anchors
 		{

@@ -13,7 +13,7 @@ struct Label
 	QString label,
 			column;
 
-	Label(int id, int value, QString label, QString column)
+	Label(int id, int value, QString label, QString column="")
 	: id(id), value(value), label(label), column(column)
 	{}
 };
@@ -31,10 +31,10 @@ public:
 
 	QString label(	int				id);
 	int		value(	int				id);
-	int		id(		const QString &	label, const QString & column);
+	int		id(		const QString &	label/*, const QString & column*/);
 
 public slots:
-	int addLabel(const QString & column, const QString & label, int value=-1);
+	int addLabel(/*const QString & column,*/ const QString & label, int value=-1);
 	int addLabel(Label * label);
 
 signals:
@@ -42,14 +42,14 @@ signals:
 private:
 	ColumnDefinition			*	_idDef		= nullptr,
 								*	_valueDef	= nullptr,
-								*	_labelDef	= nullptr,
-								*	_columnDef	= nullptr;
+								*	_labelDef	= nullptr/*,
+								*	_columnDef	= nullptr*/;
 	ColumnDefinitions				_columnDefs;
 	Database					*	_db			= nullptr;
 	const QString					_tableName	= "Labels";
 	std::vector<Label*>				_labels;
 	std::map<int, Label*>			_idLabelMap;
-	columnLabelMap					_labelMap;
+	std::map<QString, Label*>		_labelMap;
 };
 
 #endif // LABELS_H

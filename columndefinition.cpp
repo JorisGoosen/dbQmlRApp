@@ -1,6 +1,7 @@
 #define ENUM_DECLARATION_CPP
 #include "columndefinition.h"
 #include <QDateTime>
+#include "schoolscannerdefinities.h"
 
 QString ColumnDefinition::friendlyName() const
 {
@@ -118,5 +119,10 @@ void ColumnDefinition::setColumnType(const ColumnType & newColumnType)
 
 	_columnType = newColumnType;
 	emit columnTypeChanged();
+}
+
+bool ColumnDefinition::csvColumnIsForMe(const QString & csvColName) const
+{
+	return SchoolScannerDefinities::mapCsvToDb().contains(csvColName) && SchoolScannerDefinities::mapCsvToDb().at(csvColName) == _dbName;
 }
 
