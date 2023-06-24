@@ -52,6 +52,8 @@ QString ColumnDefinition::dbColType() const
 	case ColumnType::NumDbl:
 		return "REAL";
 
+	case ColumnType::Date:
+	case ColumnType::Time:
 	case ColumnType::Text:
 	case ColumnType::Labels: //A string consisting of each label present in column separated by spaces, so "1" "" "1 4" "2 4 12" etc
 		return "TEXT";
@@ -72,6 +74,12 @@ QString ColumnDefinition::convertQVariantToDbValue(QVariant val) const
 
 	case ColumnType::DateTime:
 		return QString::number(val.toDateTime().toSecsSinceEpoch());
+
+	case ColumnType::Date:
+		return val.toDate().toString();
+
+	case ColumnType::Time:
+		return val.toTime().toString();
 
 	case ColumnType::Text:
 		return val.toString();

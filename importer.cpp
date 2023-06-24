@@ -134,6 +134,28 @@ void Importer::processValues()
 				}
 				break;
 
+			case ColumnType::Date:
+				for(QString & val : column->values)
+				{
+					QDate date = QDate::fromString(val, "M/d/yy");
+
+					if(date.year() < 1950)
+						date = date.addYears(100);
+
+					val = date.toString();
+				}
+				break;
+
+
+			case ColumnType::Time:
+				for(QString & val : column->values)
+				{
+					QTime time = QTime::fromString(val, "h:mm:ss");
+					val = time.toString();
+				}
+				break;
+
+
 			default:
 				break;
 			}

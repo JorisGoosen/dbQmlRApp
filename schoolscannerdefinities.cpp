@@ -8,7 +8,7 @@ const ColumnDefinitions SchoolScannerDefinities::_columnDefs =
 {
 
 	new CD("Tijdstempel",																														"timestamp",															ColumnType::DateTime	),
-	new CD("Wat is de datum?",																													"datum",																ColumnType::DateTime	),
+	new CD("Wat is de datum?",																													"datum",																ColumnType::Date		),
 	new CD("Type respondent",																													"type",																	ColumnType::Label   	),
 	new CD("Ben je een jongen of meisje?",																										"gender",																ColumnType::Label   	),
 	new CD("Wat is jouw culturele achtergrond?",																								"cultuur",																ColumnType::Labels    	),

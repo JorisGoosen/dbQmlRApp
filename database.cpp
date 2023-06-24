@@ -459,6 +459,8 @@ void Database::tableBindColumnDefParameter(sqlite3_stmt * stmt, size_t param, co
 		return;
 
 	case ColumnType::Text:
+	case ColumnType::Date:
+	case ColumnType::Time:
 	case ColumnType::Labels:
 		{
 			std::string str = val.toString().toStdString();
@@ -489,6 +491,8 @@ QVariant Database::tableExtractColumnDefValue(sqlite3_stmt * stmt, size_t param,
 		return QVariant(sqlite3_column_double(stmt, param));
 
 	case ColumnType::Text:
+	case ColumnType::Date:
+	case ColumnType::Time:
 	case ColumnType::Labels:
 		return QVariant(QString::fromStdString(_wrap_sqlite3_column_text(stmt, param)));
 	}
