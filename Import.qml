@@ -4,7 +4,7 @@ import QtQuick.Layouts
 
 ColumnLayout
 {
-	id:		columns
+	id:		column
 
 	FileBrowser
 	{
@@ -15,6 +15,8 @@ ColumnLayout
 
 	RowLayout
 	{
+		visible:	!importeerKnop.visible
+
 		Text
 		{
 			text:			"Voer in:"
@@ -43,10 +45,11 @@ ColumnLayout
 
 	RectButton
 	{
-		id:			importButton
-		text:		"Importeer bestand"
+		id:			laadKnop
+		text:		"Laad bestand"
 		onClicked:	selecteerBestand.open()
 		enabled:	respondentType.text !== "" && schoolType.text !== ""
+		visible:	!importeerKnop.visible
 	}
 
 	Tafel
@@ -54,9 +57,19 @@ ColumnLayout
 		model:					importer
 		columnWidthProvider:	importer.columnWidthProvider
 		rowHeightProvider:		importer.rowHeightProvider
+		cellMargin:				importer.cellMargin
 
-		implicitWidth:	columns.width
-		implicitHeight:	(columns.height / 3) * 2
+		implicitWidth:			column.width
+
+		Layout.fillHeight:		true
+	}
+
+	RectButton
+	{
+		id:			importeerKnop
+		text:		"Importeer bestand"
+		onClicked:	importer.actuallyImport()
+		visible:	importer && importer.canImport
 	}
 
 

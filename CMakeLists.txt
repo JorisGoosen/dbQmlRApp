@@ -108,6 +108,7 @@ set(sources
 	columndefinition.cpp
 	schoolscannertable.cpp
 	schoolscannerdefinities.cpp
+	abstractsizeprovidertable.cpp
 )
 
 set(headers
@@ -124,6 +125,7 @@ set(headers
 	columndefinition.h
 	schoolscannertable.h
 	schoolscannerdefinities.h
+	abstractsizeprovidertable.h
 )
 
 qt_add_executable(qmlR ${sources} ${headers})

@@ -7,7 +7,7 @@
 #include "labels.h"
 
 Importer::Importer(SchoolScannerTable * table, Labels * labels)
-	: QAbstractTableModel{table}, _table(table), _labels(labels), _metrics(_metricFont)
+	: AbstractSizeProviderTable{table}, _table(table), _labels(labels)
 {
 
 }
@@ -58,16 +58,15 @@ QVariant Importer::headerData(int section, Qt::Orientation orientation, int) con
 void Importer::collectDbColumns()
 {
 	for(ImportColumn * column : _columns)
-		for(const ColumnDefinition * cd : SchoolScannerDefinities::columnDefs())
+		for(ColumnDefinition * cd : SchoolScannerDefinities::columnDefs())
 			if(cd->csvColumnIsForMe(column->nameCSV))
 				column->setCD(cd);
 
 	//See if we have to add schoolType or type
+	ColumnDefinition	*	schoolTypeCd	= nullptr,
+						*	typeCd			= nullptr;
 
-	const ColumnDefinition	*	schoolTypeCd	= nullptr,
-							*	typeCd			= nullptr;
-
-	for(const ColumnDefinition * cd : SchoolScannerDefinities::columnDefs())
+	for(ColumnDefinition * cd : SchoolScannerDefinities::columnDefs())
 		if(cd->dbName() == "schoolType")
 			schoolTypeCd = cd;
 		else if(cd->dbName() == "type")
@@ -200,15 +199,44 @@ bool Importer::importCsv(QTextStream & csvStream, QChar sepa)
 			_columns[col]->values.push_back(int(col) < line.size() ? line[col] : "");
 
 	//type en schoolType toevoegen als ze missen!
-	//graagNaarSchool moet ook gehndeld worden want die komt 2x voor in wide dataset
 	collectDbColumns();
 	processValues();
+	//graagNaarSchool moet ook gehndeld worden want die komt 2x voor in wide dataset
 
 	endResetModel();
+
+	setCanImport(true);
 
 	return true;
 }
 
+void Importer::actuallyImport()
+{
+	ColumnDefinitions defs;
+
+	for(ImportColumn * col : _columns)
+		defs.push_back(col->cd);
+
+	size_t rows = _columns[0]->values.size();
+
+	std::vector<QVariantList>	lotsOfVars;
+
+	for(size_t row=0; row<rows; row++)
+	{
+		QVariantList vars;
+
+		for(ImportColumn * col : _columns)
+			vars.push_back(col->values[row]);
+
+		lotsOfVars.push_back(vars);
+	}
+
+	_table->appendRows(lotsOfVars, &defs);
+
+	clearColumns();
+
+	emit showData();
+}
 
 
 
@@ -220,74 +248,11 @@ void Importer::clearColumns()
 
 	_columns.clear();
 	endResetModel();
+
+	setCanImport(false);
 }
 
 
-
-int Importer::columnWidthProvider(int col)
-{
-	QRect maxBounds(0,0, _maxWidthCol, std::numeric_limits<int>::max());
-
-	QString header = headerData(col, Qt::Horizontal).toString();
-
-
-
-	QRect bounds = _metrics.boundingRect(maxBounds, Qt::TextWordWrap, header);
-
-	int largestVal = bounds.width();
-
-	for(int row=std::max(0, _topLeft.y() - _sizeScan); row<std::min(rowCount(), _bottomRight.y() + _sizeScan); row++)
-		largestVal = std::max(largestVal, _metrics.boundingRect(maxBounds, Qt::TextWordWrap, data(index(row, col)).toString()).width());
-
-	return std::min(largestVal, _maxWidthCol) + _cellMargin;
-}
-
-int Importer::rowHeightProvider(int row)
-{
-	QRect maxBounds(0,0, _maxWidthCol, std::numeric_limits<int>::max());
-
-	QString header = headerData(row, Qt::Vertical).toString();
-
-	QRect bounds = _metrics.boundingRect(maxBounds, Qt::TextWordWrap, header);
-
-	int largestVal = bounds.height();
-
-	for(int column=std::max(0, _topLeft.x() - _sizeScan); column<std::min(columnCount(), _bottomRight.x() + _sizeScan); column++)
-	{
-		const QString & val = data(index(row, column)).toString();
-		largestVal = std::max(largestVal, _metrics.boundingRect(maxBounds, Qt::TextWordWrap, val).height());
-	}
-
-	return largestVal + _cellMargin;
-}
-
-QFont Importer::metricFont() const
-{
-	return _metricFont;
-}
-
-void Importer::setMetricFont(const QFont & newMetricFont)
-{
-	if (_metricFont == newMetricFont)
-		return;
-	_metricFont = newMetricFont;
-	emit metricFontChanged();
-
-	_metrics = QFontMetrics(_metricFont);
-}
-
-int Importer::cellMargin() const
-{
-	return _cellMargin;
-}
-
-void Importer::setCellMargin(int newCellMargin)
-{
-	if (_cellMargin == newCellMargin)
-		return;
-	_cellMargin = newCellMargin;
-	emit cellMarginChanged();
-}
 
 QString Importer::schoolType() const
 {
@@ -315,28 +280,15 @@ void Importer::setType(const QString & newType)
 	emit typeChanged();
 }
 
-QPoint Importer::topLeft() const
+bool Importer::canImport() const
 {
-	return _topLeft;
+	return _canImport;
 }
 
-void Importer::setTopLeft(QPoint newTopLeft)
+void Importer::setCanImport(bool newCanImport)
 {
-	if (_topLeft == newTopLeft)
+	if (_canImport == newCanImport)
 		return;
-	_topLeft = newTopLeft;
-	emit topLeftChanged();
-}
-
-QPoint Importer::bottomRight() const
-{
-	return _bottomRight;
-}
-
-void Importer::setBottomRight(QPoint newBottomRight)
-{
-	if (_bottomRight == newBottomRight)
-		return;
-	_bottomRight = newBottomRight;
-	emit bottomRightChanged();
+	_canImport = newCanImport;
+	emit canImportChanged();
 }

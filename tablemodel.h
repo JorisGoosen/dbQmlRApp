@@ -1,12 +1,12 @@
 #ifndef TABLEMODEL_H
 #define TABLEMODEL_H
 
-#include <QAbstractTableModel>
+#include "abstractsizeprovidertable.h"
 #include <QObject>
 #include "database.h"
 
 
-class TableModel : public QAbstractTableModel
+class TableModel : public AbstractSizeProviderTable
 {
   Q_OBJECT
 

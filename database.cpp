@@ -470,8 +470,6 @@ void Database::tableBindColumnDefParameter(sqlite3_stmt * stmt, size_t param, co
 
 
 	case ColumnType::Label:
-		if(val.typeId() != QMetaType::Int)
-			throw std::runtime_error("Didnt get an integer for label!");
 		sqlite3_bind_int(stmt, param, val.toInt());
 	}
 }

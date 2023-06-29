@@ -1,5 +1,6 @@
-import QtQuick 2.15
-import QtQuick.Controls 2.15
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
 
 Window
 {
@@ -15,9 +16,11 @@ Window
 	{
 		id:		tabBar
 
-		property bool importerExists: importer
+		property bool importerExists:		importer
+		property bool schoolScannerExists:	schoolScannerTable
 
-		onImporterExistsChanged: if(importer) importer.cellMargin = Qt.binding(function(){return generalMargin;});
+		onImporterExistsChanged:			if(importer)			importer.cellMargin				= Qt.binding(function(){return generalMargin;});
+		onSchoolScannerExistsChanged:		if(schoolScannerTable) schoolScannerTable.cellMargin	= Qt.binding(function(){return generalMargin;});
 
 		anchors
 		{
@@ -39,28 +42,29 @@ Window
 
 				contentItem:	Text
 				{
-					color:				tabButton.selected ? controlBackgroundPressed : controlBackgroundNeutral
-					text:				tabButton.text
-					anchors.centerIn:	parent
+					color:						tabButton.selected ? controlForegroundFocus : controlForegroundNeutral
+					text:						"<b>" + tabButton.text + "</b>"
+					anchors.fill:				parent
+					horizontalAlignment:		Text.AlignHCenter
+					verticalAlignment:			Text.AlignVCenter
 				}
 
 				background: Rectangle
 				{
-						color:	tabButton.selected ? controlForegroundPressed : controlForegroundNeutral
+						color:	tabButton.selected ? controlBackgroundFocus : controlBackgroundNeutral
 				}
 			}
 		}
 	}
 
-	SwipeView
+	StackLayout
 	{
-		id:					swiper
+		id:					stackView
 		clip:				true
-		currentIndex:		tabBar.currentIndex
 		onWidthChanged:		R.plotWidth		= width
 		onHeightChanged:	R.plotHeight	= height
 
-		onCurrentIndexChanged: if(tabBar.currentIndex != currentIndex)	tabBar.currentIndex = currentIndex
+		currentIndex:		tabBar.currentIndex
 
 		Repeater
 		{
@@ -71,8 +75,8 @@ Window
 			{
 				id:				qmlLoader
 				source:			modelData + ".qml"
-				width:			swiper.width
-				height:			swiper.height
+				width:			stackView.width
+				height:			stackView.height
 			}
 		}
 
@@ -98,26 +102,4 @@ Window
 		}
 		ToolTip.toolTip.z:						1234
 	}
-
-	/*
-
-
-	TextInput
-	{
-		id:			inputText
-		height:		Math.max(contentHeight, 20)
-
-		text:	"?"
-		color:	"yellow"
-
-		anchors
-		{
-			left:	parent.left
-			right:	parent.right
-			bottom:	parent.bottom
-		}
-
-		onEditingFinished: R.runRCommand(text)
-	}
-	*/
 }

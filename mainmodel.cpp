@@ -42,6 +42,15 @@ bool MainModel::testDatabase()
 	return true;
 }
 
+void MainModel::showData()
+{
+	if(!_qmlsShown.contains("Data"))
+	{
+		_qmlsShown.push_front("Data");
+		emit qmlsShownChanged();
+	}
+}
+
 void MainModel::setQmlsShown(const QStringList & newQmlsShown)
 {
 	if (_qmlsShown == newQmlsShown)

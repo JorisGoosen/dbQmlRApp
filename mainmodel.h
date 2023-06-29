@@ -22,6 +22,7 @@ public slots:
 	bool		loadDatabase(const QString & dbPath);
 	bool		selectDatabase();
 	bool		testDatabase();
+	void		showData();
 
 
 signals:

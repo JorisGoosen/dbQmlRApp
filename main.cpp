@@ -48,6 +48,8 @@ int main(int argc, char *argv[])
 		mainEng.rootContext()->setContextProperty("labels",						labels);
 		mainEng.rootContext()->setContextProperty("importer",					importer);
 
+		QObject::connect(importer, &Importer::showData,	&mainModel, &MainModel::showData);
+
 	});
 
 	//Tell QML whatsup:
