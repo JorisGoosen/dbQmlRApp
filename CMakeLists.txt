@@ -140,6 +140,7 @@ qt_add_qml_module(qmlR
 		Tafel.qml
 		Filter.qml
 		Import.qml
+		Analyse.qml
 		RectButton.qml
 		FileBrowser.qml
 	NO_RESOURCE_TARGET_PATH

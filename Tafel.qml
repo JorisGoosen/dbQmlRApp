@@ -4,10 +4,10 @@ import QtQuick.Layouts
 
 Item
 {
-	property alias	model:				mainTableView.model
+	property alias	model:					mainTableView.model
 	property alias	columnWidthProvider:	mainTableView.columnWidthProvider
-	property alias	rowHeightProvider:	mainTableView.rowHeightProvider
-	property int	cellMargin:			0
+	property alias	rowHeightProvider:		mainTableView.rowHeightProvider
+	property int	cellMargin:				0
 
 	Text
 	{
@@ -51,7 +51,7 @@ Item
 				{
 					left:		parent.left
 					right:		parent.right
-					margins:	model.cellMargin / 2
+					margins:	cellMargin / 2
 				}
 			}
 		}

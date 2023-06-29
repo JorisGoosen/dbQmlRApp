@@ -3,6 +3,8 @@
 
 typedef ColumnDefinition	CD;
 
+Labels * Labels::_singleton = nullptr;
+
 Labels::Labels(Database * db, QObject *parent)
 :	QObject{parent},
 	_idDef(		new CD("Id",		"id",			ColumnType::PrimaryKey	)),
@@ -12,6 +14,9 @@ Labels::Labels(Database * db, QObject *parent)
 	_columnDefs({_idDef/*, _columnDef*/, _valueDef, _labelDef}),
 	_db(db)
 {
+	assert(!_singleton);
+	_singleton = this;
+
 	loadLabels();
 }
 
@@ -53,12 +58,12 @@ void Labels::loadLabels()
 
 QString Labels::label(int id)
 {
-	return _idLabelMap[id]->label;
+	return _idLabelMap.count(id) ? _idLabelMap[id]->label : "";
 }
 
 int Labels::value(int id)
 {
-	return _idLabelMap[id]->value;
+	return _idLabelMap.count(id) ? _idLabelMap[id]->value : 0;
 }
 
 int Labels::id(const QString & label/*, const QString & column*/)

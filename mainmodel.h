@@ -28,6 +28,7 @@ public slots:
 signals:
 	void		qmlsShownChanged();
 	void		loadInQml(Labels * labels, SchoolScannerTable * schoolTable);
+	void		showStackIndex(int idx);
 
 private:
 	void		setQmlsShown(const QStringList & newQmlsShown);

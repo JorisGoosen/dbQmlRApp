@@ -53,10 +53,13 @@ int main(int argc, char *argv[])
 	});
 
 	//Tell QML whatsup:
-	mainEng.rootContext()->setContextProperty("settings",			&settings);
-	mainEng.rootContext()->setContextProperty("R",					&rWrapper);
-	mainEng.rootContext()->setContextProperty("database",			&database);
-	mainEng.rootContext()->setContextProperty("mainModel",			&mainModel);
+	mainEng.rootContext()->setContextProperty("settings",				&settings);
+	mainEng.rootContext()->setContextProperty("R",						&rWrapper);
+	mainEng.rootContext()->setContextProperty("database",				&database);
+	mainEng.rootContext()->setContextProperty("mainModel",				&mainModel);
+	mainEng.rootContext()->setContextProperty("schoolScannerTable",		nullptr);
+	mainEng.rootContext()->setContextProperty("labels",					nullptr);
+	mainEng.rootContext()->setContextProperty("importer",				nullptr);
 
 
 	mainEng.rootContext()->setContextProperty("backgroundColor",			"#BCE2D7");

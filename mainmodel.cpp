@@ -35,7 +35,7 @@ bool MainModel::testDatabase()
 	loadDatabase(":memory:");
 
 	if(_schoolTable->rowCount() > 0)
-		setQmlsShown({"Data", "Filter", "Import"});
+		setQmlsShown({"Import", "Data", "Analyse"});
 	else
 		setQmlsShown({"Import"});
 
@@ -46,9 +46,12 @@ void MainModel::showData()
 {
 	if(!_qmlsShown.contains("Data"))
 	{
-		_qmlsShown.push_front("Data");
+		_qmlsShown.push_back("Data");
+		_qmlsShown.push_back("Analyse");
 		emit qmlsShownChanged();
 	}
+
+	emit showStackIndex(_qmlsShown.indexOf("Data"));
 }
 
 void MainModel::setQmlsShown(const QStringList & newQmlsShown)

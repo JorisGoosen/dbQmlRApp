@@ -27,6 +27,8 @@ public:
 	explicit Labels(Database * db, QObject *parent = nullptr);
 	~Labels();
 
+	static Labels * singleton() { return _singleton; }
+
 	void loadLabels();
 
 	QString label(	int				id);
@@ -40,6 +42,7 @@ public slots:
 signals:
 
 private:
+	static	Labels				*	_singleton;
 	ColumnDefinition			*	_idDef		= nullptr,
 								*	_valueDef	= nullptr,
 								*	_labelDef	= nullptr/*,

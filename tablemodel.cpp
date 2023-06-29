@@ -1,4 +1,6 @@
 #include "tablemodel.h"
+#include <QDateTime>
+#include "labels.h"
 
 TableModel::TableModel(Database * db, const QString & tableName, const ColumnDefinitions & columnDefinitions)
 	: AbstractSizeProviderTable(db), _db(db), _tableName(tableName), _columnDefinitions(columnDefinitions)
@@ -27,7 +29,28 @@ QVariant TableModel::data(const QModelIndex & index, int role) const
 	if(role != Qt::DisplayRole)
 		return QVariant();
 
-	return _db->tableValue(_tableName, _columnDefinitions[index.column()], index.row());
+	ColumnDefinition * cd = _columnDefinitions[index.column()];
+
+	QVariant tableVal = _db->tableValue(_tableName, cd, index.row());
+
+	Labels * _labels = Labels::singleton();
+
+	if(cd->columnType() == ColumnType::DateTime)
+		return QDateTime::fromSecsSinceEpoch(tableVal.toInt()).toString("yyyy.MM.dd hh:mm");
+	else if(cd->columnType() == ColumnType::Label)
+	{
+		int value = _labels->value(tableVal.toInt());
+		return _labels->label(tableVal.toInt()) + (value != -1 ? " " + QString::number(value) : "");
+	}
+	else if(cd->columnType() == ColumnType::Labels)
+	{
+		QStringList labelsHuman;
+		for(const QString & split : tableVal.toString().split(' '))
+			labelsHuman.append(_labels->label(split.toInt()));
+		return labelsHuman.join(", ");
+	}
+
+	return tableVal;
 }
 
 QVariant TableModel::headerData(int section, Qt::Orientation orientation, int role) const
