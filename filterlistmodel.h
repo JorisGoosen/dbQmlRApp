@@ -7,9 +7,10 @@
 class FilterListModel : public QAbstractListModel
 {
 	Q_OBJECT
+	Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
 
 public:
-	explicit FilterListModel(QObject *parent = nullptr);
+	explicit FilterListModel(QString title= "", QObject *parent = nullptr);
 
 	void	setLabels(QStringList allLabels);
 
@@ -26,10 +27,17 @@ public:
 
 	QHash<int, QByteArray> roleNames() const override;
 
+	QString title() const;
+	void setTitle(const QString & newTitle);
+
+signals:
+	void titleChanged();
+
 private:
 	QStringList					_orderedLabels;
 	std::set<QString>			_selectedLabels;
 
+	QString _title;
 };
 
 #endif // FILTERLISTMODEL_H

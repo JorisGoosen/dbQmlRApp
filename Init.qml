@@ -15,7 +15,7 @@ Item
 
 		RectButton
 		{
-			text:		"Create new temporary database"
+			text:		"Create new database"
 			toolTip:	"Testing testing!"
 			onClicked:	mainModel.testDatabase()
 		}

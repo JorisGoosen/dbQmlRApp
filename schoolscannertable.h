@@ -4,6 +4,7 @@
 #include "tablemodel.h"
 #include "schoolscannerdefinities.h"
 #include "filterlistmodel.h"
+#include "plotrenderer.h"
 
 class SchoolScannerTable : public TableModel
 {
@@ -34,6 +35,7 @@ public:
 
 public slots:
 	void loadFilters();
+	void initPlots();
 
 signals:
 	void schoolChanged();
@@ -44,16 +46,22 @@ signals:
 	void klasChanged();
 	void genderChanged();
 	void cultuurChanged();
+	void runRCommand(const QString & command);
+	void plotWidthChanged(int plotWidth);
+	void plotHeightChanged(int plotHeight);
+	void addContextProperty(const QString & name, QObject * object);
 
 private:
-	FilterListModel		_school,
-						_locatie,
-						_sector,
-						_niveau,
-						_leerjaar,
-						_klas,
-						_gender,
-						_cultuur;
+	FilterListModel		_school		= FilterListModel("School"),
+						_locatie	= FilterListModel("Locatie"),
+						_sector		= FilterListModel("Sector"),
+						_niveau		= FilterListModel("Niveau"),
+						_leerjaar	= FilterListModel("Leerjaar"),
+						_klas		= FilterListModel("Klas"),
+						_gender		= FilterListModel("Gender"),
+						_cultuur	= FilterListModel("Cultuur");
+
+	PlotRenderer	*	_plotPie	= nullptr;
 
 
 };

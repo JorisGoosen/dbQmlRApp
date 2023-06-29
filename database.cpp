@@ -355,6 +355,9 @@ void Database::tableDrop(const QString & tableName)
 
 void Database::tableCreate(const QString & tableName, const ColumnDefinitions & cols)
 {
+	if(tableExists(tableName))
+		return;
+
 	QString optionalIdFrag = "id INTEGER PRIMARY KEY ASC,";
 
 	for(ColumnDefinition * cd : cols)

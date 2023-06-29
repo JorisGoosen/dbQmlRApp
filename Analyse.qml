@@ -12,8 +12,8 @@ SplitView
 		SplitView.preferredWidth:	splitView.width / 2
 	}
 
-	Rectangle
+	Plots
 	{
-		color: "purple"
+
 	}
 }

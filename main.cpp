@@ -40,9 +40,9 @@ int main(int argc, char *argv[])
 	Settings					settings;
 	RWrapper					rWrapper;
 
-
 	QObject::connect(&mainModel, &MainModel::loadInQml, &mainEng, [&](Labels * labels, SchoolScannerTable * table)
 	{
+
 		Importer * importer = new Importer(table, labels);
 		mainEng.rootContext()->setContextProperty("schoolScannerTable",			table);
 		mainEng.rootContext()->setContextProperty("labels",						labels);
@@ -50,6 +50,13 @@ int main(int argc, char *argv[])
 
 		QObject::connect(importer, &Importer::showData,	&mainModel, &MainModel::showData);
 
+		QObject::connect(&rWrapper, &RWrapper::plotWidthChanged,		table,	&SchoolScannerTable::plotWidthChanged);
+		QObject::connect(&rWrapper, &RWrapper::plotHeightChanged,		table,	&SchoolScannerTable::plotHeightChanged);
+
+		QObject::connect(table,		&SchoolScannerTable::addContextProperty,	[&](const QString & name, QObject * object){ mainEng.rootContext()->setContextProperty(name, object); });
+		QObject::connect(table,		&SchoolScannerTable::runRCommand,	&rWrapper,	&RWrapper::runRCommand);
+
+		table->initPlots();
 	});
 
 	//Tell QML whatsup:
@@ -60,6 +67,8 @@ int main(int argc, char *argv[])
 	mainEng.rootContext()->setContextProperty("schoolScannerTable",		nullptr);
 	mainEng.rootContext()->setContextProperty("labels",					nullptr);
 	mainEng.rootContext()->setContextProperty("importer",				nullptr);
+
+	mainEng.rootContext()->setContextProperty("plotPie",				nullptr);
 
 
 	mainEng.rootContext()->setContextProperty("backgroundColor",			"#BCE2D7");
@@ -78,31 +87,8 @@ int main(int argc, char *argv[])
 
 	mainEng.rootContext()->setContextProperty("generalMargin",		20);
 
-/*
-	QFile	//rMain(		":/R/main.R"			),
-			rWriteImage(":/R/writeImage.R"	);
 
-	//rMain.open(			QIODeviceBase::ReadOnly);
-	rWriteImage.open(	QIODeviceBase::ReadOnly);
 
-	rWrapper.runRCommand(rWriteImage.readAll());
-	rWrapper.runRCommand(mainTable.dbplyrCode());
-
-	PlotRenderer piePlot	(QFile(":/R/pie.R"),	"pie.png");
-	PlotRenderer linesPlot	(QFile(":/R/lines.R"), "lines.png");
-
-	QObject::connect(&rWrapper, &RWrapper::plotWidthChanged,	&piePlot,	&PlotRenderer::setWidth);
-	QObject::connect(&rWrapper, &RWrapper::plotWidthChanged,	&linesPlot, &PlotRenderer::setWidth);
-	QObject::connect(&rWrapper, &RWrapper::plotHeightChanged,	&piePlot,	&PlotRenderer::setHeight);
-	QObject::connect(&rWrapper, &RWrapper::plotHeightChanged,	&linesPlot, &PlotRenderer::setHeight);
-
-	QObject::connect(&piePlot,		&PlotRenderer::runRCommand,		&rWrapper,	&RWrapper::runRCommand);
-	QObject::connect(&linesPlot,	&PlotRenderer::runRCommand,		&rWrapper,	&RWrapper::runRCommand);
-
-	mainEng.rootContext()->setContextProperty("piePlot",	&piePlot);
-	mainEng.rootContext()->setContextProperty("linesPlot",	&linesPlot);
-
-*/
 	mainEng.load(":/main.qml");
 
 	return app.exec();

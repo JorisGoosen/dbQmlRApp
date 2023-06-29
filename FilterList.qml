@@ -5,8 +5,18 @@ import QtQuick.Layouts
 Item
 {
 	id:						column
-	property alias title:	titleText.text
-	property alias model:	list.model
+	clip:					true
+	width:					parent.width
+
+	property var	model:	null
+
+	function enlargeMe()
+	{
+		splitView.fillThisOne = model
+	}
+
+	SplitView.fillHeight:		splitView.fillThisOne === model
+	SplitView.minimumHeight:	titleText.height
 
 	Text
 	{
@@ -15,11 +25,18 @@ Item
 		wrapMode:				Text.WrapAtWordBoundaryOrAnywhere
 		horizontalAlignment:	Text.AlignHCenter
 		verticalAlignment:		Text.AlignVCenter
-		padding: 				generalMargin
+		padding: 				5
+		text:					column.model ? column.model.title : "???"
 
 		anchors
 		{
 			horizontalCenter:	parent.horizontalCenter
+		}
+
+		MouseArea
+		{
+			anchors.fill:		parent
+			onClicked:			column.enlargeMe()
 		}
 	}
 
@@ -27,6 +44,7 @@ Item
 	{
 		id:						list
 		clip:					true
+		model:					column.model ? column.model : null
 
 		anchors
 		{
@@ -46,7 +64,7 @@ Item
 
 
 				//color:					controlForegroundNeutral
-				padding: 				generalMargin
+				padding: 			10
 			}
 	}
 }

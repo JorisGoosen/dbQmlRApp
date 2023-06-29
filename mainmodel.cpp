@@ -32,7 +32,7 @@ bool MainModel::selectDatabase()
 
 bool MainModel::testDatabase()
 {
-	loadDatabase(":memory:");
+	loadDatabase("testing.sqlite");
 
 	if(_schoolTable->rowCount() > 0)
 		setQmlsShown({"Import", "Data", "Analyse"});

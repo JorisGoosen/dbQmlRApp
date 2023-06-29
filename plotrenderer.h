@@ -61,7 +61,7 @@ private:
 				int			_width		= 0,
 							_height		= 0,
 							_revision	= 0;
-				QDir		_plotFolder;
+				QDir		_plotFolder = QDir("~");
 				QTimer		_timer;
 };
 

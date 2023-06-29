@@ -138,7 +138,7 @@ qt_add_qml_module(qmlR
 	    main.qml
 		Init.qml
 		Data.qml
-		Plot.qml
+		Plots.qml
 		Tafel.qml
 		Filter.qml
 		Import.qml

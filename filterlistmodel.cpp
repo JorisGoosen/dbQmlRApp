@@ -1,7 +1,7 @@
 #include "filterlistmodel.h"
 
-FilterListModel::FilterListModel(QObject *parent)
-	: QAbstractListModel(parent)
+FilterListModel::FilterListModel(QString title, QObject *parent)
+	: QAbstractListModel(parent), _title(title)
 {
 }
 
@@ -76,4 +76,17 @@ QHash<int, QByteArray> FilterListModel::roleNames() const
 	}
 
 	return _roleNames;
+}
+
+QString FilterListModel::title() const
+{
+	return _title;
+}
+
+void FilterListModel::setTitle(const QString & newTitle)
+{
+	if (_title == newTitle)
+		return;
+	_title = newTitle;
+	emit titleChanged();
 }

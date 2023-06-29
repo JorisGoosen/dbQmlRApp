@@ -5,6 +5,8 @@ SchoolScannerTable::SchoolScannerTable(Database * db)
 	: TableModel(db, SchoolScannerDefinities::tableName(), SchoolScannerDefinities::columnDefs())
 {
 	connect(this, &QAbstractTableModel::modelReset, this, &SchoolScannerTable::loadFilters);
+
+	loadFilters();
 }
 
 const ColumnDefinition * SchoolScannerTable::findDbColumn(const QString & csvName)
@@ -34,4 +36,25 @@ void SchoolScannerTable::loadFilters()
 	emit klasChanged();
 	emit genderChanged();
 	emit cultuurChanged();
+}
+
+void SchoolScannerTable::initPlots()
+{
+	PlotRenderer			*	piePlot = nullptr;
+
+	QFile	rWriteImage(":/R/writeImage.R"	);
+
+	rWriteImage.open(	QIODeviceBase::ReadOnly);
+
+	emit runRCommand(rWriteImage.readAll());
+	emit runRCommand(dbplyrCode());
+
+	piePlot = new PlotRenderer(QFile(":/R/pie.R"),	"pie.png");
+
+	QObject::connect(this, &SchoolScannerTable::plotWidthChanged,	piePlot,	&PlotRenderer::setWidth);
+	QObject::connect(this, &SchoolScannerTable::plotHeightChanged,	piePlot,	&PlotRenderer::setHeight);
+
+	QObject::connect(piePlot,		&PlotRenderer::runRCommand,		this,	&SchoolScannerTable::runRCommand);
+
+	emit addContextProperty("piePlot",	piePlot);
 }

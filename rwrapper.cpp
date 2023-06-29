@@ -18,7 +18,11 @@ QString RWrapper::runRCommand(QString command)
 	{
 		QStringList out;
 
-		if(Rf_isString(res))
+		if(!res)
+			out.append("NULL");
+		else if(Rf_isNull(res))
+			out.append("NULL");
+		else if(Rf_isString(res))
 			for(Rcpp::String str : Rcpp::StringVector(res))
 				out.append(QString::fromStdString(str));
 		else if(Rf_isInteger(res))
@@ -27,8 +31,6 @@ QString RWrapper::runRCommand(QString command)
 		else if(Rf_isReal(res))
 			for(double r : Rcpp::DoubleVector(res))
 				out.append(QString::number(r));
-		else if(Rf_isNull(res))
-			out.append("NULL");
 		else if(Rf_isList(res))
 			for(SEXP s : Rcpp::List(res))
 				out.append(f(s));
