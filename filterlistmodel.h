@@ -10,7 +10,7 @@ class FilterListModel : public QAbstractListModel
 	Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
 
 public:
-	explicit FilterListModel(QString title= "", QObject *parent = nullptr);
+	explicit FilterListModel(QString title, QString colName, QObject *parent = nullptr);
 
 	void	setLabels(QStringList allLabels);
 
@@ -30,14 +30,18 @@ public:
 	QString title() const;
 	void setTitle(const QString & newTitle);
 
+	QString dbplyerFilter() const;
+
 signals:
 	void titleChanged();
 
 private:
 	QStringList					_orderedLabels;
 	std::set<QString>			_selectedLabels;
-
-	QString _title;
+	QString						_title,
+								_colName;
 };
+
+typedef std::vector<FilterListModel*> FilterListModels;
 
 #endif // FILTERLISTMODEL_H

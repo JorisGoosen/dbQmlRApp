@@ -1,7 +1,7 @@
 #include "filterlistmodel.h"
 
-FilterListModel::FilterListModel(QString title, QObject *parent)
-	: QAbstractListModel(parent), _title(title)
+FilterListModel::FilterListModel(QString title, QString colName, QObject *parent)
+	: QAbstractListModel(parent), _title(title), _colName(colName)
 {
 }
 
@@ -89,4 +89,17 @@ void FilterListModel::setTitle(const QString & newTitle)
 		return;
 	_title = newTitle;
 	emit titleChanged();
+}
+
+QString FilterListModel::dbplyerFilter() const
+{
+	if(_selectedLabels.size() == 0) //nothing select == all
+		return "";
+
+	QStringList l;
+
+	for(const QString & label : _selectedLabels)
+		l.push_back(_colName + "=='" + label + "'");
+
+	return "(" + l.join("|") + ")";
 }

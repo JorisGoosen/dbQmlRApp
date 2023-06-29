@@ -33,6 +33,8 @@ public:
 	FilterListModel * gender()		{ return &_gender;		}
 	FilterListModel * cultuur()		{ return &_cultuur;		}
 
+	QString dbplyerFilter() const;
+
 public slots:
 	void loadFilters();
 	void initPlots();
@@ -52,14 +54,15 @@ signals:
 	void addContextProperty(const QString & name, QObject * object);
 
 private:
-	FilterListModel		_school		= FilterListModel("School"),
-						_locatie	= FilterListModel("Locatie"),
-						_sector		= FilterListModel("Sector"),
-						_niveau		= FilterListModel("Niveau"),
-						_leerjaar	= FilterListModel("Leerjaar"),
-						_klas		= FilterListModel("Klas"),
-						_gender		= FilterListModel("Gender"),
-						_cultuur	= FilterListModel("Cultuur");
+	FilterListModel		_school		= FilterListModel("School",		"school"),
+						_locatie	= FilterListModel("Locatie",	"locatie"),
+						_sector		= FilterListModel("Sector",		"sector"),
+						_niveau		= FilterListModel("Niveau",		"niveau"),
+						_leerjaar	= FilterListModel("Leerjaar",	"jaar"),
+						_klas		= FilterListModel("Klas",		"klas"),
+						_gender		= FilterListModel("Gender",		"gender"),
+						_cultuur	= FilterListModel("Cultuur",	"cultuur");
+	FilterListModels	_filters;
 
 	TableModel		*	_textOnly	= nullptr;
 
