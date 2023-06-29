@@ -14,6 +14,6 @@ SplitView
 
 	Plots
 	{
-
+		height:		parent.height
 	}
 }

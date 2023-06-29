@@ -1,8 +1,8 @@
-lvls	<- levels(factor(SchoolScanner$school))
+lvls	<- levels(factor(SchoolScannerTextOnly$school))
 g		<- as.character(lvls)
-data	<- (sapply(lvls, function(x){ sum(stringr::str_count(SchoolScanner$school, as.character(x))) }) / length(SchoolScanner$school))
+data	<- (sapply(lvls, function(x){ sum(stringr::str_count(SchoolScannerTextOnly$school, as.character(x))) }) / length(SchoolScannerTextOnly$school))
 pie		<- plotPieChart(data, g)
 
 writeImage(plot=pie, plotFolder=PLOTFOLDER,	plotFile=PLOTFILE,	width=WIDTH, height=HEIGHT)
 
-print(SchoolScanner)
+#print(SchoolScannerTextOnly)

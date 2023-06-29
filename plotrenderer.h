@@ -58,8 +58,8 @@ private:
 private:
 				QString		_rCode,
 							_fileName;
-				int			_width		= 0,
-							_height		= 0,
+				int			_width		= 200,
+							_height		= 200,
 							_revision	= 0;
 				QDir		_plotFolder = QDir("~");
 				QTimer		_timer;

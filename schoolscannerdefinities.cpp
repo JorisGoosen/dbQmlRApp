@@ -4,6 +4,21 @@ typedef ColumnDefinition	CD;
 
 const QString SchoolScannerDefinities::_tableName = "SchoolScanner";
 
+ColumnDefinitions * SchoolScannerDefinities::_columnDefsText = nullptr;
+
+const ColumnDefinitions & SchoolScannerDefinities::columnDefsText()
+{
+	if(!_columnDefsText)
+	{
+		_columnDefsText = new ColumnDefinitions;
+
+		for(CD * cd : _columnDefs)
+			_columnDefsText->push_back(new ColumnDefinition(cd->friendlyName(), cd->dbName(), ColumnType::Text));
+	}
+
+	return *_columnDefsText;
+}
+
 const ColumnDefinitions SchoolScannerDefinities::_columnDefs =
 {
 
@@ -354,3 +369,4 @@ const std::map<QString, QString> SchoolScannerDefinities::_mapCsvToDb =
 	{ "7. Docenten & mentoren [Actuele gebeurtenissen in de samenleving worden in de klas besproken]",										"actueleGebeurtenissenSamenlevingWordenInKlasBesproken"	},
 	{ "8. Waaraan vind jij dat jouw school meer moet doen? (max 3 antwoorden mogelijk)",													"waarMoetSchoolMeerAanDoen"	}
 };
+

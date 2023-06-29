@@ -61,6 +61,8 @@ private:
 						_gender		= FilterListModel("Gender"),
 						_cultuur	= FilterListModel("Cultuur");
 
+	TableModel		*	_textOnly	= nullptr;
+
 	PlotRenderer	*	_plotPie	= nullptr;
 
 

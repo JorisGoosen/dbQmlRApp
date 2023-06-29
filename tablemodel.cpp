@@ -75,6 +75,14 @@ void TableModel::appendRows(const std::vector<QVariantList> & values, const Colu
 	endInsertRows();
 }
 
+void TableModel::clear()
+{
+	beginResetModel();
+	_db->tableDrop(_tableName);
+	_db->tableCreate(_tableName, _columnDefinitions);
+	endResetModel();
+}
+
 QStringList TableModel::allLabels(const QString & colName)
 {
 	ColumnDefinition * cd = nullptr;

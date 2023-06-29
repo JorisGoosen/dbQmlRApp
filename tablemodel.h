@@ -18,6 +18,7 @@ public:
 	QVariant	data(		const QModelIndex & index,										int role = Qt::DisplayRole) const override;
 	QVariant	headerData(	int					section,	Qt::Orientation orientation,	int role = Qt::DisplayRole) const override;
 	void		appendRows(const std::vector<QVariantList> & values, const ColumnDefinitions * columnDefinitions = nullptr);
+	void		clear();
 
 	const QString			&	tableName()			const { return _tableName; }
 	const ColumnDefinitions	&	columnDefinitions()	const { return _columnDefinitions;}
@@ -29,11 +30,11 @@ public:
 
 protected:
 	QString tableValueVarToString(QVariant val, ColumnType type) const;
+	QString				_tableName;
+	ColumnDefinitions	_columnDefinitions;
 
 private:
   Database			*   _db;
-  QString				_tableName;
-  ColumnDefinitions		_columnDefinitions;
 
 };
 
