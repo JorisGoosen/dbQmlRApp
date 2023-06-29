@@ -26,7 +26,7 @@ public:
 	QStringList	allUniqueLabels(const QString & colName);
 	QStringList allLabels(		const QString & colName);
 
-	QString		dbplyrCode() const;
+	QString		dbplyrCode(bool collect = true) const;
 
 protected:
 	QString tableValueVarToString(QVariant val, ColumnType type) const;

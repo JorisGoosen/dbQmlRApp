@@ -17,7 +17,15 @@ SchoolScannerTable::SchoolScannerTable(Database * db)
 		&_cultuur
 	};
 
-	connect(this, &QAbstractTableModel::modelReset, this, &SchoolScannerTable::loadFilters);
+	connect(this,		&QAbstractTableModel::modelReset,	this, &SchoolScannerTable::loadFilters);
+	connect(&_school,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuff);
+	connect(&_locatie,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuff);
+	connect(&_sector,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuff);
+	connect(&_niveau,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuff);
+	connect(&_leerjaar, &FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuff);
+	connect(&_klas,		&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuff);
+	connect(&_gender,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuff);
+	connect(&_cultuur,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuff);
 
 	loadFilters();
 }
@@ -66,7 +74,6 @@ void SchoolScannerTable::loadFilters()
 	emit genderChanged();
 	emit cultuurChanged();
 
-	_textOnly->clear();
 	std::vector<QStringList>	columns;
 
 	std::vector<QVariantList> textOnlyValues;
@@ -75,7 +82,7 @@ void SchoolScannerTable::loadFilters()
 		columns.push_back(allLabels(cd->dbName()));
 
 	int rowC = rowCount();
-	for(int row=0; row<rowC; row++)
+	for(int row=_textOnly->rowCount(); row<rowC; row++)
 	{
 		QVariantList rowVals;
 
@@ -88,27 +95,36 @@ void SchoolScannerTable::loadFilters()
 	_textOnly->appendRows(textOnlyValues);
 }
 
-void SchoolScannerTable::initPlots()
+void SchoolScannerTable::initRStuff()
 {
-	PlotRenderer			*	piePlot = nullptr;
 
 	QFile	rWriteImage(":/R/writeImage.R"	);
 
 	rWriteImage.open(	QIODeviceBase::ReadOnly);
 
 	emit runRCommand(rWriteImage.readAll());
-	emit runRCommand(_textOnly->dbplyrCode());
+	emit runRCommand(_textOnly->dbplyrCode(false));
 	QString dbFilter = dbplyerFilter();
 
 	if(dbFilter != "")
-		emit runRCommand("filter(" + _textOnly->tableName() + ", " + dbFilter + ");");
+		emit runRCommand(_textOnly->tableName() + "sql <- filter(" + _textOnly->tableName() + "sql, " + dbFilter + ");");
 
-	piePlot = new PlotRenderer(QFile(":/R/pie.R"),	"pie.png");
+	emit runRCommand(_textOnly->tableName() + " <- " + _textOnly->tableName() + "sql %>% collect()");
 
-	QObject::connect(this, &SchoolScannerTable::plotWidthChanged,	piePlot,	&PlotRenderer::setWidth);
-	QObject::connect(this, &SchoolScannerTable::plotHeightChanged,	piePlot,	&PlotRenderer::setHeight);
+	if(_plotPie)
+		_plotPie->runRCode();
+}
 
-	QObject::connect(piePlot,		&PlotRenderer::runRCommand,		this,	&SchoolScannerTable::runRCommand);
+void SchoolScannerTable::initPlots()
+{
+	initRStuff();
 
-	emit addContextProperty("plotPie",	piePlot);
+	_plotPie = new PlotRenderer(QFile(":/R/pie.R"),	"pie.png");
+
+	QObject::connect(this, &SchoolScannerTable::plotWidthChanged,	_plotPie,	&PlotRenderer::setWidth);
+	QObject::connect(this, &SchoolScannerTable::plotHeightChanged,	_plotPie,	&PlotRenderer::setHeight);
+
+	QObject::connect(_plotPie,		&PlotRenderer::runRCommand,		this,	&SchoolScannerTable::runRCommand);
+
+	emit addContextProperty("plotPie",	_plotPie);
 }

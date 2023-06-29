@@ -52,6 +52,7 @@ bool FilterListModel::setData(const QModelIndex &index, const QVariant &value, i
 		else			_selectedLabels.erase(label);
 
 		emit dataChanged(index, index, {role, Qt::DisplayRole, Qt::CheckStateRole});
+		emit filterChanged();
 		return true;
 	}
 	return false;

@@ -34,6 +34,7 @@ public:
 
 signals:
 	void titleChanged();
+	void filterChanged();
 
 private:
 	QStringList					_orderedLabels;

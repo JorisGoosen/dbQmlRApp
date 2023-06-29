@@ -139,7 +139,7 @@ QStringList TableModel::allUniqueLabels(const QString & colName)
 	return strs;
 }
 
-QString TableModel::dbplyrCode() const
+QString TableModel::dbplyrCode(bool collect) const
 {
 	QStringList code =
 	{
@@ -147,8 +147,10 @@ QString TableModel::dbplyrCode() const
 							"con <- DBI::dbConnect(RSQLite::SQLite(), dbname = '" + QString::fromStdString(_db->dbFile()) + "');",
 							_tableName + "sql <- tbl(con, '"+_tableName+"');",
 							"'sql table is called: " + _tableName + "sql'",
-							_tableName + " <- " + _tableName + "sql %>% collect()"
 	};
+
+	if(collect)
+		code.append(_tableName + " <- " + _tableName + "sql %>% collect()");
 
 	return code.join("\n");
 }

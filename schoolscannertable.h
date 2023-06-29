@@ -35,9 +35,11 @@ public:
 
 	QString dbplyerFilter() const;
 
+
 public slots:
 	void loadFilters();
 	void initPlots();
+	void initRStuff();
 
 signals:
 	void schoolChanged();
