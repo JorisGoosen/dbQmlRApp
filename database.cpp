@@ -443,6 +443,32 @@ QVariant Database::tableValue(const QString & tableName, const ColumnDefinition 
 
 }
 
+QVariantList Database::tableValues(const QString & tableName, const ColumnDefinition * col)
+{
+	const std::string	query	= ("SELECT " + col->dbName() + " FROM " + tableName + " ORDER BY id;").toStdString();
+
+	bindParametersType bindParams = [&](sqlite3_stmt *stmt)
+	{
+		//sqlite3_bind_int(	stmt, 1, id);
+	};
+
+	QVariantList returnMe;
+
+	processRowType processRow = [&](size_t row, sqlite3_stmt *stmt)
+	{
+		returnMe.append(tableExtractColumnDefValue(stmt, 0, col));
+	};
+
+	runStatements(query, bindParams, processRow);
+
+#ifdef SIR_LOG_A_LOT
+	std::cout << query << " for id " << id << " returned " << returnMe.toString().toStdString() << std::endl;
+#endif
+
+	return returnMe;
+
+}
+
 void Database::tableBindColumnDefParameter(sqlite3_stmt * stmt, size_t param, const ColumnDefinition * colDef, QVariant val)
 {
 	switch(colDef->columnType())

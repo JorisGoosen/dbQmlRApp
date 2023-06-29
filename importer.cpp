@@ -232,10 +232,12 @@ void Importer::actuallyImport()
 	}
 
 	_table->appendRows(lotsOfVars, &defs);
+	_table->loadFilters();
 
 	clearColumns();
 
 	emit showData();
+
 }
 
 

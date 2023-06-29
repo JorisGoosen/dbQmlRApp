@@ -22,7 +22,13 @@ public:
 	const QString			&	tableName()			const { return _tableName; }
 	const ColumnDefinitions	&	columnDefinitions()	const { return _columnDefinitions;}
 
+	QStringList	allUniqueLabels(const QString & colName);
+	QStringList allLabels(		const QString & colName);
+
 	QString		dbplyrCode() const;
+
+protected:
+	QString tableValueVarToString(QVariant val, ColumnType type) const;
 
 private:
   Database			*   _db;

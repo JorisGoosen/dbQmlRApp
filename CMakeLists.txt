@@ -105,6 +105,7 @@ set(sources
 	mainmodel.cpp
 	tablemodel.cpp
 	plotrenderer.cpp
+	filterlistmodel.cpp
 	columndefinition.cpp
 	schoolscannertable.cpp
 	schoolscannerdefinities.cpp
@@ -122,6 +123,7 @@ set(headers
 	stringutils.h
 	plotrenderer.h
 	enumutilities.h
+	filterlistmodel.h
 	columndefinition.h
 	schoolscannertable.h
 	schoolscannerdefinities.h
@@ -142,6 +144,7 @@ qt_add_qml_module(qmlR
 		Import.qml
 		Analyse.qml
 		RectButton.qml
+		FilterList.qml
 		FileBrowser.qml
 	NO_RESOURCE_TARGET_PATH
 #    RESOURCES

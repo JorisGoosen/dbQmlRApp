@@ -31,18 +31,21 @@ QVariant TableModel::data(const QModelIndex & index, int role) const
 
 	ColumnDefinition * cd = _columnDefinitions[index.column()];
 
-	QVariant tableVal = _db->tableValue(_tableName, cd, index.row());
+	return tableValueVarToString(_db->tableValue(_tableName, cd, index.row()), cd->columnType());
+}
 
+QString TableModel::tableValueVarToString(QVariant tableVal, ColumnType type) const
+{
 	Labels * _labels = Labels::singleton();
 
-	if(cd->columnType() == ColumnType::DateTime)
+	if(type == ColumnType::DateTime)
 		return QDateTime::fromSecsSinceEpoch(tableVal.toInt()).toString("yyyy.MM.dd hh:mm");
-	else if(cd->columnType() == ColumnType::Label)
+	else if(type == ColumnType::Label)
 	{
 		int value = _labels->value(tableVal.toInt());
 		return _labels->label(tableVal.toInt()) + (value != -1 ? " " + QString::number(value) : "");
 	}
-	else if(cd->columnType() == ColumnType::Labels)
+	else if(type == ColumnType::Labels)
 	{
 		QStringList labelsHuman;
 		for(const QString & split : tableVal.toString().split(' '))
@@ -50,7 +53,7 @@ QVariant TableModel::data(const QModelIndex & index, int role) const
 		return labelsHuman.join(", ");
 	}
 
-	return tableVal;
+	return tableVal.toString();
 }
 
 QVariant TableModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -70,6 +73,62 @@ void TableModel::appendRows(const std::vector<QVariantList> & values, const Colu
 	beginInsertRows(QModelIndex(), rowC, rowC + values.size());
 	_db->tableWriteRows(_tableName, columnDefinitions ? *columnDefinitions : _columnDefinitions, values);
 	endInsertRows();
+}
+
+QStringList TableModel::allLabels(const QString & colName)
+{
+	ColumnDefinition * cd = nullptr;
+
+	for(ColumnDefinition * cdt : _columnDefinitions)
+		if(cdt->dbName() == colName)
+		{
+			cd = cdt;
+			break;
+		}
+
+	if(!cd)
+		throw std::runtime_error("Unknown column " + colName.toStdString());
+
+	QVariantList	list = _db->tableValues(_tableName, cd);
+	QStringList		strs;
+
+	for(QVariant l : list)
+		strs.append(tableValueVarToString(l, cd->columnType()));
+
+	return strs;
+}
+
+QStringList TableModel::allUniqueLabels(const QString & colName)
+{
+	ColumnDefinition * cd = nullptr;
+
+	for(ColumnDefinition * cdt : _columnDefinitions)
+		if(cdt->dbName() == colName)
+		{
+			cd = cdt;
+			break;
+		}
+
+	if(!cd)
+		throw std::runtime_error("Unknown column " + colName.toStdString());
+
+	QVariantList	list = _db->tableValues(_tableName, cd);
+	QStringList		strs;
+
+	std::set<QString> addedAlready;
+
+	for(const QVariant & l : list)
+	{
+		QString toText = tableValueVarToString(l, cd->columnType());
+
+		if(!addedAlready.contains(toText))
+		{
+			addedAlready.insert(toText);
+			strs.append(toText);
+		}
+	}
+
+	return strs;
 }
 
 QString TableModel::dbplyrCode() const

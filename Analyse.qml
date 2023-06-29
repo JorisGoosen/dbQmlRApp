@@ -1,9 +1,19 @@
-import QtQuick 2
-import QtQuick.Controls 2
+import QtQuick
+import QtQuick.Controls
 import QtQuick.Layouts
 
-ColumnLayout
+SplitView
 {
-	id:		column
+	id:				splitView
+	orientation:	Qt.Horizontal
 
+	Filter
+	{
+		SplitView.preferredWidth:	splitView.width / 2
+	}
+
+	Rectangle
+	{
+		color: "purple"
+	}
 }

@@ -1,5 +1,17 @@
-import QtQuick 2.15
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
 
-Item {
+SplitView
+{
+	id:				splitView
+	orientation:	Qt.Vertical
 
+	FilterList
+	{
+		title:					"School"
+		model:					schoolScannerTable.school
+		SplitView.fillHeight:	true
+		width:					parent.width
+	}
 }

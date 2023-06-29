@@ -43,11 +43,13 @@ public:
 	QString			tableColumnQueryFrag(const ColumnDefinitions & cols, bool includeType=false, bool questionMarks=false);
 	int				tableRowCount(	const QString & tableName);
 	QVariant		tableValue(		const QString & tableName, const ColumnDefinition * col, size_t row);
+	QVariantList	tableValues(	const QString & tableName, const ColumnDefinition * col);
 
 	void			setDbFile(const std::filesystem::path & file);
 
 	void			tableBindColumnDefParameter(sqlite3_stmt * stmt, size_t param, const ColumnDefinition * colDef, QVariant val);
 	QVariant		tableExtractColumnDefValue(	sqlite3_stmt * stmt, size_t param, const ColumnDefinition * colDef);
+
 
 private:
 
