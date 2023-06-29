@@ -56,19 +56,21 @@ signals:
 	void addContextProperty(const QString & name, QObject * object);
 
 private:
-	FilterListModel		_school		= FilterListModel("School",		"school"),
-						_locatie	= FilterListModel("Locatie",	"locatie"),
-						_sector		= FilterListModel("Sector",		"sector"),
-						_niveau		= FilterListModel("Niveau",		"niveau"),
-						_leerjaar	= FilterListModel("Leerjaar",	"jaar"),
-						_klas		= FilterListModel("Klas",		"klas"),
-						_gender		= FilterListModel("Gender",		"gender"),
-						_cultuur	= FilterListModel("Cultuur",	"cultuur");
-	FilterListModels	_filters;
+	FilterListModel					_school		= FilterListModel("School",		"school"),
+									_locatie	= FilterListModel("Locatie",	"locatie"),
+									_sector		= FilterListModel("Sector",		"sector"),
+									_niveau		= FilterListModel("Niveau",		"niveau"),
+									_leerjaar	= FilterListModel("Leerjaar",	"jaar"),
+									_klas		= FilterListModel("Klas",		"klas"),
+									_gender		= FilterListModel("Gender",		"gender"),
+									_cultuur	= FilterListModel("Cultuur",	"cultuur");
+	FilterListModels				_filters;
 
-	TableModel		*	_textOnly	= nullptr;
+	TableModel					*	_textOnly	= nullptr;
 
-	PlotRenderer	*	_plotPie	= nullptr;
+	PlotRenderer				*	_plotPie	= nullptr;
+
+	std::vector<QStringList>		_columns;
 
 
 };

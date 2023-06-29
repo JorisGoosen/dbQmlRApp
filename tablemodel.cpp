@@ -100,13 +100,13 @@ QStringList TableModel::allLabels(const QString & colName)
 	QVariantList	list = _db->tableValues(_tableName, cd);
 	QStringList		strs;
 
-	for(QVariant l : list)
+	for(QVariant & l : list)
 		strs.append(tableValueVarToString(l, cd->columnType()));
 
 	return strs;
 }
 
-QStringList TableModel::allUniqueLabels(const QString & colName)
+QStringList TableModel::allUniqueLabels(const QString & colName, bool filter)
 {
 	ColumnDefinition * cd = nullptr;
 
@@ -123,13 +123,29 @@ QStringList TableModel::allUniqueLabels(const QString & colName)
 	QVariantList	list = _db->tableValues(_tableName, cd);
 	QStringList		strs;
 
+	std::map<QString, QVariantList>	filterLists;
+
+	if(filter)
+		for(auto & nameLM : _filters)
+			if(nameLM.first != colName)
+				filterLists[nameLM.first] = _db->tableValues(_tableName, nameLM.second->cd());
+
 	std::set<QString> addedAlready;
 
-	for(const QVariant & l : list)
+	for(size_t r=0; r<list.size(); r++)
 	{
+		const QVariant & l = list[r];
+
 		QString toText = tableValueVarToString(l, cd->columnType());
 
-		if(!addedAlready.contains(toText))
+		bool filteredOut = false;
+
+		if(filter)
+			for(auto & nameList : filterLists)
+				if(!_filters[nameList.first]->allowedThroughFilter(tableValueVarToString(nameList.second[r], _filters[nameList.first]->cd()->columnType())))
+					filteredOut = true;
+
+		if(!filteredOut && !addedAlready.contains(toText))
 		{
 			addedAlready.insert(toText);
 			strs.append(toText);
@@ -153,4 +169,9 @@ QString TableModel::dbplyrCode(bool collect) const
 		code.append(_tableName + " <- " + _tableName + "sql %>% collect()");
 
 	return code.join("\n");
+}
+
+void TableModel::registerFilter(FilterListModel * lm)
+{
+	_filters[lm->colName()] = lm;
 }

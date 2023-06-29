@@ -104,3 +104,29 @@ QString FilterListModel::dbplyerFilter() const
 
 	return "(" + l.join("|") + ")";
 }
+
+QString FilterListModel::colName() const
+{
+	return _colName;
+}
+
+void FilterListModel::setColName(const QString & newColName)
+{
+	if (_colName == newColName)
+		return;
+	_colName = newColName;
+	emit colNameChanged();
+}
+
+ColumnDefinition * FilterListModel::cd() const
+{
+	return _cd;
+}
+
+void FilterListModel::setCd(ColumnDefinition * newCd)
+{
+	if (_cd == newCd)
+		return;
+	_cd = newCd;
+	emit cdChanged();
+}

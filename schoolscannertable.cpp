@@ -17,15 +17,34 @@ SchoolScannerTable::SchoolScannerTable(Database * db)
 		&_cultuur
 	};
 
+	for(FilterListModel * lm : _filters)
+	{
+		for(ColumnDefinition * cd : SchoolScannerDefinities::columnDefsText())
+			if(lm->colName() == cd->dbName())
+				lm->setCd(cd);
+
+		_textOnly->registerFilter(lm);
+	}
+
 	connect(this,		&QAbstractTableModel::modelReset,	this, &SchoolScannerTable::loadFilters);
-	connect(&_school,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuff);
-	connect(&_locatie,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuff);
-	connect(&_sector,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuff);
-	connect(&_niveau,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuff);
-	connect(&_leerjaar, &FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuff);
-	connect(&_klas,		&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuff);
-	connect(&_gender,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuff);
-	connect(&_cultuur,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuff);
+
+	connect(&_school,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuff,	Qt::QueuedConnection);
+	connect(&_locatie,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuff,	Qt::QueuedConnection);
+	connect(&_sector,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuff,	Qt::QueuedConnection);
+	connect(&_niveau,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuff,	Qt::QueuedConnection);
+	connect(&_leerjaar, &FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuff,	Qt::QueuedConnection);
+	connect(&_klas,		&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuff,	Qt::QueuedConnection);
+	connect(&_gender,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuff,	Qt::QueuedConnection);
+	connect(&_cultuur,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuff,	Qt::QueuedConnection);
+
+	connect(&_school,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::loadFilters);
+	connect(&_locatie,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::loadFilters);
+	connect(&_sector,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::loadFilters);
+	connect(&_niveau,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::loadFilters);
+	connect(&_leerjaar, &FilterListModel::filterChanged,	this, &SchoolScannerTable::loadFilters);
+	connect(&_klas,		&FilterListModel::filterChanged,	this, &SchoolScannerTable::loadFilters);
+	connect(&_gender,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::loadFilters);
+	connect(&_cultuur,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::loadFilters);
 
 	loadFilters();
 }
@@ -56,24 +75,6 @@ QString SchoolScannerTable::dbplyerFilter() const
 
 void SchoolScannerTable::loadFilters()
 {
-	_school		.setLabels(allUniqueLabels("school"));
-	_locatie	.setLabels(allUniqueLabels("locatie"));
-	_sector		.setLabels(allUniqueLabels("sector"));
-	_niveau		.setLabels(allUniqueLabels("niveau"));
-	_leerjaar	.setLabels(allUniqueLabels("jaar"));
-	_klas		.setLabels(allUniqueLabels("klas"));
-	_gender		.setLabels(allUniqueLabels("gender"));
-	_cultuur	.setLabels(allUniqueLabels("cultuur"));
-
-	emit schoolChanged();
-	emit locatieChanged();
-	emit sectorChanged();
-	emit niveauChanged();
-	emit leerjaarChanged();
-	emit klasChanged();
-	emit genderChanged();
-	emit cultuurChanged();
-
 	std::vector<QStringList>	columns;
 
 	std::vector<QVariantList> textOnlyValues;
@@ -93,6 +94,24 @@ void SchoolScannerTable::loadFilters()
 	}
 
 	_textOnly->appendRows(textOnlyValues);
+
+	_school		.setLabels(_textOnly->allUniqueLabels("school"));
+	_locatie	.setLabels(_textOnly->allUniqueLabels("locatie"));
+	_sector		.setLabels(_textOnly->allUniqueLabels("sector"));
+	_niveau		.setLabels(_textOnly->allUniqueLabels("niveau"));
+	_leerjaar	.setLabels(_textOnly->allUniqueLabels("jaar"));
+	_klas		.setLabels(_textOnly->allUniqueLabels("klas"));
+	_gender		.setLabels(_textOnly->allUniqueLabels("gender"));
+	_cultuur	.setLabels(_textOnly->allUniqueLabels("cultuur"));
+
+	emit schoolChanged();
+	emit locatieChanged();
+	emit sectorChanged();
+	emit niveauChanged();
+	emit leerjaarChanged();
+	emit klasChanged();
+	emit genderChanged();
+	emit cultuurChanged();
 }
 
 void SchoolScannerTable::initRStuff()

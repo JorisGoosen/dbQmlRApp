@@ -4,7 +4,7 @@
 #include "abstractsizeprovidertable.h"
 #include <QObject>
 #include "database.h"
-
+#include "filterlistmodel.h"
 
 class TableModel : public AbstractSizeProviderTable
 {
@@ -23,19 +23,22 @@ public:
 	const QString			&	tableName()			const { return _tableName; }
 	const ColumnDefinitions	&	columnDefinitions()	const { return _columnDefinitions;}
 
-	QStringList	allUniqueLabels(const QString & colName);
+	QStringList	allUniqueLabels(const QString & colName, bool filter=true);
 	QStringList allLabels(		const QString & colName);
 
 	QString		dbplyrCode(bool collect = true) const;
 
+	void		registerFilter(FilterListModel * lm);
+
 protected:
-	QString tableValueVarToString(QVariant val, ColumnType type) const;
+	QString				tableValueVarToString(QVariant val, ColumnType type) const;
 	QString				_tableName;
 	ColumnDefinitions	_columnDefinitions;
 
 private:
-  Database			*   _db;
+	Database			*   _db;
 
+	std::map<QString, FilterListModel *>	_filters;
 };
 
 #endif // TABLEMODEL_H

@@ -3,11 +3,14 @@
 
 #include <QAbstractListModel>
 #include <set>
+#include "columndefinition.h"
 
 class FilterListModel : public QAbstractListModel
 {
 	Q_OBJECT
-	Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
+	Q_PROPERTY(QString				title	READ title		WRITE setTitle		NOTIFY titleChanged)
+	Q_PROPERTY(QString				colName	READ colName	WRITE setColName	NOTIFY colNameChanged)
+	Q_PROPERTY(ColumnDefinition *	cd		READ cd			WRITE setCd			NOTIFY cdChanged)
 
 public:
 	explicit FilterListModel(QString title, QString colName, QObject *parent = nullptr);
@@ -32,15 +35,28 @@ public:
 
 	QString dbplyerFilter() const;
 
+	QString colName() const;
+	void setColName(const QString & newColName);
+
+	bool allowedThroughFilter(const QString & label) { return !_selectedLabels.size() || _selectedLabels.count(label); }
+
+	ColumnDefinition * cd() const;
+	void setCd(ColumnDefinition * newCd);
+
 signals:
 	void titleChanged();
 	void filterChanged();
+
+	void colNameChanged();
+
+	void cdChanged();
 
 private:
 	QStringList					_orderedLabels;
 	std::set<QString>			_selectedLabels;
 	QString						_title,
-								_colName;
+	_colName;
+	ColumnDefinition * _cd = nullptr;
 };
 
 typedef std::vector<FilterListModel*> FilterListModels;
