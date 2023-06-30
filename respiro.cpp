@@ -52,8 +52,9 @@ void Respiro::startSession()
 
 
 	loadModels();
-	emit start();
+	start();
 }
+
 
 void Respiro::loadOldSession(const QString & oldOutputFolder)
 {
@@ -313,7 +314,7 @@ void Respiro::push_current_channel(int channel)
 void Respiro::push_valve_state(int channel, bool valve_open)
 {
 	bool changed = false;
-	if(channel > _valvesOpened.size())
+	if(channel >= _valvesOpened.size())
 		_valvesOpened.resize(channel + 1);
 
 	changed = _valvesOpened[channel] != valve_open;
@@ -381,6 +382,11 @@ void Respiro::push_loading_feedback(QString feedback, bool finished, QString err
 	emit feedbackChanged();
 }
 
+void Respiro::start()
+{
+	emit startSignal(initChannelsInts(), _runtimeSec, _channelRuntimeSec, _calibrateCO2, _internalLeakTest, _initialHsFlush);
+}
+
 const QString	&	 Respiro::outputFolder() const
 {
 	return _outputFolder;
@@ -402,4 +408,103 @@ QStringList Respiro::feedback() const
 		for(Feedback * fb : _feedbacks)
 			fbs.append(fb->feedback);
 	return fbs;
+}
+
+QVariantList Respiro::channelInit() const
+{
+	return _channelInit;
+}
+
+QList<int> Respiro::initChannelsInts() const
+{
+	QList<int> l;
+
+	for(int i=0; i<_channelInit.size(); i++)
+		if(_channelInit[i].toBool())
+			l.append(i);
+
+	return l;
+}
+
+void Respiro::setChannelInit(const QVariantList & newChannelInit)
+{
+	if (_channelInit == newChannelInit)
+		return;
+
+	_channelInit = newChannelInit;
+	emit channelInitChanged();
+}
+
+void Respiro::setChannelInit(int index, bool checked)
+{
+	if(index >= _channelInit.size())
+		_channelInit.resize(index+1);
+
+	_channelInit[index] = checked;
+	emit channelInitChanged();
+}
+
+int Respiro::channelRuntimeSec() const
+{
+	return _channelRuntimeSec;
+}
+
+void Respiro::setChannelRuntimeSec(int newChannelRuntimeSec)
+{
+	if (_channelRuntimeSec == newChannelRuntimeSec)
+		return;
+	_channelRuntimeSec = newChannelRuntimeSec;
+	emit channelRuntimeSecChanged();
+}
+
+bool Respiro::calibrateCO2() const
+{
+	return _calibrateCO2;
+}
+
+void Respiro::setCalibrateCO2(bool newCalibrateCO2)
+{
+	if (_calibrateCO2 == newCalibrateCO2)
+		return;
+	_calibrateCO2 = newCalibrateCO2;
+	emit calibrateCO2Changed();
+}
+
+bool Respiro::internalLeakTest() const
+{
+	return _internalLeakTest;
+}
+
+void Respiro::setInternalLeakTest(bool newInternalLeakTest)
+{
+	if (_internalLeakTest == newInternalLeakTest)
+		return;
+	_internalLeakTest = newInternalLeakTest;
+	emit internalLeakTestChanged();
+}
+
+bool Respiro::initialHsFlush() const
+{
+	return _initialHsFlush;
+}
+
+void Respiro::setInitialHsFlush(bool newInitialHsFlush)
+{
+	if (_initialHsFlush == newInitialHsFlush)
+		return;
+	_initialHsFlush = newInitialHsFlush;
+	emit initialHsFlushChanged();
+}
+
+int Respiro::runtimeSec() const
+{
+	return _runtimeSec;
+}
+
+void Respiro::setRuntimeSec(int newRuntimeSec)
+{
+	if (_runtimeSec == newRuntimeSec)
+		return;
+	_runtimeSec = newRuntimeSec;
+	emit runtimeSecChanged();
 }

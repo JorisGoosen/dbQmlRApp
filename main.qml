@@ -57,8 +57,6 @@ Window
 		id:						stack
 		clip:					true
 		currentIndex:			1
-		onWidthChanged:			R.plotWidth		= width
-		onHeightChanged:		R.plotHeight	= height
 		onCurrentIndexChanged:	tabBar.currentIndex = currentIndex
 
 		Repeater

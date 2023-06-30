@@ -14,6 +14,8 @@ SplitView
 		rowHeightProvider:			respiroData.rowHeightProvider
 
 		SplitView.preferredWidth:	parent.width * 0.33333
+
+		visible:					respiroData.rowCount > 0
 	}
 
 	SplitView
@@ -26,6 +28,9 @@ SplitView
 		{
 			source: "dummy.png"
 			SplitView.preferredHeight: parent.height * 0.666667
+
+			onWidthChanged:			R.plotWidth		= width
+			onHeightChanged:		R.plotHeight	= height
 		}
 
 		Tafel
@@ -37,6 +42,7 @@ SplitView
 
 			SplitView.minimumHeight:	model.rowCount > 0 ? 200 : 0
 			SplitView.preferredHeight:	parent.height * 0.333333
+			visible:					respiroMsgs.rowCount > 0
 		}
 	}
 }

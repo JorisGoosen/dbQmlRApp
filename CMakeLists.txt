@@ -128,14 +128,15 @@ qt_add_qml_module(qmlR
 	URI qmlRModule
 	QML_FILES
 	    main.qml
-		Hardware.qml
-		ChannelButton.qml
-		HWFeedbackButton.qml
 		Init.qml
-		Loading.qml
 		Data.qml
 		Tafel.qml
+		Loading.qml
+		Hardware.qml
 		RectButton.qml
+		ChannelButton.qml
+		HWFeedbackButton.qml
+		ChannelsSelector.qml
 	NO_RESOURCE_TARGET_PATH
 	RESOURCES
 	    dummy.png

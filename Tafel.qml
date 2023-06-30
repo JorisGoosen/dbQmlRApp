@@ -120,6 +120,7 @@ Item
 			color:			"transparent"
 			border.color:	foregroundColor
 			border.width:	1
+
 			Text
 			{
 				text:					display;

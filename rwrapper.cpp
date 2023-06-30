@@ -224,6 +224,10 @@ void RWrapper::setControlWanted(bool newControlWanted)
 
 void RWrapper::startRespiro(QList<int> channels, int runtimeSec, int channelRuntimeSec, bool calibrateCO2, bool internalLeakTest, bool initialHsFlush)
 {
+	std::cout << "Starting respiro with runtimeSec=" << runtimeSec <<", channelRuntimeSec=" << channelRuntimeSec << ", calibrateCO2=" << (calibrateCO2 ? "yes":"no") <<
+				 ", internalLeakTest="<< (internalLeakTest ? "yes":"no") << ", initialHsFlush="<< (initialHsFlush ? "yes":"no") << std::endl;
+	std::cout << "Outputfolder: '" << _outputFolder.toStdString() << std::endl;
+
 	(*R)[".runtimeSec"]			= runtimeSec;
 	(*R)[".channelRuntimeSec"]	= channelRuntimeSec;
 	(*R)[".calibrateCO2"]		= calibrateCO2;
@@ -231,11 +235,13 @@ void RWrapper::startRespiro(QList<int> channels, int runtimeSec, int channelRunt
 	(*R)[".initialHsFlush"]		= initialHsFlush;
 	(*R)[".outputFolder"]		= _outputFolder.toStdString();
 
+	const QString channelsStr = [channels](){ QStringList l; for(int channel : channels) l.append(QString::number(channel)); return ("c(" + l.join(",") + ")"); }();
+
 	const QString startR =
 			"setwd(.outputFolder)\n"
 			"library(respiro)\n"
 			"withCallingHandlers(\n{\n"
-			//"  channels = " + [channels](){ QStringList l; for(int channel : channels) l.append(QString::number(channel)); return ("c(" + l.join(",") + ")"); }() + "\n"
+			"  channels = " + channelsStr  + "\n"
 			"  rc = RespiroControl$new(1:12)\n"
 			"  rc$start(\n"
 			"    runtime=.runtimeSec,\n"
