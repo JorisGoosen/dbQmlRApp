@@ -38,6 +38,10 @@ class Respiro : public QObject
 	Q_PROPERTY(bool			co2On				READ co2On				WRITE setCo2On				NOTIFY co2OnChanged				)
 	Q_PROPERTY(bool			ch4On				READ ch4On				WRITE setCh4On				NOTIFY ch4OnChanged				)
 
+	Q_PROPERTY(bool			vent0				READ vent0				WRITE setVent0				NOTIFY vent0Changed				)
+	Q_PROPERTY(bool			vent1				READ vent1				WRITE setVent1				NOTIFY vent1Changed				)
+	Q_PROPERTY(bool			vent2				READ vent2				WRITE setVent2				NOTIFY vent2Changed				)
+
 	Q_PROPERTY(bool			instantPause		READ instantPause		WRITE setInstantPause		NOTIFY instantPauseChanged		)
 	Q_PROPERTY(bool			delayedPause		READ delayedPause		WRITE setDelayedPause		NOTIFY delayedPauseChanged		)
 	Q_PROPERTY(bool			controlWanted		READ controlWanted		WRITE setControlWanted		NOTIFY controlWantedChanged		)
@@ -63,7 +67,8 @@ public:
 
 
 	Database	*		db()			const	{ return _db;		}
-	TableModel	*		data()			const	{ return _data;		}
+	TableModel	*		dataMeas()		const	{ return _dataMeas;	}
+	TableModel	*		dataProc()		const	{ return _dataProc;	}
 	TableModel	*		msgs()			const	{ return _msgs;		}
 	Labels		*		labels()		const	{ return _labels;	}
 
@@ -94,6 +99,9 @@ public:
 	bool				internalLeakTest()	const;
 	bool				initialHsFlush()	const;
 	int					runtimeSec()		const;
+	bool				vent0()				const;
+	bool				vent1()				const;
+	bool				vent2()				const;
 
 	void				setO2(					int						newO2);
 	void				setCh4(					int						newCh4);
@@ -118,19 +126,17 @@ public:
 	void				setInternalLeakTest(	bool					newInternalLeakTest);
 	void				setInitialHsFlush(		bool					newInitialHsFlush);
 	void				setRuntimeSec(			int						newRuntimeSec);
-
-
-
-
-
-
-
+	void				setVent0(				bool					newVent0);
+	void				setVent1(				bool					newVent1);
+	void				setVent2(				bool					newVent2);
 
 public slots:
 	void				setChannelInit(		int index, bool checked);
-	void				push_raw_data(			int		o2, int ch4, int co2, int pressure, float temp1, float temp2);
+	void				push_meas_data(			int		channel, int o2, int ch4, int co2, int pressure, float temp1, float temp2, int phase);
+	void				push_proc_data(			int		channel, int o2, int ch4, int co2);
 	void				push_current_channel(	int		channel);
 	void				push_valve_state(		int		channel, bool valve_open);
+	void				push_vent_state(		int		vent,		bool vent_open);
 	void				push_pump_state(		bool	pump_on);
 	void				push_o2_state(			bool	o2_on);
 	void				push_co2_state(			bool	co2_on);
@@ -169,6 +175,10 @@ signals:
 	void				internalLeakTestChanged();
 	void				initialHsFlushChanged();
 	void				runtimeSecChanged();
+	void				respiroInited();
+	void				vent0Changed();
+	void				vent1Changed();
+	void				vent2Changed();
 
 	void				startSignal(
 			QList<int>	channels,
@@ -179,21 +189,15 @@ signals:
 			bool		initialHsFlush
 	);
 
-
-
-
-
-
-
-
 private:
 	void				loadModels();
 
 private:
-	Database		*	_db		= nullptr;
-	Labels			*	_labels	= nullptr;
-	TableModel		*	_data	= nullptr,
-					*	_msgs	= nullptr;
+	Database		*	_db			= nullptr;
+	Labels			*	_labels		= nullptr;
+	TableModel		*	_dataProc	= nullptr,
+					*	_dataMeas	= nullptr,
+					*	_msgs		= nullptr;
 	int					_o2,
 						_ch4,
 						_co2,
@@ -217,12 +221,16 @@ private:
 						_hardResetFeedback	= false,
 						_calibrateCO2		= true,
 						_internalLeakTest	= true,
-						_initialHsFlush		= false;
-	ColumnDefinitions	_dataDefs,
+						_initialHsFlush		= false,
+						_vent0,
+						_vent1,
+						_vent2;
+	ColumnDefinitions	_dataMeasuredDefs,
+						_dataProcessedDefs,
 						_msgsDefs;
 	Feedbacks			_feedbacks;
 	FeedbackMap			_feedbackMap;
-	QVariantList		_channelInit		= QVariantList(13, true);
+	QVariantList		_channelInit		= QVariantList(12, true);
 };
 
 #endif // RESPIRO_H

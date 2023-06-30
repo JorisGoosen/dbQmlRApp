@@ -6,16 +6,30 @@ SplitView
 {
 	orientation:	Qt.Horizontal
 
-	Tafel
+	SplitView
 	{
-		model:						respiroData
-
-		columnWidthProvider:		respiroData.columnWidthProvider
-		rowHeightProvider:			respiroData.rowHeightProvider
-
+		orientation: Qt.Vertical
 		SplitView.preferredWidth:	parent.width * 0.33333
 
-		visible:					respiroData.rowCount > 0
+		Tafel
+		{
+			model:						respiroDataProc
+
+			columnWidthProvider:		respiroDataProc.columnWidthProvider
+			rowHeightProvider:			respiroDataProc.rowHeightProvider
+
+			//visible:					respiroDataProc.rowCount > 0
+		}
+
+		Tafel
+		{
+			model:						respiroDataMeas
+
+			columnWidthProvider:		respiroDataMeas.columnWidthProvider
+			rowHeightProvider:			respiroDataMeas.rowHeightProvider
+
+			//visible:					respiroDataMeas.rowCount > 0
+		}
 	}
 
 	SplitView
@@ -42,7 +56,7 @@ SplitView
 
 			SplitView.minimumHeight:	model.rowCount > 0 ? 200 : 0
 			SplitView.preferredHeight:	parent.height * 0.333333
-			visible:					respiroMsgs.rowCount > 0
+			//visible:					respiroMsgs.rowCount > 0
 		}
 	}
 }

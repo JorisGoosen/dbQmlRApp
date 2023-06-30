@@ -60,7 +60,7 @@ Item
 
 					CheckBox
 					{
-						text:				index
+						text:				index + 1
 						checked:			modelData
 						onCheckedChanged:	if(checked != modelData) respiro.setChannelInit(index, checked);
 					}

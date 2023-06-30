@@ -12,14 +12,24 @@ Respiro::Respiro()
 	//Create table, with columnsdefs:
 	typedef ColumnDefinition	CD;
 
-	_dataDefs = {
+	_dataMeasuredDefs = {
+		new CD("Channel",			"channel",	ColumnType::NumInt),
 		new CD("O<sub>2</sub>",		"o2",		ColumnType::NumInt),
 		new CD("CH<sub>4</sub>",	"ch4",		ColumnType::NumInt),
 		new CD("CO<sub>2</sub>",	"co2",		ColumnType::NumInt),
 		new CD("Pressure",			"pressure",	ColumnType::NumInt),
 		new CD("Temp. 1",			"temp1",	ColumnType::NumDbl),
 		new CD("Temp. 2",			"temp2",	ColumnType::NumDbl),
+		new CD("Phase",				"phase",	ColumnType::NumInt),
 		new CD("Timestamp",			"utc",		ColumnType::DateTime)
+	};
+
+	_dataProcessedDefs = {
+		new CD("Channel",				"channel",	ColumnType::NumInt),
+		new CD("O<sub>2</sub> prod.",	"o2",		ColumnType::NumInt),
+		new CD("CH<sub>4</sub> prod.",	"ch4",		ColumnType::NumInt),
+		new CD("CO<sub>2</sub> prod.",	"co2",		ColumnType::NumInt),
+		new CD("Timestamp",				"utc",		ColumnType::DateTime)
 	};
 
 	_msgsDefs =
@@ -32,14 +42,14 @@ Respiro::Respiro()
 
 void Respiro::loadModels()
 {
-	_db		= new Database(dbPath().toStdString());
-	_labels	= new Labels(		_db, this);
-	_data	= new TableModel(	_db, "RespiroData",	_dataDefs);
-	_msgs	= new TableModel(	_db, "RespiroMsgs",	_msgsDefs);
+	_db			= new Database(dbPath().toStdString());
+	_labels		= new Labels(		_db,							this);
+	_dataMeas	= new TableModel(	_db, "RespiroDataMeasured",		_dataMeasuredDefs);
+	_dataProc	= new TableModel(	_db, "RespiroDataProcessed",	_dataProcessedDefs);
+	_msgs		= new TableModel(	_db, "RespiroMsgs",				_msgsDefs);
 
 	emit modelsLoaded();
 }
-
 
 void Respiro::startSession()
 {
@@ -301,9 +311,14 @@ void Respiro::setControlWanted(bool newControlWanted)
 	emit controlWantedChanged(_controlWanted);
 }
 
-void Respiro::push_raw_data(int o2, int ch4, int co2, int pressure, float temp1, float temp2)
+void Respiro::push_meas_data(int channel, int o2, int ch4, int co2, int pressure, float temp1, float temp2, int phase)
 {
-	data()->appendRows({{o2, ch4, co2, pressure, temp1, temp2, QDateTime::currentDateTimeUtc().toSecsSinceEpoch()}}, &_dataDefs);
+	dataMeas()->appendRows({{channel, o2, ch4, co2, pressure, temp1, temp2, phase, QDateTime::currentDateTimeUtc().toSecsSinceEpoch()}}, &_dataMeasuredDefs);
+}
+
+void Respiro::push_proc_data(int channel, int o2, int ch4, int co2)
+{
+	dataMeas()->appendRows({{channel, o2, ch4, co2, QDateTime::currentDateTimeUtc().toSecsSinceEpoch()}}, &_dataMeasuredDefs);
 }
 
 void Respiro::push_current_channel(int channel)
@@ -322,6 +337,25 @@ void Respiro::push_valve_state(int channel, bool valve_open)
 
 	if(changed)
 		emit valvesOpenedChanged();
+}
+
+void Respiro::push_vent_state(int vent, bool vent_open)
+{
+	switch(vent)
+	{
+	default:
+	case 0:
+		setVent0(vent_open);
+		break;
+
+	case 1:
+		setVent1(vent_open);
+		break;
+
+	case 2:
+		setVent2(vent_open);
+		break;
+	}
 }
 
 void Respiro::push_pump_state(bool pump_on)
@@ -380,6 +414,18 @@ void Respiro::push_loading_feedback(QString feedback, bool finished, QString err
 	emit feedbackChanged();
 	_hardResetFeedback = false;
 	emit feedbackChanged();
+
+	if(feedback == "Initialising respirometer")
+	{
+		bool allSucces = true;
+
+		for(Feedback * fb : _feedbacks)
+			if(!fb->finished || !fb->error.isEmpty())
+				allSucces = false;
+
+		if(allSucces)
+			emit respiroInited();
+	}
 }
 
 void Respiro::start()
@@ -417,11 +463,11 @@ QVariantList Respiro::channelInit() const
 
 QList<int> Respiro::initChannelsInts() const
 {
-	QList<int> l;
+	QList<int> l = {0};
 
 	for(int i=0; i<_channelInit.size(); i++)
 		if(_channelInit[i].toBool())
-			l.append(i);
+			l.append(i+1);
 
 	return l;
 }
@@ -507,4 +553,43 @@ void Respiro::setRuntimeSec(int newRuntimeSec)
 		return;
 	_runtimeSec = newRuntimeSec;
 	emit runtimeSecChanged();
+}
+
+bool Respiro::vent0() const
+{
+	return _vent0;
+}
+
+void Respiro::setVent0(bool newVent0)
+{
+	if (_vent0 == newVent0)
+		return;
+	_vent0 = newVent0;
+	emit vent2Changed();
+}
+
+bool Respiro::vent1() const
+{
+	return _vent1;
+}
+
+void Respiro::setVent1(bool newVent1)
+{
+	if (_vent1 == newVent1)
+		return;
+	_vent1 = newVent1;
+	emit vent1Changed();
+}
+
+bool Respiro::vent2() const
+{
+	return _vent2;
+}
+
+void Respiro::setVent2(bool newVent2)
+{
+	if (_vent2 == newVent2)
+		return;
+	_vent2 = newVent2;
+	emit vent2Changed();
 }

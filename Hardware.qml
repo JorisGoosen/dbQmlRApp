@@ -103,6 +103,55 @@ Item
 		}
 	}
 
+	ColumnLayout
+	{
+		id:		vents
+
+		anchors
+		{
+			verticalCenter:		backRec.verticalCenter
+			horizontalCenter:	backRec.right
+		}
+
+		HWFeedbackButton
+		{
+			id:				vent0Box
+
+			width:			gasFeedback.height
+			height:			width + 10
+			text:			"Vent Out"
+			value:			respiro.vent0 ? "Open" : "Closed"
+			checked:		respiro.vent0
+			onClicked:		(newChecked)=>{ respiro.vent0 = newChecked; }
+		}
+
+		HWFeedbackButton
+		{
+			id:				vent1Box
+
+			width:			gasFeedback.height
+			height:			width + 10
+			text:			"Vent In 1"
+			value:			respiro.vent1 ? "Open" : "Closed"
+			checked:		respiro.vent1
+			onClicked:		(newChecked)=>{ respiro.vent1 = newChecked; }
+		}
+
+		HWFeedbackButton
+		{
+			id:				vent2Box
+
+			width:			gasFeedback.height
+			height:			width + 10
+			text:			"Vent In 2"
+			value:			respiro.vent2 ? "Open" : "Closed"
+			checked:		respiro.vent2
+			onClicked:		(newChecked)=>{ respiro.vent2 = newChecked; }
+		}
+	}
+
+
+
 	//The actual channel buttons:
 	RowLayout
 	{

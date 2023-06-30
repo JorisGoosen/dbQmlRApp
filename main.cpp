@@ -43,9 +43,11 @@ int main(int argc, char *argv[])
 	rWrapper.moveToThread(&rThread);
 	rThread.start();
 
-	QObject::connect(&rWrapper,		&RWrapper::push_raw_data,			&respiro,	&Respiro::push_raw_data			);
+	QObject::connect(&rWrapper,		&RWrapper::push_meas_data,			&respiro,	&Respiro::push_meas_data		);
+	QObject::connect(&rWrapper,		&RWrapper::push_proc_data,			&respiro,	&Respiro::push_proc_data		);
 	QObject::connect(&rWrapper,		&RWrapper::push_current_channel,	&respiro,	&Respiro::push_current_channel	);
 	QObject::connect(&rWrapper,		&RWrapper::push_valve_state,		&respiro,	&Respiro::push_valve_state		);
+	QObject::connect(&rWrapper,		&RWrapper::push_vent_state,			&respiro,	&Respiro::push_vent_state		);
 	QObject::connect(&rWrapper,		&RWrapper::push_pump_state,			&respiro,	&Respiro::push_pump_state		);
 	QObject::connect(&rWrapper,		&RWrapper::push_o2_state,			&respiro,	&Respiro::push_o2_state			);
 	QObject::connect(&rWrapper,		&RWrapper::push_co2_state,			&respiro,	&Respiro::push_co2_state		);
@@ -61,7 +63,9 @@ int main(int argc, char *argv[])
 	QObject::connect(&respiro,		&Respiro::controlWantedChanged,		&rWrapper,	&RWrapper::setControlWanted		);
 	QObject::connect(&respiro,		&Respiro::startSignal,				&rWrapper,	&RWrapper::startRespiro			);
 
+
 	QObject::connect(&respiro,		&Respiro::modelsLoaded,				&mainModel,	&MainModel::modelsLoaded,		Qt::QueuedConnection);
+	QObject::connect(&respiro,		&Respiro::respiroInited,			&mainModel,	&MainModel::respiroInited,		Qt::QueuedConnection);
 
 	QObject::connect(&mainModel,	&MainModel::exitR,					&rWrapper,	&RWrapper::exitR,				Qt::DirectConnection);
 
@@ -91,7 +95,8 @@ int main(int argc, char *argv[])
 	{
 		mainEng.rootContext()->setContextProperty("database",			respiro.db());
 		mainEng.rootContext()->setContextProperty("labels",				respiro.labels());
-		mainEng.rootContext()->setContextProperty("respiroData",		respiro.data());
+		mainEng.rootContext()->setContextProperty("respiroDataMeas",	respiro.dataMeas());
+		mainEng.rootContext()->setContextProperty("respiroDataProc",	respiro.dataProc());
 		mainEng.rootContext()->setContextProperty("respiroMsgs",		respiro.msgs());
 
 		/*QFile	//rMain(		":/R/main.R"			),
@@ -102,7 +107,8 @@ int main(int argc, char *argv[])
 
 		rWrapper.runRCommand(rWriteImage.readAll());
 		*/
-		rWrapper.runRCommand(respiro.data()->dbplyrCode());
+		rWrapper.runRCommand(respiro.dataMeas()->dbplyrCode());
+		rWrapper.runRCommand(respiro.dataProc()->dbplyrCode(false));
 		rWrapper.runRCommand(respiro.msgs()->dbplyrCode(false));
 	};
 

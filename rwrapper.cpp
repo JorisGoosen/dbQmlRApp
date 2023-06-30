@@ -9,7 +9,8 @@ RWrapper::RWrapper(QObject *parent)
 	assert(!_singleton);
 	_singleton = this;
 
-	(*R)["respiroGui_push_raw_data"]				= Rcpp::InternalFunction(&respiroGui_push_raw_data);
+	(*R)["respiroGui_push_meas_data"]				= Rcpp::InternalFunction(&respiroGui_push_meas_data);
+	(*R)["respiroGui_push_proc_data"]				= Rcpp::InternalFunction(&respiroGui_push_proc_data);
 	(*R)["respiroGui_push_current_channel"]			= Rcpp::InternalFunction(&respiroGui_push_current_channel);
 	(*R)["respiroGui_push_valve_state"]				= Rcpp::InternalFunction(&respiroGui_push_valve_state);
 	(*R)["respiroGui_push_pump_state"]				= Rcpp::InternalFunction(&respiroGui_push_pump_state);
@@ -113,9 +114,15 @@ void RWrapper::setPlotHeight(int newPlotHeight)
 	emit plotHeightChanged(_plotHeight);
 }
 
-void respiroGui_push_raw_data(int o2, int ch4, int co2, int pressure, float temp1, float temp2)
+void respiroGui_push_meas_data(int channel, int o2, int ch4, int co2, int pressure, float temp1, float temp2, int phase)
 {
-	emit RWrapper::singleton()->push_raw_data(o2, ch4, co2, pressure, temp1, temp2);
+	emit RWrapper::singleton()->push_meas_data(channel, o2, ch4, co2, pressure, temp1, temp2, phase);
+}
+
+
+void respiroGui_push_proc_data(int channel, int o2, int ch4, int co2)
+{
+	emit RWrapper::singleton()->push_proc_data(channel, o2, ch4, co2);
 }
 
 void respiroGui_push_current_channel(	int			channel)

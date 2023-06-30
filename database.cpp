@@ -368,6 +368,8 @@ void Database::tableCreate(const QString & tableName, const ColumnDefinitions & 
 
 	QString query = "CREATE TABLE " + tableName + " (" + optionalIdFrag + " " + tableColumnQueryFrag(cols, true) + ");";
 
+	std::cout << "Creating table " << tableName.toStdString() << " as: '" << query.toStdString() << "'" << std::endl;
+
 	runStatements(query.toStdString());
 }
 

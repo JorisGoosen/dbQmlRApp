@@ -63,8 +63,8 @@ QString TableModel::dbplyrCode(bool doInit) const
 
 	code.append({
 							_tableName + "sql <- tbl(con, '"+_tableName+"');",
-							"'sql table is called: " + _tableName + "sql'",
-							_tableName + " <- " + _tableName + "sql %>% collect()"
+							"'sql table is called: " + _tableName + "sql'" /*,
+							_tableName + " <- " + _tableName + "sql %>% collect()"*/
 	});
 
 	return code.join("\n");

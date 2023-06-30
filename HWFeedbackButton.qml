@@ -40,5 +40,6 @@ Rectangle
 		color:				foregroundColor
 		text:				"<b>" + feedbackRoot.text + ":</b><br>" + feedbackRoot.value
 		anchors.centerIn:	parent
+		wrapMode:			Text.WrapAtWordBoundaryOrAnywhere
 	}
 }
