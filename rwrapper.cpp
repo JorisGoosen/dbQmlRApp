@@ -18,6 +18,7 @@ RWrapper::RWrapper(QObject *parent)
 	(*R)["respiroGui_push_ch4_state"]				= Rcpp::InternalFunction(&respiroGui_push_ch4_state);
 	(*R)["respiroGui_push_error"]					= Rcpp::InternalFunction(&respiroGui_push_error);
 	(*R)["respiroGui_push_warning"]					= Rcpp::InternalFunction(&respiroGui_push_warning);
+	(*R)["respiroGui_push_info"]					= Rcpp::InternalFunction(&respiroGui_push_info);
 	(*R)["respiroGui_poll_instant_pause"]			= Rcpp::InternalFunction(&respiroGui_poll_instant_pause);
 	(*R)["respiroGui_poll_delayed_pause"]			= Rcpp::InternalFunction(&respiroGui_poll_delayed_pause);
 	(*R)["respiroGui_poll_control_wanted"]			= Rcpp::InternalFunction(&respiroGui_poll_control_wanted);
@@ -156,7 +157,6 @@ void respiroGui_push_warning(			std::string	warning)
 {
 	emit RWrapper::singleton()->push_warning(QString::fromStdString(warning));
 }
-
 
 void respiroGui_push_info(std::string info)
 {
