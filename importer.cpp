@@ -201,7 +201,7 @@ bool Importer::importCsv(QTextStream & csvStream, QChar sepa)
 	//type en schoolType toevoegen als ze missen!
 	collectDbColumns();
 	processValues();
-	//graagNaarSchool moet ook gehndeld worden want die komt 2x voor in wide dataset
+	//graagNaarSchool moet ook gehandeld worden want die komt 2x voor in wide dataset
 
 	endResetModel();
 

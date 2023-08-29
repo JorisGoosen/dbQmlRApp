@@ -138,7 +138,7 @@ void SchoolScannerTable::initPlots()
 {
 	initRStuff();
 
-	_plotPie = new PlotRenderer(QFile(":/R/pie.R"),	"pie.png");
+	_plotPie = new PlotRenderer(QFile(":/R/plot.R"),	"plot.png");
 
 	QObject::connect(this, &SchoolScannerTable::plotWidthChanged,	_plotPie,	&PlotRenderer::setWidth);
 	QObject::connect(this, &SchoolScannerTable::plotHeightChanged,	_plotPie,	&PlotRenderer::setHeight);

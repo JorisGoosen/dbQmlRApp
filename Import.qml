@@ -20,6 +20,7 @@ ColumnLayout
 		Text
 		{
 			text:			"Voer in:"
+			font.family:	fontFamilie
 		}
 
 		TextField
@@ -27,6 +28,7 @@ ColumnLayout
 			id:					schoolType
 			placeholderText:	"VO, MBO of ?"
 			onTextChanged:		importer.schoolType = text
+			font.family:		fontFamilie
 		}
 
 		TextField
@@ -34,11 +36,13 @@ ColumnLayout
 			id:					respondentType
 			placeholderText:	"Docenten, Leerlingen of Studenten?"
 			onTextChanged:		importer.type = text
+			font.family:		fontFamilie
 		}
 
 		Text
 		{
-			text:	"<i>nb. dit wordt enkel gebruikt als de ingelezen data niet vermeld om welke type school of respondent het gaat</i>"
+			font.family:	fontFamilie
+			text:			"<i>nb. dit wordt enkel gebruikt als de ingelezen data niet vermeld om welke type school of respondent het gaat</i>"
 		}
 	}
 

@@ -28,7 +28,7 @@ add_definitions(-DRCPP_NO_SUGAR)
 include_directories(${QT_INCLUDE_DIR})
 link_directories(${QT_LIBRARY_DIR})
 
-find_package(SQLite3 3.41.2 REQUIRED)
+find_package(SQLite3 3.39.5 REQUIRED)
 
 
 message(STATUS "Collecting R info")
@@ -158,6 +158,7 @@ qt_add_resources(qmlR "R"
 	   R/main.R
 	   R/pie.R
 	   R/lines.R
+	   R/plot.R
 )
 
 

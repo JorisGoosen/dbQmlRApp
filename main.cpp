@@ -70,20 +70,40 @@ int main(int argc, char *argv[])
 
 	mainEng.rootContext()->setContextProperty("plotPie",				nullptr);
 
+	//Kleuren van CM
+	// #EF2560  239-37-96			/rozige
+	// #9CCDD1	156 205 209			/lichtblauwig
+	// #038794	3 135 148			/blauwig
+	// #1D1D1B  29 29 27			/zwartig
+	// #BCE2D7  188 226 215			/lichtgroen
+	// #5FA48F	95 164 143			/donkergroen
+	// #FFF798	255 247 152			/lichtgeel
 
-	mainEng.rootContext()->setContextProperty("backgroundColor",			"#BCE2D7");
-	mainEng.rootContext()->setContextProperty("foregroundColor",			"white");
-	mainEng.rootContext()->setContextProperty("windowBackgroundColor",		"grey");
+	QMap<QString, QString> kleurenCM =
+	{
+		{	"rozig",		"#EF2560"	},
+		{	"lichtblauwig",	"#9CCDD1"	},
+		{	"blauwig",		"#038794"	},
+		{	"zwartig",		"#1D1D1B"	},
+		{	"lichtgroen",	"#BCE2D7"	},
+		{	"donkergroen",	"#5FA48F"	},
+		{	"lichtgeel",	"#FFF798"	}
+	};
 
-	mainEng.rootContext()->setContextProperty("controlBackgroundDisabled",	"black");
-	mainEng.rootContext()->setContextProperty("controlBackgroundNeutral",	"#FFF798");
-	mainEng.rootContext()->setContextProperty("controlBackgroundFocus",		"white");
-	mainEng.rootContext()->setContextProperty("controlBackgroundPressed",	"#DFD778");
+	mainEng.rootContext()->setContextProperty("fontFamilie",				"karla");
+	mainEng.rootContext()->setContextProperty("backgroundColor",			kleurenCM["lichtblauwig"]);
+	mainEng.rootContext()->setContextProperty("windowBackgroundColor",		kleurenCM["blauwig"]);
+	mainEng.rootContext()->setContextProperty("foregroundColor",			kleurenCM["rozig"]);
 
-	mainEng.rootContext()->setContextProperty("controlForegroundDisabled",	"pink");
-	mainEng.rootContext()->setContextProperty("controlForegroundNeutral",	"black");
-	mainEng.rootContext()->setContextProperty("controlForegroundFocus",		"black");
-	mainEng.rootContext()->setContextProperty("controlForegroundPressed",	"#111");
+	mainEng.rootContext()->setContextProperty("controlBackgroundDisabled",	kleurenCM["lichtblauwig"]);
+	mainEng.rootContext()->setContextProperty("controlBackgroundNeutral",	kleurenCM["blauwig"]);
+	mainEng.rootContext()->setContextProperty("controlBackgroundFocus",		kleurenCM["lichtgroen"]);
+	mainEng.rootContext()->setContextProperty("controlBackgroundPressed",	kleurenCM["donkergroen"]);
+
+	mainEng.rootContext()->setContextProperty("controlForegroundDisabled",	kleurenCM["zwartig"]);
+	mainEng.rootContext()->setContextProperty("controlForegroundNeutral",	kleurenCM["lichtgeel"]);
+	mainEng.rootContext()->setContextProperty("controlForegroundFocus",		kleurenCM["rozig"]);
+	mainEng.rootContext()->setContextProperty("controlForegroundPressed",	kleurenCM["rozig"]);
 
 	mainEng.rootContext()->setContextProperty("generalMargin",		20);
 

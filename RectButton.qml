@@ -22,6 +22,7 @@ Rectangle
 		id:					buttonText
 		color:				buttonRoot.border.color
 		anchors.centerIn:	parent
+		font.family:		fontFamilie
 	}
 
 	ToolTip.text:		toolTip

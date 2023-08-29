@@ -6,15 +6,16 @@ SplitView
 {
 	id:				splitView
 	orientation:	Qt.Vertical
+	visible:		schoolScannerTable
 
 	property var fillThisOne:	schoolScannerTable.school
 
-	FilterList	{ model:	schoolScannerTable.school	}
-	FilterList	{ model:	schoolScannerTable.locatie 	}
-	FilterList	{ model:	schoolScannerTable.sector 	}
-	FilterList	{ model:	schoolScannerTable.niveau 	}
-	FilterList	{ model:	schoolScannerTable.leerjaar }
-	FilterList	{ model:	schoolScannerTable.klas 	}
-	FilterList	{ model:	schoolScannerTable.gender 	}
-	FilterList	{ model:	schoolScannerTable.cultuur 	}
+	FilterList	{ model:	!schoolScannerTable ? null : schoolScannerTable.school		}
+	FilterList	{ model:	!schoolScannerTable ? null : schoolScannerTable.locatie 	}
+	FilterList	{ model:	!schoolScannerTable ? null : schoolScannerTable.sector	 	}
+	FilterList	{ model:	!schoolScannerTable ? null : schoolScannerTable.niveau	 	}
+	FilterList	{ model:	!schoolScannerTable ? null : schoolScannerTable.leerjaar	}
+	FilterList	{ model:	!schoolScannerTable ? null : schoolScannerTable.klas		}
+	FilterList	{ model:	!schoolScannerTable ? null : schoolScannerTable.gender		}
+	FilterList	{ model:	!schoolScannerTable ? null : schoolScannerTable.cultuur 	}
 }

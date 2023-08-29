@@ -5,4 +5,4 @@ pie		<- plotPieChart(data, g)
 
 writeImage(plot=pie, plotFolder=PLOTFOLDER,	plotFile=PLOTFILE,	width=WIDTH, height=HEIGHT)
 
-print(SchoolScannerTextOnly)
+#print(SchoolScannerTextOnly)

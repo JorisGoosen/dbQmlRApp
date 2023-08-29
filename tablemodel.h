@@ -31,12 +31,13 @@ public:
 	void		registerFilter(FilterListModel * lm);
 
 protected:
-	QString				tableValueVarToString(QVariant val, ColumnType type) const;
+	QString				tableValueVarToString(QVariant val, ColumnType type, bool addValue = false) const;
 	QString				_tableName;
 	ColumnDefinitions	_columnDefinitions;
 
 private:
 	Database			*   _db;
+	int					_rowCount = -1;
 
 	std::map<QString, FilterListModel *>	_filters;
 };

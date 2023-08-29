@@ -12,6 +12,7 @@ Item
 	Text
 	{
 		id:						metricFontSetter
+		font.family:			fontFamilie
 		visible:				false
 		Component.onCompleted:	importer.metricFont = metricFontSetter.font
 	}
@@ -41,6 +42,7 @@ Item
 			{
 				id:						colText
 				text:					display;
+				font.family:			fontFamilie
 				//anchors.fill:			parent
 				color:					controlForegroundNeutral
 				wrapMode:				Text.WrapAtWordBoundaryOrAnywhere
@@ -82,7 +84,7 @@ Item
 			{
 				id:						rowText
 				text:					display;
-				//anchors.fill:			parent
+				font.family:			fontFamilie
 				color:					controlForegroundNeutral
 				wrapMode:				Text.WrapAtWordBoundaryOrAnywhere
 				horizontalAlignment:	Text.AlignHCenter
@@ -134,6 +136,7 @@ Item
 				{
 					id:						itemText
 					text:					display;
+					font.family:			fontFamilie
 					anchors.fill:			parent
 					color:					controlForegroundNeutral
 					wrapMode:				Text.WrapAtWordBoundaryOrAnywhere

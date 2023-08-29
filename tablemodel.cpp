@@ -10,7 +10,7 @@ TableModel::TableModel(Database * db, const QString & tableName, const ColumnDef
 
 int TableModel::rowCount(const QModelIndex &) const
 {
-	return _db->tableRowCount(_tableName);
+	return _rowCount;
 }
 
 int TableModel::columnCount(const QModelIndex &) const
@@ -34,7 +34,7 @@ QVariant TableModel::data(const QModelIndex & index, int role) const
 	return tableValueVarToString(_db->tableValue(_tableName, cd, index.row()), cd->columnType());
 }
 
-QString TableModel::tableValueVarToString(QVariant tableVal, ColumnType type) const
+QString TableModel::tableValueVarToString(QVariant tableVal, ColumnType type, bool addValue) const
 {
 	Labels * _labels = Labels::singleton();
 
@@ -43,7 +43,7 @@ QString TableModel::tableValueVarToString(QVariant tableVal, ColumnType type) co
 	else if(type == ColumnType::Label)
 	{
 		int value = _labels->value(tableVal.toInt());
-		return _labels->label(tableVal.toInt()) + (value != -1 ? " " + QString::number(value) : "");
+		return _labels->label(tableVal.toInt()) + (addValue && value != -1 ? " " + QString::number(value) : "");
 	}
 	else if(type == ColumnType::Labels)
 	{
@@ -73,6 +73,8 @@ void TableModel::appendRows(const std::vector<QVariantList> & values, const Colu
 	beginInsertRows(QModelIndex(), rowC, rowC + values.size());
 	_db->tableWriteRows(_tableName, columnDefinitions ? *columnDefinitions : _columnDefinitions, values);
 	endInsertRows();
+
+	_rowCount = _db->tableRowCount(_tableName);
 }
 
 void TableModel::clear()
@@ -81,6 +83,8 @@ void TableModel::clear()
 	_db->tableDrop(_tableName);
 	_db->tableCreate(_tableName, _columnDefinitions);
 	endResetModel();
+
+	_rowCount = _db->tableRowCount(_tableName);
 }
 
 QStringList TableModel::allLabels(const QString & colName)

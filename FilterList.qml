@@ -22,6 +22,7 @@ Item
 	{
 		id:						titleText
 		color:					controlForegroundNeutral
+		font.family:			fontFamilie
 		wrapMode:				Text.WrapAtWordBoundaryOrAnywhere
 		horizontalAlignment:	Text.AlignHCenter
 		verticalAlignment:		Text.AlignVCenter

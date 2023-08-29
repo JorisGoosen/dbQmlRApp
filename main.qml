@@ -50,6 +50,7 @@ Window
 				{
 					color:						tabButton.selected ? controlForegroundFocus : controlForegroundNeutral
 					text:						"<b>" + tabButton.text + "</b>"
+					font.family:				fontFamilie
 					anchors.fill:				parent
 					horizontalAlignment:		Text.AlignHCenter
 					verticalAlignment:			Text.AlignVCenter
@@ -105,6 +106,7 @@ Window
 			//font:			jaspTheme.font
 			wrapMode:		Text.WrapAtWordBoundaryOrAnywhere
 			text:			ToolTip.toolTip.text
+			font.family:	fontFamilie
 		}
 		ToolTip.toolTip.z:						1234
 	}
