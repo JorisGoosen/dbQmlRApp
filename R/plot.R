@@ -1,3 +1,18 @@
+kleuren <- list(
+  lichtrozig=		"#f6b6cc"	,
+  rozig=			"#EF2560"	,
+  lichtblauwig=		"#9CCDD1"	,
+  blauwig=			"#038794"	,
+  zwartig=			"#1D1D1B"	,
+  lichtgroen=		"#BCE2D7"	,
+  donkergroen=		"#5FA48F"	,
+  lichtgeel=		"#FFF798"
+)
+themaPalet <- c(kleuren$rozig, kleuren$lichtgroen, kleuren$lichtrozig, kleuren$donkergroen)
+
+scale_fill_manual(values=themaPalet)
+scale_colour_manual(values=themaPalet)
+
 
 #welkPlot <- "horizontaalPerLabel"
 welkPlot <- "horizontaalMeerdere"
@@ -30,12 +45,19 @@ horizontaalMeerdere=
 
     df <- df %>% rowwise() %>% select(Var1, Freq, Kolom) %>% mutate(`Procent`=100.0 * Freq / length(SchoolScannerTextOnly$graagNaarSchool), `Hoe vaak`=Var1)
 
+    df <- filter(df, `Hoe vaak` != "")
 
-    #levels moeten gesorteerd enzo
-	ggplot(df, aes(x=Kolom, y=`Procent`, fill=`Hoe vaak`)) + geom_bar(position="fill", stat="identity") + coord_flip()
+    df$`Hoe vaak` <- factor(as.character(df$`Hoe vaak`), rev(c("Nooit", "Soms", "Vaak", "Altijd")))
+
+    df <- arrange(df, desc(`Hoe vaak`))
+
+    ggplot(df, aes(x=Kolom, y=`Procent`, fill=`Hoe vaak`)) +
+	  geom_bar( stat="identity", na.rm=TRUE, position = position_stack(reverse = TRUE)) +
+	  coord_flip()
 }
 )
 
+plot <- plot + scale_fill_manual("Legenda", values=c(Altijd=kleuren$rozig, Vaak=kleuren$lichtblauwig, Soms=kleuren$lichtrozig, Nooit=kleuren$blauwig)) + theme_classic()
 
 writeImage(plot=plot, plotFolder=PLOTFOLDER,	plotFile=PLOTFILE,	width=WIDTH, height=HEIGHT)
 
