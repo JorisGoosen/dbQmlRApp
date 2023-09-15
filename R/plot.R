@@ -130,7 +130,87 @@ plot <- switch(WELKPLOT,
 										 Surinaams   = kleuren$lichtgeel,
 										 Turks       = kleuren$donkergroen))
 
-                 }
+                 },
+				 horizontaalLabelPerTypeRespondent=
+				 {
+				 welkeKolommen <- 'ikMijn'
+
+                 kolommen <- switch(welkeKolommen,
+				                       klas        = c("klasJezelf", "klasSfeerGoed", "klasSchoolGemopper", "klasOpschietenMet", "klasGoedSamenWerken", "klasAfkomstKlit", "klasOnaardigGepraat", "klasVeelRuzie", "klasKunJeZeggenVervelend", "klasDurfUitDeKast", "klasKwetstMetMijnIdentiteit", "klasWeetHoeHetMetMijGaat", "klasVoeltOnveilig"),
+									   studenten   = c("studentenBuitenGesloten", "studentenUitgescholden", "studentenExpresLesVerstoren", "studentenSpullenSlopenJatten", "studentenGepest", "studentenDigitaalGepest", "studentenGediscrimineerdDoorLeerlingen", "studentenGediscrimineerdDoorLeraren", "studentenBedreigdGeintimideerd", "studentenGeduwdGeschoptGeslagen", "studentenVechten", "studentenSeksueelGetinteOpmerkingenMaken", "studentenSeksueleAfbeeldingenVerspreiden", "studentenOnveiligVoelenInKlas"),
+									   ikMijn      = c("ikBuitengesloten", "ikUitgescholden", "ikExpresGestoord", "ikGepest", "ikDigitaalGepest", "ikGediscrimineerdDoorLeerlingen", "ikGediscrimineerdDoorLeraren", "ikBedreigdGeintimideerd", "ikGeduwdGeschoptGeslagen", "ikUitgedaagdOmTeVechten", "ikAangesprokenMetSeksueelGetinteOpmerkingen", "ikAangesprokenOpVervelendGedrag", "mijnSpullenGeslooptGejat", "mijnPriveFotosVerspreid"),
+									   school      = c("schoolVoeltOnveilig", "schoolJezelfZijn", "schoolSfeerIsGoed", "schoolRaadIkAan", "schoolStudentenGediscrimineerd", "schoolDiversVoeltThuis", "schoolGoedOpschietenElkaar", "schoolLiefstMetGelijkeAfkomstOm", "schoolAnderenVoorgetrokkenAfkomstCultuurGeloof", "schoolActueleGebeurtenissenMijAangaanBehandeldOpSchool", "schoolStudentenZittenOngewildAlleen"),
+									   WerkSchool  = c("werkenSchoolDuidelijkeRegelsOmgang", "werkenSchoolRegelsIedereenGelijk", "werkenSchoolStudentenDieRegelsBrekenAangesproken", "werkenSchoolDocentenDieRegelsBrekenAangesproken", "werkenSchoolRegelsIedereDocentGelijk", "werkenSchoolOmbudBekend", "werkenSchoolMeningStudentenTelt", "werkenSchoolStudentenHebbenRespectVoorDocenten", "werkenSchoolDocentenHebbenRespectVoorStudenten", "werkenSchoolDocentenGevenGoedeVoorbeeld"),
+									   vervelend   = c("vervelendDanGaIkHelpen", "vervelendDanKijkIkWeg", "vervelendDanLoopIkWeg", "vervelendDanDoeIkMee", "vervelendDanZegIkErWatVan", "vervelendDanWaarschuwIkSchoolMedewerker", "vervelendDanLaatIkMedelevenWeten", "vervelendDanZieIkDatAndereStudentIngrijpt", "vervelendDanZieIkDatDocentIngrijpt", "vervelendDanZieIkDatAfdelingsleiderIngrijpt","alsIkVervelendeSituatieZieDanVindIkDatIkWatMoetDoen", "alsIkVervelendeSituatieZieDanWeetIkWatIkKanDoen"),
+									   buitensluit = c("alsEenStudentWordtBuitengeslotenDanIsDatEigenKeuze", "alsEenStudentWordtBuitengeslotenDanIsDatEigenSchuld", "voelMeVerantwoordelijkOmBuitensluitenTegenTeGaan", "voelMeVerantwoordelijkOmInTeGrijpenAlsIemandWordtGediscrimineerd", "voelMeVerantwoordelijkOmInTeGrijpenAlsIemandWordtGepest", "ikStuurWelEensPrivefotosAnderenDoor"),
+									   mentor      = c("mentorIkHebGoedContact", "docentIkHebGoedContact", "docentenKunnenGoedOrdeHouden", "docentenGevenMijComplimenten", "docentenHebbenLageVerwachtingVanMij", "docentenLettenOpTaalgebruikStudenten", "docentenlettenOpEigenTaalgebruik", "docentenBelonenPositiefGedrag", "docentenGrijpenInWanneerDatNodigIs", "mentorenWetenWatErInDeKlasSpeelt", "mentorenBespreektWatErInDeKlasSpeelt", "actueleGebeurtenissenSamenlevingWordenInKlasBesproken"))
+
+                 TITEL <- switch(welkeKolommen,
+				                 klas.       = "In de klas...",
+								 studenten   = "Bij mij in de klas/op school zie ik dat andere studenten...",
+								 ikMijn      = "In de klas/op school word ik/worden mijn... ",
+								 school.     = "Op school...",
+								 vervelend   = "Als iemand vervelend doet tegen een klasgenoot dan...",
+								 buitensluit = "Bij buitensluiting...",
+								 mentor      = "Docenten & mentoren")
+
+                 allesPerType <- SchoolScannerTextOnly[c("type", kolommen)]
+
+
+                 renamer <- switch(welkeKolommen,
+				                   klas        = c(`kun je jezelf zijn`='klasJezelf',  `is de sfeer goed`='klasSfeerGoed',  `wordt gemopperd over school`='klasSchoolGemopper',  `kan ik goed opschieten met klasgenoten`='klasOpschietenMet',  `kunnen we goed samenwerken`='klasGoedSamenWerken',  `ga ik het liefst om met degene met dezelfde afkomst`='klasAfkomstKlit',  `hoor ik onaardig gepraat over elkaar`='klasOnaardigGepraat',  `is veel ruzie`='klasVeelRuzie',  `kun je er wat van zeggen als iemand vervelend tegen je doet`='klasKunJeZeggenVervelend',  `zou ik uit de kast durven komen`='klasDurfUitDeKast',  `worden kwetsende opmerkingen gemaakt over mijn identiteit`='klasKwetstMetMijnIdentiteit',  `weet men hoe het met mij gaat`='klasWeetHoeHetMetMijGaat',  `voelt het onveilig`='klasVoeltOnveilig'),
+								   studenten   = c(`worden buitengesloten`='studentenBuitenGesloten',  `worden uitgescholden`='studentenUitgescholden',  `met opzet de les verstoren`='studentenExpresLesVerstoren',  `spullen slopen of jatten`='studentenSpullenSlopenJatten',  `worden gepest`='studentenGepest',  `digitaal worden gepest`='studentenDigitaalGepest',  `worden gediscrimineerd door leerlingen`='studentenGediscrimineerdDoorLeerlingen',  `worden gediscrimineerd door leraren`='studentenGediscrimineerdDoorLeraren',  `worden bedreigd of geintimideerd`='studentenBedreigdGeintimideerd',  `worden geschopt of geslagen`='studentenGeduwdGeschoptGeslagen',  `vechten`='studentenVechten',  `seksueel getinte opmerkingen maken`='studentenSeksueelGetinteOpmerkingenMaken',  `seksuele afbeeldingen verspreiden`='studentenSeksueleAfbeeldingenVerspreiden',  `onveilig voelen in de klas`='studentenOnveiligVoelenInKlas'),
+								   ikMijn      = c(`buitengesloten`='ikBuitengesloten',  `uitgescholden`='ikUitgescholden',  `met opzet gestoord`='ikExpresGestoord',  `gepest`='ikGepest',  `digitaal gepest`='ikDigitaalGepest',  `gediscrimineerd door leerlingen`='ikGediscrimineerdDoorLeerlingen',  `gediscrimineerd door leraren`='ikGediscrimineerdDoorLeraren',  `bedreigd of geintimideerd`='ikBedreigdGeintimideerd',  `geduwd, geschopt of geslagen`='ikGeduwdGeschoptGeslagen',  `uitgedaagd om te vechten`='ikUitgedaagdOmTeVechten',  `aangesproken met seksueel getinte opmerkingen`='ikAangesprokenMetSeksueelGetinteOpmerkingen',  `aangesproken op vervelend gedrag`='ikAangesprokenOpVervelendGedrag',  `spullen gesloopt of gejat`='mijnSpullenGeslooptGejat',  `prive fotos verspreid`='mijnPriveFotosVerspreid'),
+								   school      = c(`voelt het onveilig`='schoolVoeltOnveilig',  `kun je jezelf zijn`='schoolJezelfZijn',  `is de sfeer goed`='schoolSfeerIsGoed',  `zou ik aanraden`='schoolRaadIkAan',  `leerlingen gediscrimineerd`='schoolStudentenGediscrimineerd',  `voelen mensen van verschillende afkomsten zich thuis`='schoolDiversVoeltThuis',  `kunnen leerlingen goed opschieten met elkaar`='schoolGoedOpschietenElkaar',  `gaan leerlingen het liefst om met anderen van dezelfde afkomst`='schoolLiefstMetGelijkeAfkomstOm',  `worden anderen voorgetrokken op basis afkomst, cultuur of geloof`='schoolAnderenVoorgetrokkenAfkomstCultuurGeloof',  `komen actuele gebeurtenissen die mij aangaan aan bod`='schoolActueleGebeurtenissenMijAangaanBehandeldOpSchool',  `zitten leerlingen ongewild alleen`='schoolStudentenZittenOngewildAlleen'),
+								   vervelend   = c(`ga ik helpen`='vervelendDanGaIkHelpen',  `kijk ik weg`='vervelendDanKijkIkWeg',  `loop ik weg`='vervelendDanLoopIkWeg',  `doe ik mee`='vervelendDanDoeIkMee',  `zeg ik er wat van`='vervelendDanZegIkErWatVan',  `waarschuw ik een schoolmedewerker`='vervelendDanWaarschuwIkSchoolMedewerker',  `laat ik medeleven weten`='vervelendDanLaatIkMedelevenWeten',  `zie ik dat andere leerling ingrijpt`='vervelendDanZieIkDatAndereStudentIngrijpt',  `zie ik dat docent ingrijpt`='vervelendDanZieIkDatDocentIngrijpt',  `zie ik dat afdelingsleider ingrijpt`='vervelendDanZieIkDatAfdelingsleiderIngrijpt', `vind ik dat ik wat moet doen`='alsIkVervelendeSituatieZieDanVindIkDatIkWatMoetDoen',  `weet ik wat ik moet doen`='alsIkVervelendeSituatieZieDanWeetIkWatIkKanDoen'),
+								   buitensluit = c(`is dat de eigen keuze`='alsEenStudentWordtBuitengeslotenDanIsDatEigenKeuze',  `is dat de eigen schuld`='alsEenStudentWordtBuitengeslotenDanIsDatEigenSchuld',  `voel ik me verantwoordelijk dat tegen te gaan`='voelMeVerantwoordelijkOmBuitensluitenTegenTeGaan',  `door discriminatie voel ik me verantwoordelijk om in te grijpen`='voelMeVerantwoordelijkOmInTeGrijpenAlsIemandWordtGediscrimineerd',  `door pesten voel ik me verantwoordelijk om in te grijpen`='voelMeVerantwoordelijkOmInTeGrijpenAlsIemandWordtGepest',  `.. stuur ik wel eens prive fotos van anderen door`='ikStuurWelEensPrivefotosAnderenDoor'),
+								   mentor      = c(`Ik heb goed contact met mijn mentor`='mentorIkHebGoedContact',  `Ik heb goed contact met mijn docent`='docentIkHebGoedContact',  `Docenten kunnen goed orde houden`='docentenKunnenGoedOrdeHouden',  `Docenten geven mij complimenten`='docentenGevenMijComplimenten',  `Docenten hebben lage verwachting van mij`='docentenHebbenLageVerwachtingVanMij',  `Docenten letten op taalgebruik van de leerlingen`='docentenLettenOpTaalgebruikStudenten',  `Docenten letten op eigen taalgebruik`='docentenlettenOpEigenTaalgebruik',  `Docenten belonen positief gedrag`='docentenBelonenPositiefGedrag',  `Docenten grijpen in wanneer dat nodig is`='docentenGrijpenInWanneerDatNodigIs',  `Mentoren weten wat er in de klas speelt`='mentorenWetenWatErInDeKlasSpeelt',  `Mentoren bespreekt wat er in de klas speelt`='mentorenBespreektWatErInDeKlasSpeelt',  `Actuele gebeurtenissen samenleving worden in klas besproken`='actueleGebeurtenissenSamenlevingWordenInKlasBesproken')
+				 )
+
+                 tafelTotaal      <- table(allesPerType$type)
+
+                 allesPerType <- allesPerType %>% mutate_at(kolommen, funs(sapply(., function(x) {switch(x, FALSE, Dagelijks=TRUE, Wekelijks=TRUE, Altijd=TRUE, Vaak=TRUE)})))
+
+                 allesPerType <- rename(allesPerType, all_of(renamer))
+
+                 allesPerType <- allesPerType %>% pivot_longer(!type)
+				 allesPerType <- filter(allesPerType, value)
+
+
+                 tafelPerType  <- table(allesPerType)
+
+                 dfPer		    <- as.data.frame(tafelPerType)
+
+
+                 #dfPer$onveiligHier <- factor(as.character(dfPer$onveiligHier), rev(c("Nooit", "Soms", "Vaak", "Altijd")))
+				 dfPer           <- dfPer %>% rowwise() %>% select(type, name, Freq) %>%
+				   mutate(Freq = Freq / tafelTotaal[[type]], type=type, totaalType = tafelTotaal[[type]])
+				 dfPer <- filter(dfPer, type != "")
+
+
+
+                # dfPer <- arrange(dfPer, desc(name))
+
+                 ggplot(dfPer, aes(x=name, y=Freq, fill=type)) +
+				   geom_bar(position=position_dodge2(reverse=TRUE),stat="identity", width=1) +
+
+                   geom_text(size=3,aes(group=type, label = paste0(round(Freq * 100), "%")), hjust=-0.1, vjust=0.4, position = position_dodge2(reverse=TRUE, width=1)) +
+				   geom_text(size=3,aes(group=type, label =
+				                          ifelse(Freq > 0.01,
+										         paste0("N: ", totaalType),
+												 "")),
+												hjust=-0.1, vjust=0.4, y=0.0, position = position_dodge2(reverse=TRUE, width=1)) +
+
+                   coord_flip() +
+				   scale_y_continuous(labels = scales::percent) + xlab("") + ylab("") + theme(aspect.ratio=2.0) +
+				   scale_x_discrete(labels = function(x) str_wrap(x, width = 20)) +
+
+                   scale_fill_manual("",
+				                     values=c(
+									   Leerlingen  = kleuren$rozig,
+									   Docenten     = kleuren$lichtblauwig,
+									   Studenten   = kleuren$lichtrozig))
+}
 )
 
 plot <- plot +

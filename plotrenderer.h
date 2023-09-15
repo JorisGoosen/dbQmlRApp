@@ -7,7 +7,7 @@
 #include <QDir>
 #include <QTimer>
 
-DECLARE_ENUM(PlotType, horizontaalPerLabel, horizontaalMeerdere, horizontaalLabelsGroepen)
+DECLARE_ENUM(PlotType, horizontaalPerLabel, horizontaalMeerdere, horizontaalLabelsGroepen, horizontaalLabelPerTypeRespondent)
 
 class PlotRenderer : public QObject
 {
@@ -80,7 +80,7 @@ private:
 							_revision	= 0;
 				QDir		_plotFolder = QDir("~");
 				QTimer		_timer;
-				PlotType	_welkPlot	= PlotType::horizontaalLabelsGroepen;
+				PlotType	_welkPlot	= PlotType::horizontaalLabelPerTypeRespondent;
 };
 
 #endif // PLOTRENDERER_H
