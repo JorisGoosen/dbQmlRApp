@@ -1,10 +1,13 @@
 #ifndef PLOTRENDERER_H
 #define PLOTRENDERER_H
 
+#include "enumutilities.h"
 #include <QObject>
 #include <QFile>
 #include <QDir>
 #include <QTimer>
+
+DECLARE_ENUM(PlotType, horizontaalPerLabel, horizontaalMeerdere, horizontaalLabelsGroepen)
 
 class PlotRenderer : public QObject
 {
@@ -15,7 +18,10 @@ class PlotRenderer : public QObject
 	Q_PROPERTY(int		revision	READ revision						NOTIFY revisionChanged	)
 	Q_PROPERTY(QDir		plotFolder	READ plotFolder	WRITE setPlotFolder	NOTIFY plotFolderChanged)
 	Q_PROPERTY(QString	fileName	READ fileName	WRITE setFileName	NOTIFY fileNameChanged	)
-	Q_PROPERTY(QString	plotUrl		READ plotUrl						NOTIFY plotUrlChanged)
+	Q_PROPERTY(QString	plotUrl		READ plotUrl						NOTIFY plotUrlChanged	)
+	Q_PROPERTY(PlotType welkPlot	READ welkPlot	WRITE setWelkPlot	NOTIFY welkPlotChanged	)
+	Q_PROPERTY(QString	title		READ title		WRITE setTitle		NOTIFY titleChanged		)
+
 
 public:
 	explicit				PlotRenderer(QFile		rFile, QString fileName="plot.png", QDir outputFolder = QDir(), QObject *parent = nullptr);
@@ -38,7 +44,13 @@ public:
 				void		incRevision();
 
 
-public slots:
+				PlotType welkPlot() const;
+				void setWelkPlot(const PlotType & newWelkPlot);
+
+				QString title() const;
+				void setTitle(const QString & newTitle);
+
+				public slots:
 				void		runRCode();
 				void		runRCodeDelayed();
 
@@ -52,17 +64,23 @@ signals:
 				void		fileNameChanged();
 				void		plotUrlChanged();
 
-private:
+				void welkPlotChanged();
+
+				void titleChanged();
+
+				private:
 				void		init();
 
 private:
 				QString		_rCode,
-							_fileName;
+							_fileName,
+							_title;
 				int			_width		= 200,
 							_height		= 200,
 							_revision	= 0;
 				QDir		_plotFolder = QDir("~");
 				QTimer		_timer;
+				PlotType	_welkPlot	= PlotType::horizontaalLabelsGroepen;
 };
 
 #endif // PLOTRENDERER_H

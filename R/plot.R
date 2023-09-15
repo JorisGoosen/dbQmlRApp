@@ -1,3 +1,7 @@
+library(tidyr)
+library(ggplot2)
+library(stringr)
+
 kleuren <- list(
   lichtrozig=		"#f6b6cc"	,
   rozig=			"#EF2560"	,
@@ -8,57 +12,134 @@ kleuren <- list(
   donkergroen=		"#5FA48F"	,
   lichtgeel=		"#FFF798"
 )
-themaPalet <- c(kleuren$rozig, kleuren$lichtgroen, kleuren$lichtrozig, kleuren$donkergroen)
 
-scale_fill_manual(values=themaPalet)
-scale_colour_manual(values=themaPalet)
+library(showtext)
+font_add_google("Karla", "karla")
+
+## Automatically use showtext to render text
+showtext_auto()
+
+plot <- switch(WELKPLOT,
+
+               horizontaalPerLabel =
+			     {
+				   tafelPerGender  <- table(SchoolScannerTextOnly[c('graagNaarSchool', 'gender')])
+				   dfPer		    <- as.data.frame(tafelPerGender)
+
+                   hoeVaaks        <- levels(as.factor(SchoolScannerTextOnly$graagNaarSchool))
+				   genders         <- levels(as.factor(SchoolScannerTextOnly$gender))
+				   dfGender	    <- table(SchoolScannerTextOnly$gender)
+
+                   dfPer$graagNaarSchool	<- factor(as.character(dfPer$graagNaarSchool), rev(c("Nooit", "Soms", "Vaak", "Altijd")))
+				   dfPer					<- dfPer %>% rowwise() %>% select(gender, graagNaarSchool, Freq) %>%  mutate(`Hoe vaak` = Freq / dfGender[[gender]], Gender=gender, `Graag naar school`=graagNaarSchool)
+				   dfPer					<- filter(dfPer, Gender != "")
+
+                   dfPer <- arrange(dfPer, desc(graagNaarSchool))
+
+                   ggplot(dfPer, aes(x=Gender, y=`Hoe vaak`, fill=`Graag naar school`)) + geom_bar(position=position_stack(reverse = TRUE), stat="identity") + coord_flip() +
+				     scale_y_continuous(labels = scales::percent) + xlab("") + ylab("") + theme(aspect.ratio=0.3) +
+					 scale_fill_manual("", values=c(Altijd=kleuren$rozig, Vaak=kleuren$lichtblauwig, Soms=kleuren$lichtrozig, Nooit=kleuren$blauwig))
+					},
+				horizontaalMeerdere=
+			     {
+
+                   dfGraag <- as.data.frame(table(SchoolScannerTextOnly$graagNaarSchool))
+				   dfBang  <- as.data.frame(table(SchoolScannerTextOnly$bangOpSchool))
+
+                   dfGraag$Kolom <- "Graag naar school"
+				   dfBang$Kolom  <- "Bang op school"
+
+                   df <- rbind(dfGraag, dfBang)
+
+                   df <- df %>% rowwise() %>% select(Var1, Freq, Kolom) %>% mutate(`Procent`= Freq / length(SchoolScannerTextOnly$graagNaarSchool), `Hoe vaak`=Var1)
+
+                   df <- filter(df, `Hoe vaak` != "")
+
+                   df$`Hoe vaak` <- factor(as.character(df$`Hoe vaak`), rev(c("Nooit", "Soms", "Vaak", "Altijd")))
+
+                   df <- arrange(df, desc(`Hoe vaak`))
+
+                   ggplot(df, aes(x=Kolom, y=`Procent`, fill=`Hoe vaak`)) + theme(aspect.ratio=0.3) +
+				     geom_bar( stat="identity", na.rm=TRUE, position = position_stack(reverse = TRUE)) +
+					 coord_flip() + scale_y_continuous(labels = scales::percent) + xlab("") + ylab("") +
+					 scale_fill_manual("", values=c(Altijd=kleuren$rozig, Vaak=kleuren$lichtblauwig, Soms=kleuren$lichtrozig, Nooit=kleuren$blauwig))
 
 
-#welkPlot <- "horizontaalPerLabel"
-welkPlot <- "horizontaalMeerdere"
+                 },
+				horizontaalLabelsGroepen=
+			     {
 
-plot <- switch(welkPlot,
+                   allesPerCulturen <- SchoolScannerTextOnly[c('onveiligHier', 'cultuur')]
 
-horizontaalPerLabel =
-{
-    tafelPerGender  <- table(SchoolScannerTextOnly[c('graagNaarSchool', 'gender')])
-	dfPer		        <- as.data.frame(tafelPerGender)
+                   allesPerCulturen <- allesPerCulturen %>% rowwise() %>% select(cultuur, onveiligHier) %>%
+				     mutate(cultuur=
+					          switch(tolower(cultuur),
+							         'nederlands'                = 'Nederlands',
+									 'marokkaans'                = 'Marrokaans',
+									 'marokkaans, nederlands'    = 'Marrokaans',
+									 'turks'                     = 'Turks',
+									 'nederlands, turks'         = 'Turks',
+									 'surinaams'                 = 'Surinaams',
+									 'nederlands, surinaams'     = 'Surinaams',
+									 'antilliaans'               = 'Antilliaans',
+									 'antilliaans, nederlands'   = 'Antilliaans',
+									 'Anders'))
 
-    hoeVaaks        <- levels(as.factor(SchoolScannerTextOnly$graagNaarSchool))
-	genders         <- levels(as.factor(SchoolScannerTextOnly$gender))
-	dfGender	      <- table(SchoolScannerTextOnly$gender)
+                   tafelTotaal      <- table(allesPerCulturen$cultuur)
+				   allesPerCultuur  <- allesPerCulturen %>% mutate(onveiligHier=strsplit(onveiligHier, ", ")) %>% unnest(onveiligHier)
+				   tafelPerCultuur  <- table(allesPerCultuur)
 
-    dfPer           <- dfPer %>% rowwise() %>% select(gender, graagNaarSchool, Freq) %>%  mutate(`Hoe vaak` = 100.0 * Freq / dfGender[[gender]], Gender=gender, `Graag naar school`=graagNaarSchool)
 
-    ggplot(dfPer, aes(x=Gender, y=`Hoe vaak`, fill=`Graag naar school`)) + geom_bar(position="fill", stat="identity") + coord_flip()
-},
-horizontaalMeerdere=
-{
 
-    dfGraag <- as.data.frame(table(SchoolScannerTextOnly$graagNaarSchool))
-	dfBang  <- as.data.frame(table(SchoolScannerTextOnly$bangOpSchool))
+                   dfPer		    <- as.data.frame(tafelPerCultuur)
 
-    dfGraag$Kolom <- "Graag naar school"
-	dfBang$Kolom  <- "Bang op school"
+                   hoeVaaks        <- levels(as.factor(SchoolScannerTextOnly$onveiligHier))
+				   cultuurs         <- levels(as.factor(SchoolScannerTextOnly$cultuur))
+				   dfcultuur	    <- table(SchoolScannerTextOnly$cultuur)
 
-    df <- rbind(dfGraag, dfBang)
+                   #dfPer$onveiligHier <- factor(as.character(dfPer$onveiligHier), rev(c("Nooit", "Soms", "Vaak", "Altijd")))
+				   dfPer           <- dfPer %>% rowwise() %>% select(cultuur, onveiligHier, Freq) %>%
+				     mutate(Freq = Freq / tafelTotaal[[cultuur]], cultuur=cultuur,
+					        `Onveilig in`=onveiligHier, totaalCultuur = tafelTotaal[[cultuur]])
+							dfPer <- filter(dfPer, cultuur != "")
+				   dfPer <- filter(dfPer, onveiligHier != "" && str_count(onveiligHier, "nergens onveilig") == 0)
 
-    df <- df %>% rowwise() %>% select(Var1, Freq, Kolom) %>% mutate(`Procent`=100.0 * Freq / length(SchoolScannerTextOnly$graagNaarSchool), `Hoe vaak`=Var1)
 
-    df <- filter(df, `Hoe vaak` != "")
+                   dfPer <- arrange(dfPer, desc(onveiligHier))
 
-    df$`Hoe vaak` <- factor(as.character(df$`Hoe vaak`), rev(c("Nooit", "Soms", "Vaak", "Altijd")))
+                   ggplot(dfPer, aes(x=`Onveilig in`, y=Freq, fill=cultuur)) +
+				     geom_bar(position=position_dodge2(reverse=TRUE),stat="identity", width=1) +
 
-    df <- arrange(df, desc(`Hoe vaak`))
+                     geom_text(size=3,aes(group=cultuur, label = paste0(round(Freq * 100), "%")), hjust=-0.1, vjust=0.4, position = position_dodge2(reverse=TRUE, width=1)) +
+					 geom_text(size=3,aes(group=cultuur, label =
+					                        ifelse(Freq > 0.01,
+											       paste0("N: ", totaalCultuur),
+												   "")),
+												hjust=-0.1, vjust=0.4, y=0.0, position = position_dodge2(reverse=TRUE, width=1)) +
 
-    ggplot(df, aes(x=Kolom, y=`Procent`, fill=`Hoe vaak`)) +
-	  geom_bar( stat="identity", na.rm=TRUE, position = position_stack(reverse = TRUE)) +
-	  coord_flip()
-}
+                     coord_flip() +
+					 scale_y_continuous(labels = scales::percent) + xlab("") + ylab("") + theme(aspect.ratio=2.0) +
+					 scale_x_discrete(labels = function(x) str_wrap(x, width = 20)) +
+
+                     scale_fill_manual("",
+					                   values=c(
+									     Anders      = kleuren$rozig,
+										 Antilliaans = kleuren$lichtblauwig,
+										 Marrokaans  = kleuren$lichtrozig,
+										 Nederlands  = kleuren$blauwig,
+										 Surinaams   = kleuren$lichtgeel,
+										 Turks       = kleuren$donkergroen))
+
+                 }
 )
 
-plot <- plot + scale_fill_manual("Legenda", values=c(Altijd=kleuren$rozig, Vaak=kleuren$lichtblauwig, Soms=kleuren$lichtrozig, Nooit=kleuren$blauwig)) + theme_classic()
+plot <- plot +
+  theme_classic() +
+  theme(text=element_text(size=18,  family="karla")) +
+  theme(axis.ticks.x=element_blank(), axis.ticks.y=element_blank(), axis.line=element_blank()) +
+  ggtitle(TITEL)
 
-writeImage(plot=plot, plotFolder=PLOTFOLDER,	plotFile=PLOTFILE,	width=WIDTH, height=HEIGHT)
+
+writeImage(plot=plot, plotFolder=PLOTFOLDER,	plotFile=PLOTFILE,	width=WIDTH, height=HEIGHT, ppi=120)
 
 #check deze: https://r-graph-gallery.com/48-grouped-barplot-with-ggplot2

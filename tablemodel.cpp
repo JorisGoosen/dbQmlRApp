@@ -3,9 +3,11 @@
 #include "labels.h"
 
 TableModel::TableModel(Database * db, const QString & tableName, const ColumnDefinitions & columnDefinitions)
-	: AbstractSizeProviderTable(db), _db(db), _tableName(tableName), _columnDefinitions(columnDefinitions)
+	: AbstractSizeProviderTable(db), _tableName(tableName), _columnDefinitions(columnDefinitions), _db(db)
 {
 	_db->tableCreate(_tableName, _columnDefinitions);
+
+	_rowCount = _db->tableRowCount(_tableName);
 }
 
 int TableModel::rowCount(const QModelIndex &) const

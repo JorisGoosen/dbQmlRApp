@@ -27,7 +27,7 @@ bool MainModel::loadDatabase(const QString & dbPath)
 
 bool MainModel::selectDatabase()
 {
-	throw std::runtime_error("implement me");
+	loadDatabase("testing.sqlite");
 }
 
 bool MainModel::testDatabase()

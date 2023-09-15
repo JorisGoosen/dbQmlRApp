@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
 
 	mainEng.rootContext()->setContextProperty("plotPie",				nullptr);
 
-	//Kleuren van CM
+	// Kleuren van CM
 	// #EF2560  239-37-96			/rozige
 	// #9CCDD1	156 205 209			/lichtblauwig
 	// #038794	3 135 148			/blauwig

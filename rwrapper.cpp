@@ -9,41 +9,51 @@ RWrapper::RWrapper(QObject *parent)
 QString RWrapper::runRCommand(QString command)
 {
 	std::cout << "Running R command:\n" << command.toStdString() << std::endl;
+	QString outQ;
 
-	RInside::Proxy res = R->parseEvalNT(command.toStdString());
-
-	std::function<QString(SEXP sexp)> f;
-
-	f = [&](SEXP res)
+	try
 	{
-		QStringList out;
+		RInside::Proxy res = R->parseEval(command.toStdString());
 
-		if(!res)
-			out.append("NULL");
-		else if(Rf_isNull(res))
-			out.append("NULL");
-		else if(Rf_isString(res))
-			for(Rcpp::String str : Rcpp::StringVector(res))
-				out.append(QString::fromStdString(str));
-		else if(Rf_isInteger(res))
-			for(int r : Rcpp::IntegerVector(res))
-				out.append(QString::number(r));
-		else if(Rf_isReal(res))
-			for(double r : Rcpp::DoubleVector(res))
-				out.append(QString::number(r));
-		else if(Rf_isList(res))
-			for(SEXP s : Rcpp::List(res))
-				out.append(f(s));
-		else
-			out.append("???");
+		std::function<QString(SEXP sexp)> f;
+
+		f = [&](SEXP res)
+		{
+			QStringList out;
+
+			if(!res)
+				out.append("NULL");
+			else if(Rf_isNull(res))
+				out.append("NULL");
+			else if(Rf_isString(res))
+				for(Rcpp::String str : Rcpp::StringVector(res))
+					out.append(QString::fromStdString(str));
+			else if(Rf_isInteger(res))
+				for(int r : Rcpp::IntegerVector(res))
+					out.append(QString::number(r));
+			else if(Rf_isReal(res))
+				for(double r : Rcpp::DoubleVector(res))
+					out.append(QString::number(r));
+			else if(Rf_isList(res))
+				for(SEXP s : Rcpp::List(res))
+					out.append(f(s));
+			else
+				out.append("???");
 
 
-		return out.join("\n");
-	};
+			return out.join("\n");
+		};
 
-	QString outQ = f(res);
+		outQ = f(res);
 
-	std::cout << ": " << outQ.toStdString() << std::endl;
+		std::cout << ": " << outQ.toStdString() << std::endl;
+
+	}
+	catch(Rcpp::exception & e)
+	{
+		outQ = "Exception caught: " + QString::fromStdString(e.what());
+		std::cerr << outQ.toStdString() << std::endl;
+	}
 
 	_prevOutput.append(outQ);
 	emit prevOutputChanged();

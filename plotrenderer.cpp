@@ -1,3 +1,4 @@
+#define ENUM_DECLARATION_CPP
 #include "plotrenderer.h"
 #include <iostream>
 
@@ -49,10 +50,12 @@ void PlotRenderer::runRCodeDelayed()
 void PlotRenderer::runRCode()
 {
 //	std::cout << "RUNNING RCODE!" << std::endl;
-	emit runRCommand(	"WIDTH       <- "  + QString::number(width())	+  ";\n"
-						"HEIGHT      <- "  + QString::number(height())	+  ";\n"
-						"PLOTFILE    <- '" + _fileName					+ "';\n"
-						"PLOTFOLDER  <- '" + _plotFolder.absolutePath()	+ "';\n" +
+	emit runRCommand(	"WIDTH       <- "  + QString::number(width())		+  ";\n"
+						"HEIGHT      <- "  + QString::number(height())		+  ";\n"
+						"PLOTFILE    <- '" + _fileName						+ "';\n"
+						"PLOTFOLDER  <- '" + _plotFolder.absolutePath()		+ "';\n" +
+						"WELKPLOT    <- '" + PlotTypeToQString(_welkPlot)	+ "';\n" +
+						"TITEL       <- '" + _title							+ "';\n" +
 						 _rCode);
 
 	incRevision();
@@ -109,4 +112,30 @@ void PlotRenderer::setFileName(const QString & newFileName)
 		return;
 	_fileName = newFileName;
 	emit fileNameChanged();
+}
+
+PlotType PlotRenderer::welkPlot() const
+{
+	return _welkPlot;
+}
+
+void PlotRenderer::setWelkPlot(const PlotType & newWelkPlot)
+{
+	if (_welkPlot == newWelkPlot)
+		return;
+	_welkPlot = newWelkPlot;
+	emit welkPlotChanged();
+}
+
+QString PlotRenderer::title() const
+{
+	return _title;
+}
+
+void PlotRenderer::setTitle(const QString & newTitle)
+{
+	if (_title == newTitle)
+		return;
+	_title = newTitle;
+	emit titleChanged();
 }
