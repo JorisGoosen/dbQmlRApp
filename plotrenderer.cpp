@@ -23,8 +23,8 @@ PlotRenderer::PlotRenderer(QString rCode, QString fileName, QDir outputFolder, Q
 	init();
 }*/
 
-PlotRenderer::PlotRenderer(PlotRenderers * renderers, PlotType plotType, PlotFilter filter, const QString & kolom, const QString & title, int width, int height)
-: QObject{renderers}, _ouder(renderers), _title(title), _kolom(kolom), _width(width), _height(height), _welkPlot(plotType), _welkFilter(filter)
+PlotRenderer::PlotRenderer(PlotRenderers * renderers, PlotType plotType, PlotFilter filter, bool studenten, const QString & kolom, const QString & title, int width, int height)
+: QObject{renderers}, _ouder(renderers), _title(title), _kolom(kolom), _studenten(studenten), _width(width), _height(height), _welkPlot(plotType), _welkFilter(filter)
 {
 	std::cerr << "Ik negeer " << _welkFilter << std::endl;
 
@@ -33,7 +33,7 @@ PlotRenderer::PlotRenderer(PlotRenderers * renderers, PlotType plotType, PlotFil
 		_title = baseName;
 
 	_fileName =  baseName + ".png";
-	_rCode = PlotTypeToQString(_welkPlot) + "Func(plotFolder=PLOTFOLDER, plotFile=PLOTFILE, width=WIDTH, height=HEIGHT, titel=TITEL, kolom=KOLOM, filter=FILTER)";
+	_rCode = PlotTypeToQString(_welkPlot) + "Func(plotFolder=PLOTFOLDER, plotFile=PLOTFILE, width=WIDTH, height=HEIGHT, titel=TITEL, kolom=KOLOM, filter=FILTER, studenten=STUDENTEN)";
 }
 
 QDir PlotRenderer::plotFolder() const
@@ -78,13 +78,15 @@ void PlotRenderer::runRCodeDelayed()
 void PlotRenderer::runRCode()
 {
 //	std::cout << "RUNNING RCODE!" << std::endl;
-	emit runRCommand(	"WIDTH       <- "  + QString::number(width())			+  ";\n"
-						"HEIGHT      <- "  + QString::number(height())			+  ";\n"
+	emit runRCommand(
+						"TITEL       <- '" + _title								+ "';\n" +
+						"WIDTH       <- "  + QString::number(width())			+  ";\n"
 						"PLOTFILE    <- '" + _fileName							+ "';\n"
 						"PLOTFOLDER  <- '" + plotFolder().absolutePath()		+ "';\n" +
+						"STUDENTEN   <- "  + (_studenten ? "TRUE" : "FALSE")	+ "; \n" +
 						"WELKPLOT    <- '" + PlotTypeToQString(_welkPlot)		+ "';\n" +
+						"HEIGHT      <- "  + QString::number(height())			+  ";\n"
 						"FILTER      <- '" + PlotFilterToQString(_welkFilter)	+ "';\n" +
-						"TITEL       <- '" + _title								+ "';\n" +
 						"KOLOM       <- '" + _kolom								+ "';\n" +
 						 _rCode);
 

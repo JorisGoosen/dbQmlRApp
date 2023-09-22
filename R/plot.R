@@ -10,7 +10,7 @@ afronder <- function(plot, plotFolder, plotFile, width, height, titel, filter)
     writeImage(plot=plot, plotFolder=plotFolder,	plotFile=plotFile,	width=width, height=height, ppi=120)
 }
 
-horizontaalPerLabelFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter)
+horizontaalPerLabelFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
 {
     tafelPerGender  <- table(SchoolScannerTextOnly[c('graagNaarSchool', 'gender')])
 	dfPer		    <- as.data.frame(tafelPerGender)
@@ -33,7 +33,7 @@ horizontaalPerLabelFunc <- function(plotFolder, plotFile, width, height, titel, 
 	)
 }
 
-horizontaalMeerdereFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter)
+horizontaalMeerdereFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
 {
     dfGraag <- as.data.frame(table(SchoolScannerTextOnly$graagNaarSchool))
 	dfBang  <- as.data.frame(table(SchoolScannerTextOnly$bangOpSchool))
@@ -60,7 +60,7 @@ horizontaalMeerdereFunc <- function(plotFolder, plotFile, width, height, titel, 
 	)
 }
 
-horizontaalLabelsGroepenFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter)
+horizontaalLabelsGroepenFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
 {
 
     allesPerCulturen <- SchoolScannerTextOnly[c('onveiligHier', 'cultuur')]
@@ -128,7 +128,7 @@ horizontaalLabelsGroepenFunc <- function(plotFolder, plotFile, width, height, ti
 	)
 }
 
-horizontaalLabelPerTypeRespondentFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter)
+horizontaalLabelPerTypeRespondentFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
 {
     welkeKolommen <- 'ikMijn'
 
@@ -210,7 +210,7 @@ horizontaalLabelPerTypeRespondentFunc <- function(plotFolder, plotFile, width, h
 	)
 }
 
-verticaalStaafFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter)
+verticaalStaafFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
 {
   df <- as.data.frame(table(SchoolScannerTextOnly$veiligSchool))
   
@@ -235,7 +235,7 @@ verticaalStaafFunc <- function(plotFolder, plotFile, width, height, titel, kolom
   )
 }
 
-taartFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter)
+taartFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
 {
   
   df <- as.data.frame(table(SchoolScannerTextOnly$veiligSchool))

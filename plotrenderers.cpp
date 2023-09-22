@@ -1,13 +1,27 @@
 #include "plotrenderers.h"
 #include "plotrenderer.h"
 
+#define GENEREERHET(PLOTTYPE, KOLOM, TITEL)										\
+	new PlotRenderer(this, PLOTTYPE,	PlotFilter::School,		KOLOM, TITEL),	\
+	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Locatie,	KOLOM, TITEL),	\
+	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Sector,		KOLOM, TITEL),	\
+	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Niveau,		KOLOM, TITEL),	\
+	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Leerjaar,	KOLOM, TITEL),	\
+	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Klas,		KOLOM, TITEL),	\
+	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Gender,		KOLOM, TITEL),	\
+	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Cultuur,	KOLOM, TITEL)
+
 PlotRenderers::PlotRenderers( QObject *parent)
 	: QAbstractListModel{parent}
 {
 	_plots =
 	{
-		new PlotRenderer(this, PlotType::taart, PlotFilter::Studenten, "veiligSchool"),
-		new PlotRenderer(this, PlotType::taart, PlotFilter::Studenten, "veiligKlas")
+		new PlotRenderer(this,	PlotType::taart,					PlotFilter::Geen, true,	"veiligSchool",		"Veilig op school"				),
+		new PlotRenderer(this,	PlotType::taart,					PlotFilter::Geen, true,	"veiligKlas",		"Veilig in de klas"				),
+		GENEREERHET(			PlotType::verticaalStaaf,									"veiligSchool",		"Veilig op school"				),
+		GENEREERHET(			PlotType::verticaalStaaf,									"veiligKlas",		"Veilig in de klas"				),
+		GENEREERHET(			PlotType::horizontaalLabelsGroepen,							"onveiligHier",		"Voel me onveilig in/bij"		),
+
 	};
 }
 

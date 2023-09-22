@@ -8,7 +8,7 @@
 #include <QTimer>
 
 DECLARE_ENUM(PlotType,		horizontaalPerLabel, horizontaalMeerdere, horizontaalLabelsGroepen, horizontaalLabelPerTypeRespondent, verticaalStaaf, taart)
-DECLARE_ENUM(PlotFilter,	Geen, School, Locatie, Sector, Niveau, Leerjaar, Klas, Gender, Cultuur, Studenten, Docenten)
+DECLARE_ENUM(PlotFilter,	Geen, School, Locatie, Sector, Niveau, Leerjaar, Klas, Gender, Cultuur)
 
 class PlotRenderers;
 
@@ -30,7 +30,7 @@ class PlotRenderer : public QObject
 
 
 public:
-	explicit				PlotRenderer(PlotRenderers * renderers, PlotType plotType, PlotFilter filter, const QString & kolom = "", const QString & titel = "", int width = 1024, int height = 1024);
+	explicit				PlotRenderer(PlotRenderers * renderers, PlotType plotType, PlotFilter filter, bool studenten = true, const QString & kolom = "", const QString & titel = "", int width = 1024, int height = 1024);
 	/*explicit				PlotRenderer(QFile		rFile, QString fileName="plot.png", QDir outputFolder = QDir(), QObject *parent = nullptr);
 	explicit				PlotRenderer(QString	rCode, QString fileName="plot.png", QDir outputFolder = QDir(), QObject *parent = nullptr);*/
 
@@ -84,8 +84,9 @@ private:
 									_fileName,
 									_title,
 									_kolom;
-				int					_width		= 800,
-									_height		= 800,
+				bool				_studenten;
+				int					_width,
+									_height,
 									_revision	= 0;
 				QTimer				_timer;
 				PlotType			_welkPlot	= PlotType::horizontaalLabelPerTypeRespondent;
