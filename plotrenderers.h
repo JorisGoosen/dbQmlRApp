@@ -33,7 +33,7 @@ public slots:
 
 private:
 	std::vector<PlotRenderer*>	_plots;
-	QDir						_plotFolder = QDir::home();
+	QDir						_plotFolder;
 };
 
 #endif // PLOTRENDERERS_H

@@ -5,29 +5,29 @@ afronder <- function(plot, plotFolder, plotFile, width, height, titel, filter)
 	  theme_classic() +
 	  theme(text=element_text(size=18,  family="karla")) +
 	  theme(axis.ticks.x=element_blank(), axis.ticks.y=element_blank(), axis.line=element_blank()) +
-	  ggtitle(paste0(titel, ifelse(filter != 'Geen', paste0(" - ", filter), "")))
+	  ggtitle(titel)
 
     writeImage(plot=plot, plotFolder=plotFolder,	plotFile=plotFile,	width=width, height=height, ppi=120)
 }
 
 horizontaalPerLabelFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
 {
-    tafelPerGender  <- table(SchoolScannerTextOnly[c('graagNaarSchool', 'gender')])
+    tafelPerGender  <- table(SchoolScannerTextOnly[c(kolom, filter)])
 	dfPer		    <- as.data.frame(tafelPerGender)
 
-    hoeVaaks        <- levels(as.factor(SchoolScannerTextOnly$graagNaarSchool))
-	genders         <- levels(as.factor(SchoolScannerTextOnly$gender))
-	dfGender	    <- table(SchoolScannerTextOnly$gender)
+    hoeVaaks        <- levels(as.factor(SchoolScannerTextOnly[[kolom]]))
+	genders         <- levels(as.factor(SchoolScannerTextOnly[[filter]]))
+	dfGender	    <- table(SchoolScannerTextOnly[[filter]])
 
-    dfPer$graagNaarSchool	<- factor(as.character(dfPer$graagNaarSchool), rev(c("Nooit", "Soms", "Vaak", "Altijd")))
-	dfPer					<- dfPer %>% rowwise() %>% select(gender, graagNaarSchool, Freq) %>%  mutate(`Hoe vaak` = Freq / dfGender[[gender]], Gender=gender, `Graag naar school`=graagNaarSchool)
-	dfPer					<- filter(dfPer, Gender != "")
+    dfPer[[kolom]]	<- factor(as.character(dfPer[[kolom]], rev(c("Nooit", "Soms", "Vaak", "Altijd"))))
+	dfPer					<- dfPer %>% rowwise() %>% select({{filter}}, {{kolom}}, Freq) %>%  mutate(`Hoe vaak` = Freq / dfGender[[filter]], Filter={{filter}}, kolom={{kolom}})
+	dfPer					<- filter(dfPer, Filter != "")
 
-    dfPer <- arrange(dfPer, desc(graagNaarSchool))
+    dfPer <- arrange(dfPer, desc(kolom))
 
     afronder(
 	    plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel,
-		plot=ggplot(dfPer, aes(x=Gender, y=`Hoe vaak`, fill=`Graag naar school`)) + geom_bar(position=position_stack(reverse = TRUE), stat="identity") + coord_flip() +
+		plot=ggplot(dfPer, aes(x=Filter, y=`Hoe vaak`, fill=kolom)) + geom_bar(position=position_stack(reverse = TRUE), stat="identity") + coord_flip() +
 		  scale_y_continuous(labels = scales::percent) + xlab("") + ylab("") + theme(aspect.ratio=0.3) +
 		  scale_fill_manual("", values=c(Altijd=kleuren$rozig, Vaak=kleuren$lichtblauwig, Soms=kleuren$lichtrozig, Nooit=kleuren$blauwig))
 	)
@@ -212,9 +212,10 @@ horizontaalLabelPerTypeRespondentFunc <- function(plotFolder, plotFile, width, h
 
 verticaalStaafFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
 {
-  df <- as.data.frame(table(SchoolScannerTextOnly$veiligSchool))
+  deKolom <- SchoolScannerTextOnly[[kolom]]
+  df <- as.data.frame(table(deKolom))
   
-  df <- df %>% rowwise() %>% select(Var1, Freq) %>% mutate(`Procent`= Freq / length(SchoolScannerTextOnly$graagNaarSchool), `Hoe vaak`=Var1)
+  df <- df %>% rowwise() %>% select(deKolom, Freq) %>% mutate(`Procent`= Freq / length(deKolom), `Hoe vaak`=deKolom)
   
   df <- filter(df, `Hoe vaak` != "")
   
@@ -237,10 +238,13 @@ verticaalStaafFunc <- function(plotFolder, plotFile, width, height, titel, kolom
 
 taartFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
 {
+  deKolom <- SchoolScannerTextOnly[[kolom]]
   
-  df <- as.data.frame(table(SchoolScannerTextOnly$veiligSchool))
+  # doe filter?
+  totaal <- length(deKolom)
+  df <- as.data.frame(table(deKolom))
   
-  df <- df %>% rowwise() %>% select(Var1, Freq) %>% mutate(Procent= Freq / length(SchoolScannerTextOnly$graagNaarSchool), `Hoe vaak`=Var1)
+  df <- df %>% rowwise() %>% select(deKolom, Freq) %>% mutate(Procent= Freq / totaal, `Hoe vaak`=deKolom)
   
   df <- filter(df, `Hoe vaak` != "")
   
@@ -250,9 +254,6 @@ taartFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter,
   df$cumProcent <- cumsum(df$Procent)
   
   df <- df %>% mutate(middlePoint=cumProcent - (Procent / 2)) %>% mutate(angleData=middlePoint * -360) %>% mutate(angleData=ifelse(angleData < -180, angleData - 90, angleData + 90))
-  
-  
-  totaal <- length(SchoolScannerTextOnly$graagNaarSchool)
   
   afronder(
     plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel,
@@ -264,7 +265,7 @@ taartFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter,
       scale_fill_manual(paste0("N: ", totaal), values=
                           c(`0`=kleuren$blauwig, `1`=kleuren$lichtgeel, `2`=kleuren$donkergroen, `3`=kleuren$lichtblauwig, `4`=kleuren$lichtrozig, `5`=kleuren$lichtgroen, 
                             `6`=kleuren$rozig, `7`=kleuren$blauwig, `8`=kleuren$donkergroen, `9`=kleuren$lichtgeel, `10`=kleuren$rozig )) +
-      geom_text(size=4, aes(x=1.6, y = middlePoint * totaal, label=Freq, angle=angleData)) +
+      geom_text(size=4, aes(x=1.6, y = middlePoint * totaal, label=paste0(`Hoe vaak`, ": ", Freq), angle=angleData)) +
       geom_text(size=4, aes(x=1.3, y = (middlePoint) * totaal, label=ifelse(Procent > 0.01, sprintf("%2.1f%%", Procent * 100.), ""), angle=angleData)) +
       coord_polar("y", start=0) 
   )

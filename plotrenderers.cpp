@@ -1,26 +1,35 @@
 #include "plotrenderers.h"
 #include "plotrenderer.h"
 
-#define GENEREERHET(PLOTTYPE, KOLOM, TITEL)										\
-	new PlotRenderer(this, PLOTTYPE,	PlotFilter::School,		KOLOM, TITEL),	\
-	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Locatie,	KOLOM, TITEL),	\
-	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Sector,		KOLOM, TITEL),	\
-	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Niveau,		KOLOM, TITEL),	\
-	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Leerjaar,	KOLOM, TITEL),	\
-	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Klas,		KOLOM, TITEL),	\
-	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Gender,		KOLOM, TITEL),	\
-	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Cultuur,	KOLOM, TITEL)
+#define GENEREERHET(PLOTTYPE, STU, KOLOM, TITEL)										\
+	new PlotRenderer(this, PLOTTYPE,	PlotFilter::School,		STU, KOLOM, TITEL),	\
+	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Locatie,	STU, KOLOM, TITEL),	\
+	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Sector,		STU, KOLOM, TITEL),	\
+	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Niveau,		STU, KOLOM, TITEL),	\
+	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Leerjaar,	STU, KOLOM, TITEL),	\
+	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Klas,		STU, KOLOM, TITEL),	\
+	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Gender,		STU, KOLOM, TITEL),	\
+	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Cultuur,	STU, KOLOM, TITEL)
 
 PlotRenderers::PlotRenderers( QObject *parent)
 	: QAbstractListModel{parent}
 {
+	_plotFolder = QDir::home();
+
+	const QString naamMap = "SchoolScanner";
+	if(!_plotFolder.exists(naamMap))
+		_plotFolder.mkdir(naamMap);
+
+	_plotFolder = _plotFolder.absoluteFilePath(naamMap);
+
+
 	_plots =
 	{
-		new PlotRenderer(this,	PlotType::taart,					PlotFilter::Geen, true,	"veiligSchool",		"Veilig op school"				),
-		new PlotRenderer(this,	PlotType::taart,					PlotFilter::Geen, true,	"veiligKlas",		"Veilig in de klas"				),
-		GENEREERHET(			PlotType::verticaalStaaf,									"veiligSchool",		"Veilig op school"				),
-		GENEREERHET(			PlotType::verticaalStaaf,									"veiligKlas",		"Veilig in de klas"				),
-		GENEREERHET(			PlotType::horizontaalLabelsGroepen,							"onveiligHier",		"Voel me onveilig in/bij"		),
+		new PlotRenderer(this,	PlotType::taart,					PlotFilter::Geen,	true,	"veiligSchool",		"Veilig op school"				),
+		new PlotRenderer(this,	PlotType::taart,					PlotFilter::Geen,	true,	"veiligKlas",		"Veilig in de klas"				),
+		GENEREERHET(			PlotType::verticaalStaaf,								true,	"veiligSchool",		"Veilig op school"				),
+		GENEREERHET(			PlotType::verticaalStaaf,								true,	"veiligKlas",		"Veilig in de klas"				),
+		GENEREERHET(			PlotType::horizontaalLabelsGroepen,						true,	"onveiligHier",		"Voel me onveilig in bij"		),
 
 	};
 }

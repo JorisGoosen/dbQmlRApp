@@ -79,15 +79,15 @@ void PlotRenderer::runRCode()
 {
 //	std::cout << "RUNNING RCODE!" << std::endl;
 	emit runRCommand(
-						"TITEL       <- '" + _title								+ "';\n" +
-						"WIDTH       <- "  + QString::number(width())			+  ";\n"
-						"PLOTFILE    <- '" + _fileName							+ "';\n"
-						"PLOTFOLDER  <- '" + plotFolder().absolutePath()		+ "';\n" +
-						"STUDENTEN   <- "  + (_studenten ? "TRUE" : "FALSE")	+ "; \n" +
-						"WELKPLOT    <- '" + PlotTypeToQString(_welkPlot)		+ "';\n" +
-						"HEIGHT      <- "  + QString::number(height())			+  ";\n"
-						"FILTER      <- '" + PlotFilterToQString(_welkFilter)	+ "';\n" +
-						"KOLOM       <- '" + _kolom								+ "';\n" +
+						"TITEL       <- '" + _title										+ "';\n" +
+						"WIDTH       <- "  + QString::number(width())					+  ";\n"
+						"PLOTFILE    <- '" + _fileName									+ "';\n"
+						"PLOTFOLDER  <- '" + plotFolder().absolutePath()				+ "';\n" +
+						"STUDENTEN   <- "  + (_studenten ? "TRUE" : "FALSE")			+ "; \n" +
+						"WELKPLOT    <- '" + PlotTypeToQString(_welkPlot)				+ "';\n" +
+						"HEIGHT      <- "  + QString::number(height())					+  ";\n"
+						"FILTER      <- '" + PlotFilterToQString(_welkFilter).toLower()	+ "';\n" +
+						"KOLOM       <- '" + _kolom										+ "';\n" +
 						 _rCode);
 
 	incRevision();
