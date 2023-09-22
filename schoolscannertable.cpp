@@ -117,12 +117,17 @@ void SchoolScannerTable::loadFilters()
 void SchoolScannerTable::initRStuff()
 {
 
-	QFile	rWriteImage(":/R/writeImage.R"	);
+	QFile	rWriteImage(":/R/writeImage.R"	),
+			rPlots(		":/R/plot.R"		);
 
 	rWriteImage.open(	QIODeviceBase::ReadOnly);
+	rPlots.open(		QIODeviceBase::ReadOnly);
 
 	emit runRCommand(rWriteImage.readAll());
+	emit runRCommand(rPlots.readAll());
+
 	emit runRCommand(_textOnly->dbplyrCode(false));
+
 	QString dbFilter = dbplyerFilter();
 
 	if(dbFilter != "")
@@ -130,20 +135,5 @@ void SchoolScannerTable::initRStuff()
 
 	emit runRCommand(_textOnly->tableName() + " <- " + _textOnly->tableName() + "sql %>% collect()");
 
-	if(_plotPie)
-		_plotPie->runRCode();
-}
-
-void SchoolScannerTable::initPlots()
-{
-	initRStuff();
-
-	_plotPie = new PlotRenderer(QFile(":/R/plot.R"),	"plot.png");
-
-	QObject::connect(this, &SchoolScannerTable::plotWidthChanged,	_plotPie,	&PlotRenderer::setWidth);
-	QObject::connect(this, &SchoolScannerTable::plotHeightChanged,	_plotPie,	&PlotRenderer::setHeight);
-
-	QObject::connect(_plotPie,		&PlotRenderer::runRCommand,		this,	&SchoolScannerTable::runRCommand);
-
-	emit addContextProperty("plotPie",	_plotPie);
+	emit renderPlots();
 }

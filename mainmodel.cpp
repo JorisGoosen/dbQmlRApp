@@ -62,3 +62,16 @@ void MainModel::setQmlsShown(const QStringList & newQmlsShown)
 	_qmlsShown = newQmlsShown;
 	emit qmlsShownChanged();
 }
+
+QStringList MainModel::plotFilterNames() const
+{
+	return _plotFilterNames;
+}
+
+void MainModel::setPlotFilterNames(const QStringList & newPlotFilterNames)
+{
+	if (_plotFilterNames == newPlotFilterNames)
+		return;
+	_plotFilterNames = newPlotFilterNames;
+	emit plotFilterNamesChanged();
+}

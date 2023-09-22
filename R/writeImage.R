@@ -1,5 +1,26 @@
 library(jaspGraphs)
 library(ggplot2)
+library(tidyr)
+library(ggplot2)
+library(stringr)
+
+kleuren <- list(
+  lichtrozig=		"#f6b6cc"	,
+  rozig=			"#EF2560"	,
+  lichtblauwig=		"#9CCDD1"	,
+  blauwig=			"#038794"	,
+  zwartig=			"#1D1D1B"	,
+  lichtgroen=		"#BCE2D7"	,
+  donkergroen=		"#5FA48F"	,
+  lichtgeel=		"#FFF798"
+)
+
+library(showtext)
+font_add_google("Karla", "karla")
+
+## Automatically use showtext to render text
+showtext_auto()
+
 
 #Taken from jaspBase and modified to be a bit simpler
 
@@ -14,7 +35,7 @@ openGrDevice <- function(...) {
   ragg::agg_png(...)
 }
 
-writeImage <- function(plot, plotFolder=".", plotFile = "plot.png", width = 500, height = 500, ppi = 300, backgroundColor = "transparent")
+writeImage <- function(plot, plotFolder=".", plotFile = "plot.png", width = 500, height = 500, ppi = 200, backgroundColor = "transparent")
 {
 
     width  <- width  * (ppi / 96)
@@ -22,8 +43,6 @@ writeImage <- function(plot, plotFolder=".", plotFile = "plot.png", width = 500,
 
     oldWd <- getwd();
 	setwd(plotFolder);
-
-print(getwd());
 
     openGrDevice(file = plotFile, width = width, height = height, res = 72 * (ppi / 96), background = backgroundColor)
 	on.exit({dev.off(); setwd(oldWd)}, add = TRUE)

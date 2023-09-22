@@ -38,10 +38,10 @@ public:
 
 public slots:
 	void loadFilters();
-	void initPlots();
 	void initRStuff();
 
 signals:
+	void renderPlots();
 	void schoolChanged();
 	void locatieChanged();
 	void sectorChanged();
@@ -67,8 +67,6 @@ private:
 	FilterListModels				_filters;
 
 	TableModel					*	_textOnly	= nullptr;
-
-	PlotRenderer				*	_plotPie	= nullptr;
 
 	std::vector<QStringList>		_columns;
 

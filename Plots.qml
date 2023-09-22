@@ -1,14 +1,20 @@
-import QtQuick
+ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-Image
+ListView
 {
-	source:				plotPie ? plotPie.plotUrl : ""
-	onSourceChanged:	console.log(source);
-	cache:				false
-	fillMode:			Image.PreserveAspectFit
+	model:	plotList
 
-	onWidthChanged:		R.plotWidth  = width
-	onHeightChanged:	R.plotHeight = height
+	delegate:	Image
+	{
+		source:				display
+		cache:				false
+		fillMode:			Image.PreserveAspectFit
+
+		width:				ListView.view.width
+
+		//onWidthChanged:		R.plotWidth  = width
+		//onHeightChanged:	R.plotHeight = height
+	}
 }

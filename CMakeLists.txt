@@ -94,7 +94,6 @@ elseif ( CMAKE_BUILD_TYPE STREQUAL "RELEASE" )
     add_definitions("-O3")
 endif()
 
-#Set up our actual application
 set(sources
 	main.cpp
 	labels.cpp
@@ -105,6 +104,7 @@ set(sources
 	mainmodel.cpp
 	tablemodel.cpp
 	plotrenderer.cpp
+	plotrenderers.cpp
 	filterlistmodel.cpp
 	columndefinition.cpp
 	schoolscannertable.cpp
@@ -122,6 +122,7 @@ set(headers
 	tablemodel.h
 	stringutils.h
 	plotrenderer.h
+	plotrenderers.h
 	enumutilities.h
 	filterlistmodel.h
 	columndefinition.h
@@ -145,6 +146,7 @@ qt_add_qml_module(qmlR
 		Analyse.qml
 		RectButton.qml
 		FilterList.qml
+		PlotFilters.qml
 		FileBrowser.qml
 	NO_RESOURCE_TARGET_PATH
 #    RESOURCES

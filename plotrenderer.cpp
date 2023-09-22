@@ -1,9 +1,13 @@
+#include "plotrenderers.h"
+#include <QUrl>
+
 #define ENUM_DECLARATION_CPP
 #include "plotrenderer.h"
 #include <iostream>
 
+/*
 PlotRenderer::PlotRenderer(QFile rFile, QString fileName, QDir outputFolder, QObject *parent)
-	: QObject{parent}, _fileName(fileName), _plotFolder(outputFolder)
+	: QObject{parent}, _fileName(fileName)
 {
 	rFile.open(			QIODeviceBase::ReadOnly);
 
@@ -14,14 +18,36 @@ PlotRenderer::PlotRenderer(QFile rFile, QString fileName, QDir outputFolder, QOb
 }
 
 PlotRenderer::PlotRenderer(QString rCode, QString fileName, QDir outputFolder, QObject *parent)
-	: QObject{parent}, _rCode(rCode), _fileName(fileName), _plotFolder(outputFolder)
+	: QObject{parent}, _rCode(rCode), _fileName(fileName)
 {
 	init();
+}*/
+
+PlotRenderer::PlotRenderer(PlotRenderers * renderers, PlotType plotType, PlotFilter filter, const QString & kolom, const QString & title, int width, int height)
+: QObject{renderers}, _ouder(renderers), _title(title), _kolom(kolom), _width(width), _height(height), _welkPlot(plotType), _welkFilter(filter)
+{
+	std::cerr << "Ik negeer " << _welkFilter << std::endl;
+
+	const QString baseName = PlotTypeToQString(_welkPlot) + "_" + PlotFilterToQString(_welkFilter) + "_" + kolom;
+	if(_title == "")
+		_title = baseName;
+
+	_fileName =  baseName + ".png";
+	_rCode = PlotTypeToQString(_welkPlot) + "Func(plotFolder=PLOTFOLDER, plotFile=PLOTFILE, width=WIDTH, height=HEIGHT, titel=TITEL, kolom=KOLOM, filter=FILTER)";
+}
+
+QDir PlotRenderer::plotFolder() const
+{
+	return _ouder->plotFolder();
 }
 
 QString PlotRenderer::plotUrl() const
 {
-	return	_plotFolder.absoluteFilePath(_fileName) + "?" + QString::number(revision());
+	QString folder=plotFolder().absolutePath(),
+			absFolder = plotFolder().absoluteFilePath(_fileName);
+	QString out = QUrl::fromLocalFile(absFolder).toString() + "?" + QString::number(revision());
+
+	return out;
 }
 
 void PlotRenderer::init()
@@ -31,11 +57,13 @@ void PlotRenderer::init()
 
 	connect(&_timer, &QTimer::timeout, this, &PlotRenderer::runRCode);
 
-	connect(this, &PlotRenderer::rCodeChanged,			this,	&PlotRenderer::runRCodeDelayed);
-	connect(this, &PlotRenderer::widthChanged,			this,	&PlotRenderer::runRCodeDelayed);
-	connect(this, &PlotRenderer::heightChanged,			this,	&PlotRenderer::runRCodeDelayed);
-	connect(this, &PlotRenderer::plotFolderChanged,		this,	&PlotRenderer::runRCodeDelayed);
-	connect(this, &PlotRenderer::revisionChanged,		this,	&PlotRenderer::plotUrlChanged);
+	connect(this, &PlotRenderer::rCodeChanged,			this,	&PlotRenderer::runRCodeDelayed		);
+	connect(this, &PlotRenderer::widthChanged,			this,	&PlotRenderer::runRCodeDelayed		);
+	connect(this, &PlotRenderer::heightChanged,			this,	&PlotRenderer::runRCodeDelayed		);
+	connect(this, &PlotRenderer::plotFolderChanged,		this,	&PlotRenderer::runRCodeDelayed		);
+	connect(this, &PlotRenderer::revisionChanged,		this,	&PlotRenderer::plotUrlChanged		);
+	connect(this, &PlotRenderer::iUpdated,				_ouder,	&PlotRenderers::plotRenderUpdated	);
+	connect(this, &PlotRenderer::runRCommand,			_ouder,	&PlotRenderers::runRCommand			);
 
 	runRCode();
 }
@@ -50,12 +78,14 @@ void PlotRenderer::runRCodeDelayed()
 void PlotRenderer::runRCode()
 {
 //	std::cout << "RUNNING RCODE!" << std::endl;
-	emit runRCommand(	"WIDTH       <- "  + QString::number(width())		+  ";\n"
-						"HEIGHT      <- "  + QString::number(height())		+  ";\n"
-						"PLOTFILE    <- '" + _fileName						+ "';\n"
-						"PLOTFOLDER  <- '" + _plotFolder.absolutePath()		+ "';\n" +
-						"WELKPLOT    <- '" + PlotTypeToQString(_welkPlot)	+ "';\n" +
-						"TITEL       <- '" + _title							+ "';\n" +
+	emit runRCommand(	"WIDTH       <- "  + QString::number(width())			+  ";\n"
+						"HEIGHT      <- "  + QString::number(height())			+  ";\n"
+						"PLOTFILE    <- '" + _fileName							+ "';\n"
+						"PLOTFOLDER  <- '" + plotFolder().absolutePath()		+ "';\n" +
+						"WELKPLOT    <- '" + PlotTypeToQString(_welkPlot)		+ "';\n" +
+						"FILTER      <- '" + PlotFilterToQString(_welkFilter)	+ "';\n" +
+						"TITEL       <- '" + _title								+ "';\n" +
+						"KOLOM       <- '" + _kolom								+ "';\n" +
 						 _rCode);
 
 	incRevision();
@@ -95,24 +125,9 @@ void PlotRenderer::incRevision()
 	_revision++;
 
 	emit revisionChanged();
+	emit iUpdated(this);
 }
 
-void PlotRenderer::setPlotFolder(const QDir & newPlotFolder)
-{
-	if (_plotFolder == newPlotFolder)
-		return;
-
-	_plotFolder = newPlotFolder;
-	emit plotFolderChanged();
-}
-
-void PlotRenderer::setFileName(const QString & newFileName)
-{
-	if (_fileName == newFileName)
-		return;
-	_fileName = newFileName;
-	emit fileNameChanged();
-}
 
 PlotType PlotRenderer::welkPlot() const
 {
@@ -138,4 +153,30 @@ void PlotRenderer::setTitle(const QString & newTitle)
 		return;
 	_title = newTitle;
 	emit titleChanged();
+}
+
+PlotFilter PlotRenderer::welkFilter() const
+{
+	return _welkFilter;
+}
+
+void PlotRenderer::setWelkFilter(const PlotFilter & newWelkFilter)
+{
+	if (_welkFilter == newWelkFilter)
+		return;
+	_welkFilter = newWelkFilter;
+	emit welkFilterChanged();
+}
+
+QString PlotRenderer::kolom() const
+{
+	return _kolom;
+}
+
+void PlotRenderer::setKolom(const QString & newKolom)
+{
+	if (_kolom == newKolom)
+		return;
+	_kolom = newKolom;
+	emit kolomChanged();
 }

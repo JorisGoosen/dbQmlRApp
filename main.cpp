@@ -14,6 +14,7 @@
 #include "database.h"
 #include "settings.h"
 #include "plotrenderer.h"
+#include "plotrenderers.h"
 #include "importer.h"
 #include "labels.h"
 #include "mainmodel.h"
@@ -39,6 +40,11 @@ int main(int argc, char *argv[])
 	MainModel					mainModel(&database);
 	Settings					settings;
 	RWrapper					rWrapper;
+	PlotRenderers				plots;
+
+	//plots.setPlotFolder()
+
+	QObject::connect(&plots,	&PlotRenderers::runRCommand,	&rWrapper,		&RWrapper::runRCommand);
 
 	QObject::connect(&mainModel, &MainModel::loadInQml, &mainEng, [&](Labels * labels, SchoolScannerTable * table)
 	{
@@ -48,15 +54,17 @@ int main(int argc, char *argv[])
 		mainEng.rootContext()->setContextProperty("labels",						labels);
 		mainEng.rootContext()->setContextProperty("importer",					importer);
 
-		QObject::connect(importer, &Importer::showData,	&mainModel, &MainModel::showData);
-
-		QObject::connect(&rWrapper, &RWrapper::plotWidthChanged,		table,	&SchoolScannerTable::plotWidthChanged);
-		QObject::connect(&rWrapper, &RWrapper::plotHeightChanged,		table,	&SchoolScannerTable::plotHeightChanged);
-
 		QObject::connect(table,		&SchoolScannerTable::addContextProperty,	[&](const QString & name, QObject * object){ mainEng.rootContext()->setContextProperty(name, object); });
-		QObject::connect(table,		&SchoolScannerTable::runRCommand,	&rWrapper,	&RWrapper::runRCommand);
 
-		table->initPlots();
+		QObject::connect(importer,	&Importer::showData,				&mainModel,		&MainModel::showData);
+		QObject::connect(&rWrapper, &RWrapper::plotWidthChanged,		table,			&SchoolScannerTable::plotWidthChanged);
+		QObject::connect(&rWrapper, &RWrapper::plotHeightChanged,		table,			&SchoolScannerTable::plotHeightChanged);
+		QObject::connect(table,		&SchoolScannerTable::runRCommand,	&rWrapper,		&RWrapper::runRCommand);
+		QObject::connect(table,		&SchoolScannerTable::renderPlots,	&plots,			&PlotRenderers::renderPlots,	Qt::QueuedConnection);
+
+		table->initRStuff();
+
+		plots.init();
 	});
 
 	//Tell QML whatsup:
@@ -64,20 +72,11 @@ int main(int argc, char *argv[])
 	mainEng.rootContext()->setContextProperty("R",						&rWrapper);
 	mainEng.rootContext()->setContextProperty("database",				&database);
 	mainEng.rootContext()->setContextProperty("mainModel",				&mainModel);
+	mainEng.rootContext()->setContextProperty("plotList",				&plots);
 	mainEng.rootContext()->setContextProperty("schoolScannerTable",		nullptr);
 	mainEng.rootContext()->setContextProperty("labels",					nullptr);
 	mainEng.rootContext()->setContextProperty("importer",				nullptr);
-
 	mainEng.rootContext()->setContextProperty("plotPie",				nullptr);
-
-	// Kleuren van CM
-	// #EF2560  239-37-96			/rozige
-	// #9CCDD1	156 205 209			/lichtblauwig
-	// #038794	3 135 148			/blauwig
-	// #1D1D1B  29 29 27			/zwartig
-	// #BCE2D7  188 226 215			/lichtgroen
-	// #5FA48F	95 164 143			/donkergroen
-	// #FFF798	255 247 152			/lichtgeel
 
 	QMap<QString, QString> kleurenCM =
 	{
@@ -106,8 +105,6 @@ int main(int argc, char *argv[])
 	mainEng.rootContext()->setContextProperty("controlForegroundPressed",	kleurenCM["rozig"]);
 
 	mainEng.rootContext()->setContextProperty("generalMargin",		20);
-
-
 
 	mainEng.load(":/main.qml");
 
