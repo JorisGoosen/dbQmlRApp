@@ -6,7 +6,7 @@
 	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Locatie,	STU, KOLOM, TITEL),	\
 	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Sector,		STU, KOLOM, TITEL),	\
 	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Niveau,		STU, KOLOM, TITEL),	\
-	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Leerjaar,	STU, KOLOM, TITEL),	\
+	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Jaar,		STU, KOLOM, TITEL),	\
 	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Klas,		STU, KOLOM, TITEL),	\
 	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Gender,		STU, KOLOM, TITEL),	\
 	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Cultuur,	STU, KOLOM, TITEL)
