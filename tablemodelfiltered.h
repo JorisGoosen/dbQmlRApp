@@ -1,22 +1,24 @@
-#ifndef ABSTRACTSIZEPROVIDERTABLE_H
-#define ABSTRACTSIZEPROVIDERTABLE_H
+#ifndef TABLEMODELFILTERED_H
+#define TABLEMODELFILTERED_H
 
+#include <QSortFilterProxyModel>
 #include <QPoint>
 #include <QFont>
-#include <QFontMetrics>
-#include <QAbstractTableModel>
+Q_MOC_INCLUDE("tablemodel.h")
 
-class AbstractSizeProviderTable : public QAbstractTableModel
+class TableModel;
+class TableModelFiltered : public QSortFilterProxyModel
 {
 	Q_OBJECT
-
 	Q_PROPERTY(QFont	metricFont			READ metricFont			WRITE setMetricFont			NOTIFY metricFontChanged		)
 	Q_PROPERTY(int		cellMargin			READ cellMargin			WRITE setCellMargin			NOTIFY cellMarginChanged		)
 	Q_PROPERTY(QPoint	topLeft				READ topLeft			WRITE setTopLeft			NOTIFY topLeftChanged			)
 	Q_PROPERTY(QPoint	bottomRight			READ bottomRight		WRITE setBottomRight		NOTIFY bottomRightChanged		)
 
 public:
-	explicit AbstractSizeProviderTable(QObject *parent = nullptr);
+	TableModelFiltered(TableModel * papa);
+
+	bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
 
 	Q_INVOKABLE int			columnWidthProvider(int col);
 	Q_INVOKABLE int			rowHeightProvider(int row);
@@ -26,7 +28,6 @@ public:
 	QPoint	topLeft()		const;
 	QPoint	bottomRight()	const;
 
-
 public slots:
 	void setMetricFont(	const QFont & newMetricFont);
 	void setCellMargin(	int newCellMargin);
@@ -35,22 +36,15 @@ public slots:
 	void setBottomRight(QPoint newBottomRight);
 	void setBottomRight(int col, int row)				{	setBottomRight(QPoint(col, row)); }
 
-
 signals:
 	void	metricFontChanged();
 	void	cellMarginChanged();
 	void	topLeftChanged();
 	void	bottomRightChanged();
 
-protected:
-	QFont					_metricFont;
-	QFontMetrics			_metrics;
-	int						_maxWidthCol	= 300,
-							_cellMargin		= 20,
-							_sizeScan		= 10;	///< how many extravisible cells should be taken into account when calculating cellsize?
-	QPoint					_topLeft,
-							_bottomRight;
 
+private:
+	TableModel * _papa;
 };
 
-#endif // ABSTRACTSIZEPROVIDERTABLE_H
+#endif // TABLEMODELFILTERED_H

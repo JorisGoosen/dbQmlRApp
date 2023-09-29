@@ -1,147 +1,289 @@
 
-afronder <- function(plot, plotFolder, plotFile, width, height, titel, filter)
+basisGrootteText <- 5
+
+laadKolommen <- function(kolomnamen)
+{
+  kolommen <- collect(SchoolScannerTextOnlysql %>% select(all_of(kolomnamen)))
+  
+  if(is.null(names(kolomnamen)))
+    names(kolomnamen) <- kolomnamen
+  
+  naamCultuur <- ""
+  for(naam in names(kolomnamen))
+      if(kolomnamen[[naam]] == 'cultuur')
+        naamCultuur <- naam
+  
+  if(naamCultuur != "")
+  {
+    kolommen[["TEMP"]] <- kolommen[[naamCultuur]]
+    kolommen <- kolommen %>% rowwise() %>%
+      mutate(TEMP=
+        switch(tolower(TEMP),
+               'nederlands'                = 'Nederlands',
+               'marokkaans'                = 'Marrokaans',
+               'marokkaans, nederlands'    = 'Marrokaans',
+               'turks'                     = 'Turks',
+               'nederlands, turks'         = 'Turks',
+               'surinaams'                 = 'Surinaams',
+               'nederlands, surinaams'     = 'Surinaams',
+               'antilliaans'               = 'Antilliaans',
+               'antilliaans, nederlands'   = 'Antilliaans',
+               'Anders'))
+    kolommen[[naamCultuur]] <- droplevels(factor(as.character(kolommen[["TEMP"]]), levels=c('Anders', 'Antilliaans', 'Marrokaans', 'Nederlands', 'Surinaams', 'Turks', '')))
+    kolommen$TEMP <- NULL
+  }
+  
+  return(kolommen)
+}
+
+herordenVaak <- function(kolom, heen=TRUE)
+{
+  vaak <- c('Dagelijks', 'Altijd', 'Wekelijks', 'Vaak', 'Maandelijks', 'Soms', 'Af & toe', 'Nooit', '')
+  
+  if(heen)
+    vaak <- rev(vaak)
+  
+  if(length(intersect(vaak, unique(kolom))) == 0)
+    return(kolom)
+  
+  return(factor(as.character(kolom), levels=vaak))
+}
+
+isFilterSensible <- function(filter)
+{
+  if(filter == 'geen')
+    return(TRUE)
+  
+  sum("" != laadKolommen(filter)[[filter]]) > 0
+}
+
+afronder <- function(plot, plotFolder, plotFile, width, height, titel, filter, bottomLegend=FALSE)
 {
     plot <- plot +
-	  theme_classic() +
-	  theme(text=element_text(size=18,  family="karla")) +
-	  theme(axis.ticks.x=element_blank(), axis.ticks.y=element_blank(), axis.line=element_blank()) +
-	  ggtitle(titel)
+  	  theme_classic() +
+      theme(text=element_text(          size=18,  family="karla", color="black")) +
+      theme(legend.text=element_text(   size=18,  family="karla", color="black")) +
+      theme(text=element_text(          size=18,  family="karla", color="black")) +
+      theme(axis.text.x = element_text( size=18,  family="karla", color="black", lineheight=.0)) +
+      theme(axis.text.y = element_text( size=18,  family="karla", color="black", lineheight=.0)) +
+  	  theme(axis.ticks.x=element_blank(), axis.ticks.y=element_blank(), axis.line=element_blank()) +
+
+      theme(
+        panel.background = element_rect(fill = "transparent",
+                                        colour = NA_character_), # necessary to avoid drawing panel outline
+        panel.grid.major = element_blank(), # get rid of major grid
+        panel.grid.minor = element_blank(), # get rid of minor grid
+        plot.background = element_rect(fill = "transparent",
+                                       colour = NA_character_), # necessary to avoid drawing plot outline
+       legend.background = element_rect(fill = "transparent")
+        #legend.box.background = element_rect(fill = "transparent"),
+       # legend.key = element_rect(fill = "transparent")
+      )
+    
+    
+    if(bottomLegend)
+      plot <- plot + theme(legend.position="bottom") 
+    
+    if(titel != "")
+      plot <- plot +  ggtitle(titel)
 
     writeImage(plot=plot, plotFolder=plotFolder,	plotFile=plotFile,	width=width, height=height)
+    
+    HEIGHT <<- height
     
     return(plot)
 }
 
+dummyPlot <- function(plotFolder, plotFile, width, height, filter, titel="Alle data is weggefilterd")
+{
+
+  afronder(plotFolder=plotFolder, plotFile=plotFile, width=width, height=200, filter=filter, titel="", 
+           plot=ggplot() + 
+             scale_y_continuous(breaks=NULL, labels=NULL) + scale_x_continuous(breaks=NULL, labels=NULL) + 
+             xlab("") + ylab("") +
+             theme(plot.title=element_text(hjust=0.5, vjust=0.5)) +
+             ggtitle(paste(titel, plotFile))
+          ) 
+            
+}
+
+doeCMPalet <- function(hetPlot, aantalWaardes, tekst="")
+{
+  if(aantalWaardes < length(paletKleuren))
+    return(hetPlot + scale_fill_manual(tekst, values=unname(paletKleuren)))
+  
+  return(hetPlot + scale_fill_manual(tekst, values=palet(aantalWaardes)))
+}
+
+procentAsY <- function()
+{
+  scale_y_continuous(labels = scales::percent, breaks=c(0, 0.25, 0.5, 0.75, 1), limits=c(0, 1)) 
+}
+
 horizontaalPerLabelFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
 {
-    tafelPerGender  <- table(SchoolScannerTextOnly[c(kolom, filter)])
-	dfPer		    <- as.data.frame(tafelPerGender)
+  if(!isFilterSensible(filter))
+    return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
+  
+  kolommen        <- laadKolommen(c(kolom, filter))
+  tafelPerGender  <- table(kolommen)
+  dfPer		        <- as.data.frame(tafelPerGender)
 
-    hoeVaaks        <- levels(as.factor(SchoolScannerTextOnly[[kolom]]))
-	genders         <- levels(as.factor(SchoolScannerTextOnly[[filter]]))
-	dfGender	    <- table(SchoolScannerTextOnly[[filter]])
+  hoeVaaks        <- levels(as.factor(kolommen[[kolom]]))
+	genders         <- levels(as.factor(kolommen[[filter]]))
+	dfGender	      <- table(kolommen[[filter]])
 
-    dfPer[[kolom]]	<- factor(as.character(dfPer[[kolom]], rev(c("Nooit", "Soms", "Vaak", "Altijd"))))
-	dfPer			<- dfPer %>% rowwise() %>% select({{filter}}, {{kolom}}, Freq) %>%  mutate(`Hoe vaak` = Freq / dfGender[[filter]], Filter={{filter}}, kolom={{kolom}})
-	dfPer			<- dplyr::filter(dfPer, Filter != "")
-
-    dfPer <- arrange(dfPer, desc(kolom))
+  dfPer[[kolom]]	<- factor(as.character(dfPer[[kolom]], rev(c("Nooit", "Soms", "Vaak", "Altijd"))))
+	dfPer			      <- dfPer %>% rowwise() %>% select({{filter}}, {{kolom}}, Freq) %>%  mutate(`Hoe vaak` = Freq / dfGender[[filter]], Filter={{filter}}, kolom={{kolom}})
+	dfPer			      <- dplyr::filter(dfPer, Filter != "")
+  dfPer           <- arrange(dfPer, desc(kolom))
 
     afronder(
 	    plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel,
-		plot=ggplot(dfPer, aes(x=Filter, y=`Hoe vaak`, fill=kolom)) + geom_bar(position=position_stack(reverse = TRUE), stat="identity") + coord_flip() +
-		  scale_y_continuous(labels = scales::percent) + xlab("") + ylab("") + theme(aspect.ratio=0.3) +
+		  plot=ggplot(dfPer, aes(x=Filter, y=`Hoe vaak`, fill=kolom)) + geom_bar(position=position_stack(reverse = TRUE), stat="identity") + coord_flip() +
+		  procentAsY() + xlab("") + ylab("") + theme(aspect.ratio=0.3) +
 		  scale_fill_manual("", values=c(Altijd=kleuren$rozig, Vaak=kleuren$lichtblauwig, Soms=kleuren$lichtrozig, Nooit=kleuren$blauwig))
 	)
 }
 
-horizontaalMeerdereFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
+horizontaalMeerdereKolomFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
 {
-    dfGraag <- as.data.frame(table(SchoolScannerTextOnly$graagNaarSchool))
-	dfBang  <- as.data.frame(table(SchoolScannerTextOnly$bangOpSchool))
+  if(!isFilterSensible(filter))
+    return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
+  
+  kolommen <- laadKolommen(c(kolom, filter))
+  
+  dfGraag <- as.data.frame(table(kolommen$graagNaarSchool))
+  dfBang  <- as.data.frame(table(kolommen$bangOpSchool))
+  
+ 
+  
+  df <- df %>% rowwise() %>% select(Var1, Freq, Kolom) %>% mutate(`Procent`= Freq / length(kolommen$graagNaarSchool), `Hoe vaak`=Var1)
+  
+  df <- dplyr::filter(df, `Hoe vaak` != "")
+  
+  df$`Hoe vaak` <- herordenVaak(df$`Hoe vaak`, FALSE)
+  
+  df <- arrange(df, desc(`Hoe vaak`))
+  
+  afronder(
+    plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel,
+    plot=ggplot(df, aes(x=Kolom, y=`Procent`, fill=`Hoe vaak`)) + theme(aspect.ratio=0.3) +
+      geom_bar( stat="identity", na.rm=TRUE, position = position_stack(reverse = TRUE)) +
+      procentAsY() + xlab("") + ylab("") +
+      scale_fill_manual("", values=c(Altijd=kleuren$rozig, Vaak=kleuren$lichtblauwig, Soms=kleuren$lichtrozig, Nooit=kleuren$blauwig))
+  )
+}
 
-    dfGraag$Kolom <- "Graag naar school"
-	dfBang$Kolom  <- "Bang op school"
 
-    df <- rbind(dfGraag, dfBang)
-
-    df <- df %>% rowwise() %>% select(Var1, Freq, Kolom) %>% mutate(`Procent`= Freq / length(SchoolScannerTextOnly$graagNaarSchool), `Hoe vaak`=Var1)
-
-    df <- dplyr::filter(df, `Hoe vaak` != "")
-
-    df$`Hoe vaak` <- factor(as.character(df$`Hoe vaak`), rev(c("Nooit", "Soms", "Vaak", "Altijd")))
-
-    df <- arrange(df, desc(`Hoe vaak`))
-
-    afronder(
-	    plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel,
-		plot=ggplot(df, aes(x=Kolom, y=`Procent`, fill=`Hoe vaak`)) + theme(aspect.ratio=0.3) +
-		  geom_bar( stat="identity", na.rm=TRUE, position = position_stack(reverse = TRUE)) +
-		  coord_flip() + scale_y_continuous(labels = scales::percent) + xlab("") + ylab("") +
-		  scale_fill_manual("", values=c(Altijd=kleuren$rozig, Vaak=kleuren$lichtblauwig, Soms=kleuren$lichtrozig, Nooit=kleuren$blauwig))
-	)
+horizontaalMeerdereGaSchoolFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
+{
+  if(!isFilterSensible(filter))
+    return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
+  
+  kolommen <- laadKolommen(c('graagNaarSchool', 'bangOpSchool'))
+  
+  dfGraag <- as.data.frame(table(kolommen$graagNaarSchool))
+  dfBang  <- as.data.frame(table(kolommen$bangOpSchool))
+  
+  dfGraag$Kolom <- "Graag naar school"
+  dfBang$Kolom  <- "Bang op school"
+  
+  df <- rbind(dfGraag, dfBang)
+  
+  df <- df %>% rowwise() %>% select(Var1, Freq, Kolom) %>% mutate(`Procent`= Freq / length(kolommen$graagNaarSchool), `Hoe vaak`=Var1)
+  
+  df <- dplyr::filter(df, `Hoe vaak` != "")
+  
+  df$`Hoe vaak` <- herordenVaak(df$`Hoe vaak`, FALSE)
+  
+  df <- arrange(df, desc(`Hoe vaak`))
+  
+  afronder(
+    plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel,
+    plot=ggplot(df, aes(x=Kolom, y=`Procent`, fill=`Hoe vaak`)) + theme(aspect.ratio=0.3) +
+      geom_bar( stat="identity", na.rm=TRUE, position = position_stack(reverse = TRUE)) +
+      coord_flip() +
+      procentAsY() + xlab("") + ylab("") +
+      scale_fill_manual("", values=c(Altijd=kleuren$rozig, Vaak=kleuren$lichtblauwig, Soms=kleuren$lichtrozig, Nooit=kleuren$blauwig))
+  )
 }
 
 horizontaalLabelsGroepenFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
 {
+  if(!isFilterSensible(filter))
+    return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
+  
+  allesPerCulturen <- laadKolommen(c(kolom=kolom, filter=filter))
 
-    allesPerCulturen <- SchoolScannerTextOnly[c('onveiligHier', 'cultuur')]
+  tafelTotaal       <- table(allesPerCulturen$filter)
+	allesPerCultuur   <- allesPerCulturen %>% mutate(kolom=strsplit(kolom, ", ")) %>% unnest(kolom)
+	tafelPerCultuur   <- table(allesPerCultuur)
+	
+  dfPer		          <- as.data.frame(tafelPerCultuur)
 
-    allesPerCulturen <- allesPerCulturen %>% rowwise() %>% select(cultuur, onveiligHier) %>%
-	  mutate(cultuur=
-	           switch(tolower(cultuur),
-			          'nederlands'                = 'Nederlands',
-					  'marokkaans'                = 'Marrokaans',
-					  'marokkaans, nederlands'    = 'Marrokaans',
-					  'turks'                     = 'Turks',
-					  'nederlands, turks'         = 'Turks',
-					  'surinaams'                 = 'Surinaams',
-					  'nederlands, surinaams'     = 'Surinaams',
-					  'antilliaans'               = 'Antilliaans',
-					  'antilliaans, nederlands'   = 'Antilliaans',
-					  'Anders'))
+  hoeVaaks          <- levels(as.factor(allesPerCulturen$kolom))
+	filters           <- levels(as.factor(allesPerCulturen$filter))
+	dffilter	        <- table(allesPerCulturen$filter)
+	
+	dfPer <- dfPer %>% rowwise() %>% select(filter, kolom, Freq) %>% mutate(Procent = Freq / tafelTotaal[[filter]], totaalCultuur = tafelTotaal[[filter]])
+	dfPer <- dplyr::filter(dfPer, filter != "")
+			 
+	#if(kolom == 'onveiligHier' & length(hoeVaaks) > 1 ) #haal nergens onveilig weg want die verstoord alles alleen maar. Tenzij het de enige is...
+	#  dfPer <- dplyr::filter(dfPer, kolom != "" & str_count(kolom, "nergens onveilig") == 0)
+	dfPer$kolom <- herordenVaak(dfPer$kolom)
 
-    tafelTotaal      <- table(allesPerCulturen$cultuur)
-	allesPerCultuur  <- allesPerCulturen %>% mutate(onveiligHier=strsplit(onveiligHier, ", ")) %>% unnest(onveiligHier)
-	tafelPerCultuur  <- table(allesPerCultuur)
+	
+  dfPer <- arrange(dfPer, desc(kolom))
+  
+  hetPlot <- ggplot(dfPer, aes(x=kolom, y=Procent, fill=filter)) +
+    geom_bar(position=position_dodge2(reverse=TRUE),stat="identity", width=1) +
+    
+    geom_text(size=basisGrootteText, aes(group=filter, label = ifelse(Freq > 0, paste0(round(Procent * 100, 1), "%"), ""), hjust=ifelse(Procent > 0.1, 1.1, -0.1)), vjust=0.4, position = position_dodge2(reverse=TRUE, width=1)) +
+    geom_text(size=basisGrootteText-1,aes(group=filter, label = ifelse(Freq > 0, Freq, "")),
+              hjust=1.1, vjust=0.4, y=0.0, position = position_dodge2(reverse=TRUE, width=1)) +
+    
+    coord_flip() +
+    procentAsY() + xlab("") + ylab("") + theme(aspect.ratio=2.0) 
+    #scale_x_discrete(labels = function(x) str_wrap(x, width = 20))
+  
+  hetPlot <- doeCMPalet(hetPlot, length(filters))
+  
+  bodemLegenda <- length(hoeVaaks) > 6
+  
+  height <- max(width / 4, 
+                min(width * 4, 
+                    floor(
+                      (50) 
+                      * length(unique(dfPer$kolom)) 
+                      * length(unique(dfPer$filter))  
+                      )
+                    + ifelse(bodemLegenda, 150, 0)
+               )
+            )
+  
+  
 
-
-
-    dfPer		    <- as.data.frame(tafelPerCultuur)
-
-    hoeVaaks        <- levels(as.factor(SchoolScannerTextOnly$onveiligHier))
-	cultuurs         <- levels(as.factor(SchoolScannerTextOnly$cultuur))
-	dfcultuur	    <- table(SchoolScannerTextOnly$cultuur)
-
-    #dfPer$onveiligHier <- factor(as.character(dfPer$onveiligHier), rev(c("Nooit", "Soms", "Vaak", "Altijd")))
-	dfPer           <- dfPer %>% rowwise() %>% select(cultuur, onveiligHier, Freq) %>%
-	  mutate(Freq = Freq / tafelTotaal[[cultuur]], cultuur=cultuur,
-	         `Onveilig in`=onveiligHier, totaalCultuur = tafelTotaal[[cultuur]])
-			 dfPer <- dplyr::filter(dfPer, cultuur != "")
-	dfPer <- dplyr::filter(dfPer, onveiligHier != "" && str_count(onveiligHier, "nergens onveilig") == 0)
-
-
-    dfPer <- arrange(dfPer, desc(onveiligHier))
-
-    afronder(
-	    plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel,
-		plot=ggplot(dfPer, aes(x=`Onveilig in`, y=Freq, fill=cultuur)) +
-		  geom_bar(position=position_dodge2(reverse=TRUE),stat="identity", width=1) +
-
-          geom_text(size=3,aes(group=cultuur, label = paste0(round(Freq * 100), "%")), hjust=-0.1, vjust=0.4, position = position_dodge2(reverse=TRUE, width=1)) +
-		  geom_text(size=3,aes(group=cultuur, label =
-		                         ifelse(Freq > 0.01,
-								        paste0("N: ", totaalCultuur),
-										"")),
-									 hjust=-0.1, vjust=0.4, y=0.0, position = position_dodge2(reverse=TRUE, width=1)) +
-
-          coord_flip() +
-		  scale_y_continuous(labels = scales::percent) + xlab("") + ylab("") + theme(aspect.ratio=2.0) +
-		  scale_x_discrete(labels = function(x) str_wrap(x, width = 20)) +
-
-          scale_fill_manual("",
-		                    values=c(
-							  Anders      = kleuren$rozig,
-							  Antilliaans = kleuren$lichtblauwig,
-							  Marrokaans  = kleuren$lichtrozig,
-							  Nederlands  = kleuren$blauwig,
-							  Surinaams   = kleuren$lichtgeel,
-							  Turks       = kleuren$donkergroen))
+  afronder(
+    plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel, bottomLegend=bodemLegenda, plot=hetPlot
 	)
 }
 
 horizontaalLabelPerTypeRespondentFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
 {
+  if(!isFilterSensible(filter))
+    return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
+  
     welkeKolommen <- 'ikMijn'
 
     kolommen <- switch(welkeKolommen,
-	                      klas        = c("klasJezelf", "klasSfeerGoed", "klasSchoolGemopper", "klasOpschietenMet", "klasGoedSamenWerken", "klasAfkomstKlit", "klasOnaardigGepraat", "klasVeelRuzie", "klasKunJeZeggenVervelend", "klasDurfUitDeKast", "klasKwetstMetMijnIdentiteit", "klasWeetHoeHetMetMijGaat", "klasVoeltOnveilig"),
+	            klas        = c("klasJezelf", "klasSfeerGoed", "klasSchoolGemopper", "klasOpschietenMet", "klasGoedSamenWerken", "klasAfkomstKlit", "klasOnaardigGepraat", "klasVeelRuzie", "klasKunJeZeggenVervelend", "klasDurfUitDeKast", "klasKwetstMetMijnIdentiteit", "klasWeetHoeHetMetMijGaat", "klasVoeltOnveilig"),
 						  studenten   = c("studentenBuitenGesloten", "studentenUitgescholden", "studentenExpresLesVerstoren", "studentenSpullenSlopenJatten", "studentenGepest", "studentenDigitaalGepest", "studentenGediscrimineerdDoorLeerlingen", "studentenGediscrimineerdDoorLeraren", "studentenBedreigdGeintimideerd", "studentenGeduwdGeschoptGeslagen", "studentenVechten", "studentenSeksueelGetinteOpmerkingenMaken", "studentenSeksueleAfbeeldingenVerspreiden", "studentenOnveiligVoelenInKlas"),
 						  ikMijn      = c("ikBuitengesloten", "ikUitgescholden", "ikExpresGestoord", "ikGepest", "ikDigitaalGepest", "ikGediscrimineerdDoorLeerlingen", "ikGediscrimineerdDoorLeraren", "ikBedreigdGeintimideerd", "ikGeduwdGeschoptGeslagen", "ikUitgedaagdOmTeVechten", "ikAangesprokenMetSeksueelGetinteOpmerkingen", "ikAangesprokenOpVervelendGedrag", "mijnSpullenGeslooptGejat", "mijnPriveFotosVerspreid"),
 						  school      = c("schoolVoeltOnveilig", "schoolJezelfZijn", "schoolSfeerIsGoed", "schoolRaadIkAan", "schoolStudentenGediscrimineerd", "schoolDiversVoeltThuis", "schoolGoedOpschietenElkaar", "schoolLiefstMetGelijkeAfkomstOm", "schoolAnderenVoorgetrokkenAfkomstCultuurGeloof", "schoolActueleGebeurtenissenMijAangaanBehandeldOpSchool", "schoolStudentenZittenOngewildAlleen"),
 						  WerkSchool  = c("werkenSchoolDuidelijkeRegelsOmgang", "werkenSchoolRegelsIedereenGelijk", "werkenSchoolStudentenDieRegelsBrekenAangesproken", "werkenSchoolDocentenDieRegelsBrekenAangesproken", "werkenSchoolRegelsIedereDocentGelijk", "werkenSchoolOmbudBekend", "werkenSchoolMeningStudentenTelt", "werkenSchoolStudentenHebbenRespectVoorDocenten", "werkenSchoolDocentenHebbenRespectVoorStudenten", "werkenSchoolDocentenGevenGoedeVoorbeeld"),
 						  vervelend   = c("vervelendDanGaIkHelpen", "vervelendDanKijkIkWeg", "vervelendDanLoopIkWeg", "vervelendDanDoeIkMee", "vervelendDanZegIkErWatVan", "vervelendDanWaarschuwIkSchoolMedewerker", "vervelendDanLaatIkMedelevenWeten", "vervelendDanZieIkDatAndereStudentIngrijpt", "vervelendDanZieIkDatDocentIngrijpt", "vervelendDanZieIkDatAfdelingsleiderIngrijpt","alsIkVervelendeSituatieZieDanVindIkDatIkWatMoetDoen", "alsIkVervelendeSituatieZieDanWeetIkWatIkKanDoen"),
-						  buitensluit = c("alsEenStudentWordtBuitengeslotenDanIsDatEigenKeuze", "alsEenStudentWordtBuitengeslotenDanIsDatEigenSchuld", "voelMeVerantwoordelijkOmBuitensluitenTegenTeGaan", "voelMeVerantwoordelijkOmInTeGrijpenAlsIemandWordtGediscrimineerd", "voelMeVerantwoordelijkOmInTeGrijpenAlsIemandWordtGepest", "ikStuurWelEensPrivefotosAnderenDoor"),
+						  buitensluit = c("alsEenStudentWordtBuitengeslotenDanIsDatEigenKeuze", "alsEenStudentWordtBuitengeslotenDanIsDatEigenSchuld", "voelMeVerantwoordelijkOmBuitensluitenTegenTeGaan", "voelMeVerantwoordelijkOmInTeGrijpenAlsIemandWordtGediscrimineerd", "voelMeVerantwoordelijkOmInTeGrijpenAlsIemandWordtGepest", "ikStuurWelEensPrivefotosAnderenDoorOfIkGrijpIn"),
 						  mentor      = c("mentorIkHebGoedContact", "docentIkHebGoedContact", "docentenKunnenGoedOrdeHouden", "docentenGevenMijComplimenten", "docentenHebbenLageVerwachtingVanMij", "docentenLettenOpTaalgebruikStudenten", "docentenlettenOpEigenTaalgebruik", "docentenBelonenPositiefGedrag", "docentenGrijpenInWanneerDatNodigIs", "mentorenWetenWatErInDeKlasSpeelt", "mentorenBespreektWatErInDeKlasSpeelt", "actueleGebeurtenissenSamenlevingWordenInKlasBesproken"))
 
     TITEL <- switch(welkeKolommen,
@@ -153,59 +295,56 @@ horizontaalLabelPerTypeRespondentFunc <- function(plotFolder, plotFile, width, h
 					buitensluit = "Bij buitensluiting...",
 					mentor      = "Docenten & mentoren")
 
-    allesPerType <- SchoolScannerTextOnly[c("type", kolommen)]
+    allesPerType <- laadKolommen(c("type", kolommen))
 
 
     renamer <- switch(welkeKolommen,
-	                  klas        = c(`kun je jezelf zijn`='klasJezelf',  `is de sfeer goed`='klasSfeerGoed',  `wordt gemopperd over school`='klasSchoolGemopper',  `kan ik goed opschieten met klasgenoten`='klasOpschietenMet',  `kunnen we goed samenwerken`='klasGoedSamenWerken',  `ga ik het liefst om met degene met dezelfde afkomst`='klasAfkomstKlit',  `hoor ik onaardig gepraat over elkaar`='klasOnaardigGepraat',  `is veel ruzie`='klasVeelRuzie',  `kun je er wat van zeggen als iemand vervelend tegen je doet`='klasKunJeZeggenVervelend',  `zou ik uit de kast durven komen`='klasDurfUitDeKast',  `worden kwetsende opmerkingen gemaakt over mijn identiteit`='klasKwetstMetMijnIdentiteit',  `weet men hoe het met mij gaat`='klasWeetHoeHetMetMijGaat',  `voelt het onveilig`='klasVoeltOnveilig'),
+	          klas        = c(`kun je jezelf zijn`='klasJezelf',  `is de sfeer goed`='klasSfeerGoed',  `wordt gemopperd over school`='klasSchoolGemopper',  `kan ik goed opschieten met klasgenoten`='klasOpschietenMet',  `kunnen we goed samenwerken`='klasGoedSamenWerken',  `ga ik het liefst om met degene met dezelfde afkomst`='klasAfkomstKlit',  `hoor ik onaardig gepraat over elkaar`='klasOnaardigGepraat',  `is veel ruzie`='klasVeelRuzie',  `kun je er wat van zeggen als iemand vervelend tegen je doet`='klasKunJeZeggenVervelend',  `zou ik uit de kast durven komen`='klasDurfUitDeKast',  `worden kwetsende opmerkingen gemaakt over mijn identiteit`='klasKwetstMetMijnIdentiteit',  `weet men hoe het met mij gaat`='klasWeetHoeHetMetMijGaat',  `voelt het onveilig`='klasVoeltOnveilig'),
 					  studenten   = c(`worden buitengesloten`='studentenBuitenGesloten',  `worden uitgescholden`='studentenUitgescholden',  `met opzet de les verstoren`='studentenExpresLesVerstoren',  `spullen slopen of jatten`='studentenSpullenSlopenJatten',  `worden gepest`='studentenGepest',  `digitaal worden gepest`='studentenDigitaalGepest',  `worden gediscrimineerd door leerlingen`='studentenGediscrimineerdDoorLeerlingen',  `worden gediscrimineerd door leraren`='studentenGediscrimineerdDoorLeraren',  `worden bedreigd of geintimideerd`='studentenBedreigdGeintimideerd',  `worden geschopt of geslagen`='studentenGeduwdGeschoptGeslagen',  `vechten`='studentenVechten',  `seksueel getinte opmerkingen maken`='studentenSeksueelGetinteOpmerkingenMaken',  `seksuele afbeeldingen verspreiden`='studentenSeksueleAfbeeldingenVerspreiden',  `onveilig voelen in de klas`='studentenOnveiligVoelenInKlas'),
 					  ikMijn      = c(`buitengesloten`='ikBuitengesloten',  `uitgescholden`='ikUitgescholden',  `met opzet gestoord`='ikExpresGestoord',  `gepest`='ikGepest',  `digitaal gepest`='ikDigitaalGepest',  `gediscrimineerd door leerlingen`='ikGediscrimineerdDoorLeerlingen',  `gediscrimineerd door leraren`='ikGediscrimineerdDoorLeraren',  `bedreigd of geintimideerd`='ikBedreigdGeintimideerd',  `geduwd, geschopt of geslagen`='ikGeduwdGeschoptGeslagen',  `uitgedaagd om te vechten`='ikUitgedaagdOmTeVechten',  `aangesproken met seksueel getinte opmerkingen`='ikAangesprokenMetSeksueelGetinteOpmerkingen',  `aangesproken op vervelend gedrag`='ikAangesprokenOpVervelendGedrag',  `spullen gesloopt of gejat`='mijnSpullenGeslooptGejat',  `prive fotos verspreid`='mijnPriveFotosVerspreid'),
 					  school      = c(`voelt het onveilig`='schoolVoeltOnveilig',  `kun je jezelf zijn`='schoolJezelfZijn',  `is de sfeer goed`='schoolSfeerIsGoed',  `zou ik aanraden`='schoolRaadIkAan',  `leerlingen gediscrimineerd`='schoolStudentenGediscrimineerd',  `voelen mensen van verschillende afkomsten zich thuis`='schoolDiversVoeltThuis',  `kunnen leerlingen goed opschieten met elkaar`='schoolGoedOpschietenElkaar',  `gaan leerlingen het liefst om met anderen van dezelfde afkomst`='schoolLiefstMetGelijkeAfkomstOm',  `worden anderen voorgetrokken op basis afkomst, cultuur of geloof`='schoolAnderenVoorgetrokkenAfkomstCultuurGeloof',  `komen actuele gebeurtenissen die mij aangaan aan bod`='schoolActueleGebeurtenissenMijAangaanBehandeldOpSchool',  `zitten leerlingen ongewild alleen`='schoolStudentenZittenOngewildAlleen'),
 					  vervelend   = c(`ga ik helpen`='vervelendDanGaIkHelpen',  `kijk ik weg`='vervelendDanKijkIkWeg',  `loop ik weg`='vervelendDanLoopIkWeg',  `doe ik mee`='vervelendDanDoeIkMee',  `zeg ik er wat van`='vervelendDanZegIkErWatVan',  `waarschuw ik een schoolmedewerker`='vervelendDanWaarschuwIkSchoolMedewerker',  `laat ik medeleven weten`='vervelendDanLaatIkMedelevenWeten',  `zie ik dat andere leerling ingrijpt`='vervelendDanZieIkDatAndereStudentIngrijpt',  `zie ik dat docent ingrijpt`='vervelendDanZieIkDatDocentIngrijpt',  `zie ik dat afdelingsleider ingrijpt`='vervelendDanZieIkDatAfdelingsleiderIngrijpt', `vind ik dat ik wat moet doen`='alsIkVervelendeSituatieZieDanVindIkDatIkWatMoetDoen',  `weet ik wat ik moet doen`='alsIkVervelendeSituatieZieDanWeetIkWatIkKanDoen'),
-					  buitensluit = c(`is dat de eigen keuze`='alsEenStudentWordtBuitengeslotenDanIsDatEigenKeuze',  `is dat de eigen schuld`='alsEenStudentWordtBuitengeslotenDanIsDatEigenSchuld',  `voel ik me verantwoordelijk dat tegen te gaan`='voelMeVerantwoordelijkOmBuitensluitenTegenTeGaan',  `door discriminatie voel ik me verantwoordelijk om in te grijpen`='voelMeVerantwoordelijkOmInTeGrijpenAlsIemandWordtGediscrimineerd',  `door pesten voel ik me verantwoordelijk om in te grijpen`='voelMeVerantwoordelijkOmInTeGrijpenAlsIemandWordtGepest',  `.. stuur ik wel eens prive fotos van anderen door`='ikStuurWelEensPrivefotosAnderenDoor'),
+					  buitensluit = c(`is dat de eigen keuze`='alsEenStudentWordtBuitengeslotenDanIsDatEigenKeuze',  `is dat de eigen schuld`='alsEenStudentWordtBuitengeslotenDanIsDatEigenSchuld',  `voel ik me verantwoordelijk dat tegen te gaan`='voelMeVerantwoordelijkOmBuitensluitenTegenTeGaan',  `door discriminatie voel ik me verantwoordelijk om in te grijpen`='voelMeVerantwoordelijkOmInTeGrijpenAlsIemandWordtGediscrimineerd',  `door pesten voel ik me verantwoordelijk om in te grijpen`='voelMeVerantwoordelijkOmInTeGrijpenAlsIemandWordtGepest',  `.. stuur ik wel eens prive fotos van anderen door`='ikStuurWelEensPrivefotosAnderenDoorOfIkGrijpIn'),
 					  mentor      = c(`Ik heb goed contact met mijn mentor`='mentorIkHebGoedContact',  `Ik heb goed contact met mijn docent`='docentIkHebGoedContact',  `Docenten kunnen goed orde houden`='docentenKunnenGoedOrdeHouden',  `Docenten geven mij complimenten`='docentenGevenMijComplimenten',  `Docenten hebben lage verwachting van mij`='docentenHebbenLageVerwachtingVanMij',  `Docenten letten op taalgebruik van de leerlingen`='docentenLettenOpTaalgebruikStudenten',  `Docenten letten op eigen taalgebruik`='docentenlettenOpEigenTaalgebruik',  `Docenten belonen positief gedrag`='docentenBelonenPositiefGedrag',  `Docenten grijpen in wanneer dat nodig is`='docentenGrijpenInWanneerDatNodigIs',  `Mentoren weten wat er in de klas speelt`='mentorenWetenWatErInDeKlasSpeelt',  `Mentoren bespreekt wat er in de klas speelt`='mentorenBespreektWatErInDeKlasSpeelt',  `Actuele gebeurtenissen samenleving worden in klas besproken`='actueleGebeurtenissenSamenlevingWordenInKlasBesproken')
 	)
 
-    tafelTotaal      <- table(allesPerType$type)
-
-    allesPerType <- allesPerType %>% mutate_at(kolommen, funs(sapply(., function(x) {switch(x, FALSE, Dagelijks=TRUE, Wekelijks=TRUE, Altijd=TRUE, Vaak=TRUE)})))
-
-    allesPerType <- rename(allesPerType, all_of(renamer))
-
-    allesPerType <- allesPerType %>% pivot_longer(!type)
-	allesPerType <- dplyr::filter(allesPerType, value)
-
-
-    tafelPerType  <- table(allesPerType)
-
-    dfPer		    <- as.data.frame(tafelPerType)
+  tafelTotaal      <- table(allesPerType$type)
+  
+  allesPerType <- allesPerType %>% mutate_at(kolommen, funs(sapply(., function(x) {switch(x, FALSE, Dagelijks=TRUE, Wekelijks=TRUE, Altijd=TRUE, Vaak=TRUE)})))
+  
+  allesPerType <- rename(allesPerType, all_of(renamer))
+  
+  allesPerType <- allesPerType %>% pivot_longer(!type)
+  allesPerType <- dplyr::filter(allesPerType, value)
 
 
-    #dfPer$onveiligHier <- factor(as.character(dfPer$onveiligHier), rev(c("Nooit", "Soms", "Vaak", "Altijd")))
-	dfPer           <- dfPer %>% rowwise() %>% select(type, name, Freq) %>%
-	  mutate(Freq = Freq / tafelTotaal[[type]], type=type, totaalType = tafelTotaal[[type]])
-	dfPer <- dplyr::filter(dfPer, type != "")
+  tafelPerType  <- table(allesPerType)
+  
+  dfPer		    <- as.data.frame(tafelPerType)
+  
+  
+  #dfPer$onveiligHier <- factor(as.character(dfPer$onveiligHier), rev(c("Nooit", "Soms", "Vaak", "Altijd")))
+  dfPer           <- dfPer %>% rowwise() %>% select(type, name, Freq) %>%
+  mutate(Freq = Freq / tafelTotaal[[type]], type=type, totaalType = tafelTotaal[[type]])
+  dfPer <- dplyr::filter(dfPer, type != "")
 
-    # dfPer <- arrange(dfPer, desc(name))
+  # dfPer <- arrange(dfPer, desc(name))
 
-    afronder(
-	    plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel,
+  afronder(
+    plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel,
 		plot=ggplot(dfPer, aes(x=name, y=Freq, fill=type)) +
 		  geom_bar(position=position_dodge2(reverse=TRUE),stat="identity", width=1) +
-
-          geom_text(size=3,aes(group=type, label = paste0(round(Freq * 100), "%")), hjust=-0.1, vjust=0.4, position = position_dodge2(reverse=TRUE, width=1)) +
-		  geom_text(size=3,aes(group=type, label =
+      geom_text(size=basisGrootteText,aes(group=type, label = paste0(round(Freq * 100), "%")), hjust=ifelse(dfPer$Freq < 0.9, 1.1, -0.1), vjust=0.4, position = position_dodge2(reverse=TRUE, width=1)) +
+		  geom_text(size=basisGrootteText,aes(group=type, label =
 		                         ifelse(Freq > 0.01,
 								        paste0("N: ", totaalType),
 										"")),
 									   hjust=-0.1, vjust=0.4, y=0.0, position = position_dodge2(reverse=TRUE, width=1)) +
-
-          coord_flip() +
-		  scale_y_continuous(labels = scales::percent) + xlab("") + ylab("") + theme(aspect.ratio=2.0) +
-		  scale_x_discrete(labels = function(x) str_wrap(x, width = 20)) +
-
-          scale_fill_manual("",
-		                    values=c(
+      coord_flip() +
+		  procentAsY() + xlab("") + ylab("") + theme(aspect.ratio=2.0) +
+		  scale_x_discrete(labels = function(x) str_wrap(x, width = 30)) +
+      scale_fill_manual("",
+	             values=c(
 							  Leerlingen  = kleuren$rozig,
 							  Docenten     = kleuren$lichtblauwig,
 							  Studenten   = kleuren$lichtrozig))
@@ -214,31 +353,36 @@ horizontaalLabelPerTypeRespondentFunc <- function(plotFolder, plotFile, width, h
 
 verticaalStaafFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
 {
-  deKolommen <- dplyr::filter(dplyr::filter(SchoolScannerTextOnly[c(kolom, filter)], SchoolScannerTextOnly[[filter]] != ""), {{kolom}} != "")
-  
-  df <- as.data.frame(table(deKolommen))
-  perFilter <- as.data.frame(table(deKolommen[[filter]]))
-  
-  df <- df %>% rowwise() %>% select({{kolom}}, Freq, {{filter}}) %>% mutate(`Procent`= Freq / length(deKolommen[[kolom]]))
+  if(!isFilterSensible(filter))
+    return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
 
-  df[[kolom]] <- factor(as.character(df[[kolom]]), (c('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10')))
+  if(filter == 'geen')
+    return(dummyPlot(titel="Kan niet zonder filter", plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
   
-  #  df <- arrange(df, asc(`Hoe vaak`))
+  kolommen   <- laadKolommen(c(kolom, filter))
+  deKolommen <- dplyr::filter(kolommen, .data[[filter]] != "" & .data[[kolom]] != "")
   
-  #print(deKolommen[[kolom]])
+  df              <- as.data.frame(table(deKolommen))
+  tafelPerFilter  <- table(deKolommen[[filter]])
+  perFilter       <- as.data.frame(tafelPerFilter)
+  df$totaal       <- tafelPerFilter[df[[filter]]]
+  df$`Procent`    <- df$Freq / df$totaal
+  
+  # df <- df %>% rowwise() %>% select({{kolom}}, Freq, {{filter}}) %>% mutate(`Procent`= Freq / tafelPerFilter[[filter]])
 
-    hetPlot <-       ggplot(df, aes(x=.data[[kolom]], y=`Procent`, fill=.data[[filter]])) +
-	geom_bar( stat="identity", na.rm=TRUE, position = position_dodge2(reverse=TRUE, width=1)) +
-	# coord_flip() +
-	scale_y_continuous(labels = scales::percent) + xlab(str_to_title(filter)) + #ylab("") +
-	geom_text(size=4, aes(y = `Procent`, label=Freq), vjust=-0.5, position=position_dodge2(reverse=TRUE, width=1))# +
-  ##  geom_text(size=4, aes(y = 0, label={{kolom}}), vjust=-0.5,  position=position_dodge2(reverse=TRUE, width=1))
+  df[[kolom]] <- factor(as.character(df[[kolom]]), (c('1', '2', '3', '4', '5', '6', '7', '8', '9', '10')))
   
-    if(length(perFilter$Var1) <= 11)
-	hetPlot <- hetPlot +
-	    scale_fill_manual(paste0("N: ", length(deKolommen[[kolom]])), values=
-		                c(kleuren$rozig, kleuren$lichtblauwig, kleuren$lichtrozig, kleuren$blauwig, kleuren$lichtgeel, kleuren$rozig,
-						  kleuren$lichtgroen, kleuren$lichtrozig, kleuren$donkergroen, kleuren$lichtgeel, kleuren$rozig ))
+  # df <- arrange(df, asc(`Hoe vaak`))
+  # print(deKolommen[[kolom]])
+
+  hetPlot <-       ggplot(df, aes(x=.data[[kolom]], y=`Procent`, fill=.data[[filter]])) +
+  	geom_bar( stat="identity", na.rm=TRUE, position = position_dodge2(reverse=TRUE, width=1)) +
+  	# coord_flip() +
+    procentAsY() + xlab(str_to_title(filter)) + #ylab("") +
+  	geom_text(size=basisGrootteText, aes(y = `Procent`, label=ifelse(Freq>0, Freq, '')), vjust=-0.5, position=position_dodge2(reverse=TRUE, width=1))# +
+    ##  geom_text(size=4, aes(y = 0, label={{kolom}}), vjust=-0.5,  position=position_dodge2(reverse=TRUE, width=1))
+  
+  hetPlot <- doeCMPalet(hetPlot, length(unique(df[[filter]])), paste0("N: ", length(deKolommen[[kolom]])))
 
   afronder(
     plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel,
@@ -249,18 +393,23 @@ verticaalStaafFunc <- function(plotFolder, plotFile, width, height, titel, kolom
 
 taartFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
 {
-  deKolom <- SchoolScannerTextOnly[[kolom]]
+  if(!isFilterSensible(filter))
+    return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
   
-  # doe filter?
-  totaal <- length(deKolom)
-  df <- as.data.frame(table(deKolom))
+  deKolom             <- laadKolommen(c(kolom))
+  deKolom[["kolom"]]  <- deKolom[[kolom]]
+  deKolom[[kolom]]    <- NULL
   
-  df <- df %>% rowwise() %>% select(deKolom, Freq) %>% mutate(Procent= Freq / totaal, `Hoe vaak`=deKolom)
+  levelsHier <- c('1', '2', '3', '4', '5', '6', '7', '8', '9', '10')
   
-  df <- dplyr::filter(df, `Hoe vaak` != "")
+  df       <- dplyr::filter(deKolom, kolom != "")
+  totaal   <- length(df$kolom)
+  df$kolom <- factor(as.character(df$kolom), levels=levelsHier)
+  df       <- as.data.frame(table(df))
   
-  df$`Hoe vaak` <- factor(as.character(df$`Hoe vaak`), (c('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10')))
-  df <- arrange(df, `Hoe vaak`)
+  df <- df %>% rowwise() %>% select(kolom, Freq) %>% mutate(Procent= Freq / totaal)
+  
+  df <- arrange(df, kolom)
   
   df$cumProcent <- cumsum(df$Procent)
   
@@ -268,16 +417,17 @@ taartFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter,
   
   afronder(
     plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel,
-    plot=ggplot(df, aes(x="", y=Freq, fill=`Hoe vaak`)) + 
-      geom_bar( stat="identity", na.rm=TRUE, position = position_stack(reverse = TRUE)) +
+    plot=ggplot(df, aes(x="", y=Freq, fill=kolom)) + 
+      geom_bar( stat="identity", position = position_stack(reverse = TRUE)) +
       # coord_flip() +
       scale_y_continuous(breaks=NULL, labels=NULL) + 
       xlab("") + ylab("") +
       scale_fill_manual(paste0("N: ", totaal), values=
-                          c(`0`=kleuren$blauwig, `1`=kleuren$lichtgeel, `2`=kleuren$donkergroen, `3`=kleuren$lichtblauwig, `4`=kleuren$lichtrozig, `5`=kleuren$lichtgroen, 
-                            `6`=kleuren$rozig, `7`=kleuren$blauwig, `8`=kleuren$donkergroen, `9`=kleuren$lichtgeel, `10`=kleuren$rozig )) +
-      geom_text(size=4, aes(x=1.6, y = middlePoint * totaal, label=paste0(`Hoe vaak`, ": ", Freq), angle=angleData)) +
-      geom_text(size=4, aes(x=1.3, y = (middlePoint) * totaal, label=ifelse(Procent > 0.01, sprintf("%2.1f%%", Procent * 100.), ""), angle=angleData)) +
+                          c(`1`=kleuren$zwartig, `2`=kleuren$lichtgeel, `3`=kleuren$blauwig, `4`=kleuren$lichtrozig, `5`=kleuren$donkergroen, 
+                            `6`=kleuren$lichtgeel, `7`=kleuren$blauwig, `8`=kleuren$lichtrozig, `9`=kleuren$lichtgroen, `10`=kleuren$rozig )) +
+      
+      geom_text(size=basisGrootteText, aes(x=1.6, y = middlePoint * totaal, label=ifelse(Freq > 0, paste0(kolom, ": ", Freq), ""), angle=angleData)) +
+      geom_text(size=basisGrootteText, aes(x=1.3, y = (middlePoint) * totaal, label=ifelse(Procent > 0.01, sprintf("%2.1f%%", Procent * 100.), ""), angle=angleData)) +
       coord_polar("y", start=0) 
   )
 }

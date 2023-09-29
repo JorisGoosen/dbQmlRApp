@@ -6,7 +6,6 @@ AbstractSizeProviderTable::AbstractSizeProviderTable(QObject *parent)
 
 }
 
-
 int AbstractSizeProviderTable::columnWidthProvider(int col)
 {
 	QRect maxBounds(0,0, _maxWidthCol, std::numeric_limits<int>::max());

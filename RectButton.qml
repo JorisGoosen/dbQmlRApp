@@ -19,10 +19,14 @@ Rectangle
 
 	Text
 	{
-		id:					buttonText
-		color:				buttonRoot.border.color
-		anchors.centerIn:	parent
-		font.family:		fontFamilie
+		id:						buttonText
+		color:					buttonRoot.border.color
+		anchors.fill:			parent
+		anchors.margins:		generalMargin
+		font.family:			fontFamilie
+		font.pixelSize:			25
+		horizontalAlignment:	Text.AlignHCenter
+		verticalAlignment:		Text.AlignVCenter
 	}
 
 	ToolTip.text:		toolTip

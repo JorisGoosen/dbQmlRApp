@@ -7,7 +7,7 @@
 #include <QDir>
 #include <QTimer>
 
-DECLARE_ENUM(PlotType,		horizontaalPerLabel, horizontaalMeerdere, horizontaalLabelsGroepen, horizontaalLabelPerTypeRespondent, verticaalStaaf, taart)
+DECLARE_ENUM(PlotType,		horizontaalPerLabel, horizontaalMeerdereGaSchool, horizontaalMeerdereKolom, horizontaalLabelsGroepen, horizontaalLabelPerTypeRespondent, verticaalStaaf, taart)
 DECLARE_ENUM(PlotFilter,	Geen, School, Locatie, Sector, Niveau, Jaar, Klas, Gender, Cultuur)
 
 class PlotRenderers;
@@ -30,7 +30,7 @@ class PlotRenderer : public QObject
 
 
 public:
-	explicit				PlotRenderer(PlotRenderers * renderers, PlotType plotType, PlotFilter filter, bool studenten = true, const QString & kolom = "", const QString & titel = "", int width = 1024, int height = 1024);
+	explicit				PlotRenderer(PlotRenderers * renderers, PlotType plotType, PlotFilter filter, bool studenten = true, const QString & kolom = "", const QString & titel = "", int width = 1280, int height = 720);
 	/*explicit				PlotRenderer(QFile		rFile, QString fileName="plot.png", QDir outputFolder = QDir(), QObject *parent = nullptr);
 	explicit				PlotRenderer(QString	rCode, QString fileName="plot.png", QDir outputFolder = QDir(), QObject *parent = nullptr);*/
 
@@ -63,7 +63,7 @@ public slots:
 
 signals:
 				void		rCodeChanged();
-				void		runRCommand(QString rCode);
+				QString		runRCommand(QString rCode);
 				void		widthChanged();
 				void		heightChanged();
 				void		revisionChanged();

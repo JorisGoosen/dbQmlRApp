@@ -23,7 +23,6 @@ void Database::setDbFile(const std::filesystem::path & file)
 		load();
 }
 
-
 void Database::create()
 {
 

@@ -1,20 +1,25 @@
- import QtQuick
+import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
+
+
 ListView
 {
-	model:	plotList
+	id:			lijstje
+	model:		plotList
 
-	delegate:	Image
+
+	delegate: PlotsHori
 	{
-		source:				display
-		cache:				false
-		fillMode:			Image.PreserveAspectFit
-
 		width:				ListView.view.width
-
-		//onWidthChanged:		R.plotWidth  = width
-		//onHeightChanged:	R.plotHeight = height
+		model:				display
+		modelFilters:		filters
+		aspecten:			aspectData
+		hoogtes:			hoogteData
+		titels:				titelData
 	}
+
+
+
 }

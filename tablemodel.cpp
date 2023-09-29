@@ -1,4 +1,5 @@
 #include "tablemodel.h"
+#include "tablemodelfiltered.h"
 #include <QDateTime>
 #include "labels.h"
 
@@ -8,6 +9,8 @@ TableModel::TableModel(Database * db, const QString & tableName, const ColumnDef
 	_db->tableCreate(_tableName, _columnDefinitions);
 
 	_rowCount = _db->tableRowCount(_tableName);
+
+	_filtered = new TableModelFiltered(this);
 }
 
 int TableModel::rowCount(const QModelIndex &) const
@@ -161,6 +164,23 @@ QStringList TableModel::allUniqueLabels(const QString & colName, bool filter)
 	return strs;
 }
 
+bool TableModel::rowAccepted(int row) const
+{
+	for(auto & colModel : _filters)
+		if(!colModel.second->allowedThroughFilter(data(index(row, columnIndex(colModel.first))).toString()))
+			return false;
+	return true;
+}
+
+int TableModel::columnIndex(const QString & name) const
+{
+	for(size_t i=0; i<_columnDefinitions.size(); i++)
+		if(_columnDefinitions[i]->dbName() == name)
+			return i;
+	return -1;
+}
+
+
 QString TableModel::dbplyrCode(bool collect) const
 {
 	QStringList code =
@@ -180,4 +200,9 @@ QString TableModel::dbplyrCode(bool collect) const
 void TableModel::registerFilter(FilterListModel * lm)
 {
 	_filters[lm->colName()] = lm;
+}
+
+TableModelFiltered * TableModel::filtered()
+{
+	return _filtered;
 }

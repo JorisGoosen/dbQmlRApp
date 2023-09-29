@@ -1,15 +1,18 @@
 #include "plotrenderers.h"
 #include "plotrenderer.h"
+#include <iostream>
 
-#define GENEREERHET(PLOTTYPE, STU, KOLOM, TITEL)										\
-	new PlotRenderer(this, PLOTTYPE,	PlotFilter::School,		STU, KOLOM, TITEL),	\
-	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Locatie,	STU, KOLOM, TITEL),	\
-	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Sector,		STU, KOLOM, TITEL),	\
-	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Niveau,		STU, KOLOM, TITEL),	\
-	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Jaar,		STU, KOLOM, TITEL),	\
-	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Klas,		STU, KOLOM, TITEL),	\
-	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Gender,		STU, KOLOM, TITEL),	\
-	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Cultuur,	STU, KOLOM, TITEL)
+#define GENEREERHET(PLOTTYPE, STU, KOLOM, TITEL, W, H)									\
+	new PlotRenderer(this, PLOTTYPE,	PlotFilter::School,		STU, KOLOM, TITEL, W, H),	\
+	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Locatie,	STU, KOLOM, TITEL, W, H),	\
+	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Sector,		STU, KOLOM, TITEL, W, H),	\
+	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Niveau,		STU, KOLOM, TITEL, W, H),	\
+	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Jaar,		STU, KOLOM, TITEL, W, H),	\
+	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Klas,		STU, KOLOM, TITEL, W, H),	\
+	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Gender,		STU, KOLOM, TITEL, W, H),	\
+	new PlotRenderer(this, PLOTTYPE,	PlotFilter::Cultuur,	STU, KOLOM, TITEL, W, H)
+
+
 
 PlotRenderers::PlotRenderers( QObject *parent)
 	: QAbstractListModel{parent}
@@ -25,46 +28,87 @@ PlotRenderers::PlotRenderers( QObject *parent)
 
 	_plots =
 	{
-		new PlotRenderer(this,	PlotType::taart,					PlotFilter::Geen,	true,	"veiligSchool",		"Veilig op school"				),
-		new PlotRenderer(this,	PlotType::taart,					PlotFilter::Geen,	true,	"veiligKlas",		"Veilig in de klas"				),
-		GENEREERHET(			PlotType::verticaalStaaf,								true,	"veiligSchool",		"Veilig op school"				),
-		GENEREERHET(			PlotType::verticaalStaaf,								true,	"veiligKlas",		"Veilig in de klas"				),
-		GENEREERHET(			PlotType::horizontaalLabelsGroepen,						true,	"onveiligHier",		"Voel me onveilig in bij"		),
-
+		{ GENEREERHET(				PlotType::horizontaalLabelsGroepen,							true,	"bangOpSchool",						"Bang op school",						1280,		2560	)},
+		{ GENEREERHET(				PlotType::horizontaalLabelsGroepen,							true,	"mijnSpullenGeslooptGejat",			"Mijn spullen worden gemolesteerd",		1280,		2560	)},
+		{ new PlotRenderer(this,	PlotType::taart,						PlotFilter::Geen,	true,	"veiligSchool",						"Veilig op school",						1280,		1280	)},
+		{ new PlotRenderer(this,	PlotType::taart,						PlotFilter::Geen,	true,	"veiligKlas",						"Veilig in de klas",					1280,		1280	)},
+		{ GENEREERHET(				PlotType::verticaalStaaf,									true,	"veiligSchool",						"Veilig op school",						1280,		720		)},
+		{ GENEREERHET(				PlotType::verticaalStaaf,									true,	"veiligKlas",						"Veilig in de klas",					1280,		720		)},
+		{ GENEREERHET(				PlotType::horizontaalLabelsGroepen,							true,	"onveiligHier",						"Voel me onveilig in bij",				1280,		2560	)},
+		{ new PlotRenderer(this,	PlotType::horizontaalMeerdereGaSchool,	PlotFilter::Geen,	true,	"bangOpSchool",						"Bang op school",						1280,		400		)},
 	};
+
+
 }
 
 void PlotRenderers::init()
 {
 	beginResetModel();
-	for(PlotRenderer * plot : _plots)
-		plot->init();
+	for(auto & plotL : _plots)
+		for(PlotRenderer * plot : plotL)
+			plot->init();
 	endResetModel();
 }
+
 
 int PlotRenderers::rowCount(const QModelIndex &) const
 {
 	return _plots.size();
 }
 
+QHash<int, QByteArray> PlotRenderers::roleNames() const
+{
+	static QHash<int, QByteArray> rolNamen = [&](){
+		auto namen = QAbstractListModel::roleNames();
+		namen[Qt::UserRole+0] = "filters";
+		namen[Qt::UserRole+1] = "aspectData";
+		namen[Qt::UserRole+2] = "hoogteData";
+		namen[Qt::UserRole+3] = "titelData";
+		return namen;
+	}();
+
+	return rolNamen;
+}
+
 QVariant PlotRenderers::data(const QModelIndex & index, int role) const
 {
-	if(index.row() < 0 || index.row() >= int(_plots.size()) || role != Qt::DisplayRole)
+	if(index.row() < 0 || index.row() >= int(_plots.size()))
 		return QVariant();
 
-	return _plots[index.row()]->plotUrl();
+
+	QVariantList lijst;
+	for(PlotRenderer * plot : _plots[index.row()])
+		if(role < Qt::UserRole)
+			lijst.append(plot->plotUrl());
+		else if(role == Qt::UserRole + 3)
+			lijst.append(plot->title());
+		else if(role == Qt::UserRole + 2)
+			lijst.append(plot->height());
+		else if(role == Qt::UserRole + 1)
+			lijst.append(plot->height() > 0 ? float(plot->height()) / float(plot->width()) : 0);
+		else
+			lijst.append(PlotFilterToQString(plot->welkFilter()));
+
+	return lijst;
 }
 
 void PlotRenderers::renderPlots()
 {
-	for(PlotRenderer * plot : _plots)
-		plot->runRCode();
+	if(!_renderMaar)
+		return;
+
+	for(auto & plotL : _plots)
+		for(PlotRenderer * plot : plotL)
+			plot->runRCodeDelayed();
+
+	setShowMe(true);
 }
 
 void PlotRenderers::plotRenderUpdated(PlotRenderer * plot)
 {
 	for(size_t i=0; i<_plots.size(); i++)
-		if(_plots[i] == plot)
+		for(auto * pr : _plots[i])
+		if(pr == plot)
 		{
 			emit dataChanged(index(i), index(i));
 			return;
@@ -79,4 +123,33 @@ void PlotRenderers::setPlotFolder(const QDir & newPlotFolder)
 
 	_plotFolder = newPlotFolder;
 	emit plotFolderChanged();
+}
+
+bool PlotRenderers::showMe() const
+{
+	return _showMe;
+}
+
+void PlotRenderers::setShowMe(bool newShowMe)
+{
+	if (_showMe == newShowMe)
+		return;
+	_showMe = newShowMe;
+	emit showMeChanged();
+}
+
+bool PlotRenderers::renderMaar() const
+{
+	return _renderMaar;
+}
+
+void PlotRenderers::setRenderMaar(bool newRenderMaar)
+{
+	if (_renderMaar == newRenderMaar)
+		return;
+	_renderMaar = newRenderMaar;
+	emit renderMaarChanged();
+
+
+	renderPlots();
 }

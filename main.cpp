@@ -86,10 +86,12 @@ int main(int argc, char *argv[])
 		{	"zwartig",		"#1D1D1B"	},
 		{	"lichtgroen",	"#BCE2D7"	},
 		{	"donkergroen",	"#5FA48F"	},
-		{	"lichtgeel",	"#FFF798"	}
+		{	"lichtgeel",	"#FFF798"	},
+		{	"witgroen",		"#cdf3e8"	},
 	};
 
 	mainEng.rootContext()->setContextProperty("fontFamilie",				"karla");
+	mainEng.rootContext()->setContextProperty("dikkeLijnDikte",				4);
 	mainEng.rootContext()->setContextProperty("backgroundColor",			kleurenCM["lichtblauwig"]);
 	mainEng.rootContext()->setContextProperty("windowBackgroundColor",		kleurenCM["blauwig"]);
 	mainEng.rootContext()->setContextProperty("foregroundColor",			kleurenCM["rozig"]);
@@ -98,6 +100,7 @@ int main(int argc, char *argv[])
 	mainEng.rootContext()->setContextProperty("controlBackgroundNeutral",	kleurenCM["blauwig"]);
 	mainEng.rootContext()->setContextProperty("controlBackgroundFocus",		kleurenCM["lichtgroen"]);
 	mainEng.rootContext()->setContextProperty("controlBackgroundPressed",	kleurenCM["donkergroen"]);
+	mainEng.rootContext()->setContextProperty("controlBackgroundPlots",		kleurenCM["witgroen"]);
 
 	mainEng.rootContext()->setContextProperty("controlForegroundDisabled",	kleurenCM["zwartig"]);
 	mainEng.rootContext()->setContextProperty("controlForegroundNeutral",	kleurenCM["lichtgeel"]);

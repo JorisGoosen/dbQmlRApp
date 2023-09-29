@@ -9,20 +9,23 @@
 class SchoolScannerTable : public TableModel
 {
 	Q_OBJECT
-	Q_PROPERTY(FilterListModel * school		READ school		NOTIFY schoolChanged)
-	Q_PROPERTY(FilterListModel * locatie	READ locatie	NOTIFY locatieChanged)
-	Q_PROPERTY(FilterListModel * sector		READ sector		NOTIFY sectorChanged)
-	Q_PROPERTY(FilterListModel * niveau		READ niveau		NOTIFY niveauChanged)
-	Q_PROPERTY(FilterListModel * leerjaar	READ leerjaar	NOTIFY leerjaarChanged)
-	Q_PROPERTY(FilterListModel * klas		READ klas		NOTIFY klasChanged)
-	Q_PROPERTY(FilterListModel * gender		READ gender		NOTIFY genderChanged)
-	Q_PROPERTY(FilterListModel * cultuur	READ cultuur	NOTIFY cultuurChanged)
+	Q_PROPERTY(FilterListModel	* school	READ school		NOTIFY schoolChanged)
+	Q_PROPERTY(FilterListModel	* locatie	READ locatie	NOTIFY locatieChanged)
+	Q_PROPERTY(FilterListModel	* sector	READ sector		NOTIFY sectorChanged)
+	Q_PROPERTY(FilterListModel	* niveau	READ niveau		NOTIFY niveauChanged)
+	Q_PROPERTY(FilterListModel	* leerjaar	READ leerjaar	NOTIFY leerjaarChanged)
+	Q_PROPERTY(FilterListModel	* klas		READ klas		NOTIFY klasChanged)
+	Q_PROPERTY(FilterListModel	* gender	READ gender		NOTIFY genderChanged)
+	Q_PROPERTY(FilterListModel	* cultuur	READ cultuur	NOTIFY cultuurChanged)
+	Q_PROPERTY(TableModel		* textOnly	READ textOnly	NOTIFY textOnlyChanged)
 
 
 public:
 	SchoolScannerTable(Database * db);
 
 	const ColumnDefinition * findDbColumn(const QString & csvName);
+
+	TableModel * textOnly() { return _textOnly; }
 
 	FilterListModel * school()		{ return &_school;		}
 	FilterListModel * locatie()		{ return &_locatie;		}
@@ -50,6 +53,7 @@ signals:
 	void klasChanged();
 	void genderChanged();
 	void cultuurChanged();
+	void textOnlyChanged();
 	void runRCommand(const QString & command);
 	void plotWidthChanged(int plotWidth);
 	void plotHeightChanged(int plotHeight);

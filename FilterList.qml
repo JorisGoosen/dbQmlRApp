@@ -57,15 +57,12 @@ Item
 		}
 
 		delegate:
-			CheckBox
+			MyCheckBox
 			{
+				id:					control
 				checked:			model.checkState
 				text:				model.display
 				onCheckedChanged:	model.checkState = checked
-
-
-				//color:					controlForegroundNeutral
-				padding: 			10
 			}
 	}
 }

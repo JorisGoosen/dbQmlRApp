@@ -65,20 +65,18 @@ void PlotRenderer::init()
 	connect(this, &PlotRenderer::iUpdated,				_ouder,	&PlotRenderers::plotRenderUpdated	);
 	connect(this, &PlotRenderer::runRCommand,			_ouder,	&PlotRenderers::runRCommand			);
 
-	runRCode();
+	//runRCode();
 }
 
 void PlotRenderer::runRCodeDelayed()
 {
-	emit plotUrlChanged();
-
 	_timer.start();
 }
 
 void PlotRenderer::runRCode()
 {
 //	std::cout << "RUNNING RCODE!" << std::endl;
-	emit runRCommand(
+	QString hoogte = emit runRCommand(
 						"TITEL       <- '" + _title										+ "';\n" +
 						"WIDTH       <- "  + QString::number(width())					+  ";\n"
 						"PLOTFILE    <- '" + _fileName									+ "';\n"
@@ -88,7 +86,13 @@ void PlotRenderer::runRCode()
 						"HEIGHT      <- "  + QString::number(height())					+  ";\n"
 						"FILTER      <- '" + PlotFilterToQString(_welkFilter).toLower()	+ "';\n" +
 						"KOLOM       <- '" + _kolom										+ "';\n" +
-						 _rCode);
+						 _rCode															+ ";\n" +
+						"HEIGHT");
+
+	bool ok = false;
+	int h = hoogte.toInt(&ok);
+	if(ok)
+		setHeight(h);
 
 	incRevision();
 }
@@ -128,6 +132,7 @@ void PlotRenderer::incRevision()
 
 	emit revisionChanged();
 	emit iUpdated(this);
+	emit plotUrlChanged();
 }
 
 

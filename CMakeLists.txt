@@ -107,6 +107,7 @@ set(sources
 	plotrenderers.cpp
 	filterlistmodel.cpp
 	columndefinition.cpp
+  tablemodelfiltered.cpp
 	schoolscannertable.cpp
 	schoolscannerdefinities.cpp
 	abstractsizeprovidertable.cpp
@@ -126,6 +127,7 @@ set(headers
 	enumutilities.h
 	filterlistmodel.h
 	columndefinition.h
+  tablemodelfiltered.h
 	schoolscannertable.h
 	schoolscannerdefinities.h
 	abstractsizeprovidertable.h
@@ -136,18 +138,21 @@ qt_add_executable(qmlR ${sources} ${headers})
 qt_add_qml_module(qmlR
 	URI qmlRModule
 	QML_FILES
-	    main.qml
-		Init.qml
+    main.qml
 		Data.qml
 		Plots.qml
 		Tafel.qml
+    Welkom.qml
 		Filter.qml
 		Import.qml
 		Analyse.qml
+    PlotsHori.qml
 		RectButton.qml
+    MyCheckBox.qml
 		FilterList.qml
 		PlotFilters.qml
 		FileBrowser.qml
+    FilteredData.qml
 	NO_RESOURCE_TARGET_PATH
 #    RESOURCES
 #        img/world.png

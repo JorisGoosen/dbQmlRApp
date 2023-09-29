@@ -46,6 +46,7 @@ public:
 	QVariantList	tableValues(	const QString & tableName, const ColumnDefinition * col);
 
 	void			setDbFile(const std::filesystem::path & file);
+	void			setDbFile(const std::string           & file);
 
 	void			tableBindColumnDefParameter(sqlite3_stmt * stmt, size_t param, const ColumnDefinition * colDef, QVariant val);
 	QVariant		tableExtractColumnDefValue(	sqlite3_stmt * stmt, size_t param, const ColumnDefinition * colDef);

@@ -35,6 +35,10 @@ Window
 			right:	parent.right
 		}
 
+		background: Rectangle {
+			   color: controlForegroundNeutral
+		   }
+
 		Repeater
 		{
 			model:	mainModel.qmlsShown
@@ -50,15 +54,21 @@ Window
 				{
 					color:						tabButton.selected ? controlForegroundFocus : controlForegroundNeutral
 					text:						"<b>" + tabButton.text + "</b>"
-					font.family:				fontFamilie
 					anchors.fill:				parent
+					font.family:				fontFamilie
 					horizontalAlignment:		Text.AlignHCenter
 					verticalAlignment:			Text.AlignVCenter
 				}
 
-				background: Rectangle
-				{
-						color:	tabButton.selected ? controlBackgroundFocus : controlBackgroundNeutral
+				background: Item {
+					Rectangle
+					{
+							color:				tabButton.selected ? controlBackgroundFocus : controlBackgroundNeutral
+							border.color:		tabButton.selected ? controlForegroundFocus : controlBackgroundNeutral
+							border.width:		1
+							anchors.fill:		parent
+							anchors.margins:	dikkeLijnDikte / 2
+					}
 				}
 			}
 		}

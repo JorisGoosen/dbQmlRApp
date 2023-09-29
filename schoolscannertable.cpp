@@ -1,5 +1,5 @@
 #include "schoolscannertable.h"
-
+#include "tablemodelfiltered.h"
 
 SchoolScannerTable::SchoolScannerTable(Database * db)
 	: TableModel(db, SchoolScannerDefinities::tableName(), SchoolScannerDefinities::columnDefs())
@@ -112,6 +112,9 @@ void SchoolScannerTable::loadFilters()
 	emit klasChanged();
 	emit genderChanged();
 	emit cultuurChanged();
+
+	//filtered()->invalidate();
+	textOnly()->filtered()->invalidate();
 }
 
 void SchoolScannerTable::initRStuff()
@@ -133,7 +136,6 @@ void SchoolScannerTable::initRStuff()
 	if(dbFilter != "")
 		emit runRCommand(_textOnly->tableName() + "sql <- filter(" + _textOnly->tableName() + "sql, " + dbFilter + ");");
 
-	emit runRCommand(_textOnly->tableName() + " <- " + _textOnly->tableName() + "sql %>% collect()");
-
 	emit renderPlots();
+
 }

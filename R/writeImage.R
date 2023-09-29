@@ -5,15 +5,28 @@ library(ggplot2)
 library(stringr)
 
 kleuren <- list(
-  lichtrozig=		"#f6b6cc"	,
-  rozig=			"#EF2560"	,
-  lichtblauwig=		"#9CCDD1"	,
-  blauwig=			"#038794"	,
-  zwartig=			"#1D1D1B"	,
+  rozig=			  "#EF2560"	,
   lichtgroen=		"#BCE2D7"	,
-  donkergroen=		"#5FA48F"	,
-  lichtgeel=		"#FFF798"
+  donkergroen=	"#5FA48F"	,
+  lichtrozig=		"#f6b6cc"	,
+  lichtblauwig=	"#9CCDD1"	,
+  blauwig=			"#038794"	,
+  lichtgeel=		"#FFF798" ,
+  zwartig=			"#1D1D1B"
 )
+
+paletKleuren <- list(
+  rozig=			  "#EF2560"	,
+  lichtgroen=		"#BCE2D7"	,
+  donkergroen=	"#5FA48F"	,
+  lichtrozig=		"#f6b6cc"	,
+  lichtgeel=		"#FFF798" ,
+  lichtblauwig=	"#9CCDD1"	,
+  blauwig=			"#038794"	
+  
+)
+
+palet <- colorRampPalette(paletKleuren, space='rgb', interpolate='spline')
 
 library(showtext)
 font_add_google("Karla", "karla")
@@ -35,16 +48,13 @@ openGrDevice <- function(...) {
   ragg::agg_png(...)
 }
 
-writeImage <- function(plot, plotFolder=".", plotFile = "plot.png", width = 500, height = 500, ppi = 200, backgroundColor = "transparent")
+writeImage <- function(plot, plotFolder=".", plotFile = "plot.png", width = 500, height = 500, schaling = 1.0, backgroundColor = "transparent")
 {
 
-    width  <- width  * (ppi / 96)
-	height <- height * (ppi / 96)
-
-    oldWd <- getwd();
+  oldWd <- getwd();
 	setwd(plotFolder);
 
-    openGrDevice(file = plotFile, width = width, height = height, res = 72 * (ppi / 96), background = backgroundColor)
+  openGrDevice(file = plotFile, width = width, height = height, res = 288, scaling = schaling, background = backgroundColor)
 	on.exit({dev.off(); setwd(oldWd)}, add = TRUE)
 
     if (ggplot2::is.ggplot(plot) || inherits(plot, c("gtable", "gTree")))

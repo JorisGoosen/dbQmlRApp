@@ -10,6 +10,13 @@ SplitView
 
 	property var fillThisOne:	schoolScannerTable.school
 
+	handle:	Rectangle
+	{
+		color:			SplitHandle.hovered ? controlForegroundFocus : controlForegroundNeutral
+		implicitWidth:	6
+		implicitHeight:	6
+	}
+
 	FilterList	{ model:	!schoolScannerTable ? null : schoolScannerTable.school		}
 	FilterList	{ model:	!schoolScannerTable ? null : schoolScannerTable.locatie 	}
 	FilterList	{ model:	!schoolScannerTable ? null : schoolScannerTable.sector	 	}
