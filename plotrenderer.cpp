@@ -26,9 +26,7 @@ PlotRenderer::PlotRenderer(QString rCode, QString fileName, QDir outputFolder, Q
 PlotRenderer::PlotRenderer(PlotRenderers * renderers, PlotType plotType, PlotFilter filter, bool studenten, const QString & kolom, const QString & title, int width, int height)
 : QObject{renderers}, _ouder(renderers), _title(title), _kolom(kolom), _studenten(studenten), _width(width), _height(height), _welkPlot(plotType), _welkFilter(filter)
 {
-	std::cerr << "Ik negeer " << _welkFilter << std::endl;
-
-	const QString baseName = PlotTypeToQString(_welkPlot) + "_" + PlotFilterToQString(_welkFilter) + "_" + kolom;
+	const QString baseName =  (studenten ? "Studenten_" : "Docenten_") + PlotTypeToQString(_welkPlot) + "_" + PlotFilterToQString(_welkFilter) + "_" + kolom;
 	if(_title == "")
 		_title = baseName;
 

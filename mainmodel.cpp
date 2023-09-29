@@ -51,7 +51,7 @@ void MainModel::showData()
 		emit qmlsShownChanged();
 	}
 
-	//emit showStackIndex(_qmlsShown.indexOf("Data"));
+	_schoolTable->renderPlots();
 }
 
 void MainModel::setQmlsShown(const QStringList & newQmlsShown)

@@ -1,19 +1,29 @@
 
 basisGrootteText <- 5
 
-laadKolommen <- function(kolomnamen)
+#kolomnamen is een vector/lijst die genaamde elementen heeft, de namen zijn hoe de kolom moet heten in de output en de waardes is welke kolom uit de database gewenst is
+laadKolommen <- function(kolomnamen, studenten)
 {
-  kolommen <- collect(SchoolScannerTextOnlysql %>% select(all_of(kolomnamen)))
-  
   if(is.null(names(kolomnamen)))
     names(kolomnamen) <- kolomnamen
   
+  # alle kolommen hier?
+  if(length(intersect(kolomnamen, names(SchoolScannerTextOnlysql))) != length(kolomnamen))
+    return(data.frame())
+  
+  kolommen <- collect(SchoolScannerTextOnlysql %>% filter((type != "Docenten") == studenten)  %>% select(all_of(kolomnamen)) )
+  
   naamCultuur <- ""
   for(naam in names(kolomnamen))
+  {
       if(kolomnamen[[naam]] == 'cultuur')
         naamCultuur <- naam
+      
+      if(sum(names(kolommen) == naam) == 0)
+        kolommen[[naam]] <- rep('', nrow(kolommen))
+  }
   
-  if(naamCultuur != "")
+  if(naamCultuur != "" & nrow(kolommen) > 0)
   {
     kolommen[["TEMP"]] <- kolommen[[naamCultuur]]
     kolommen <- kolommen %>% rowwise() %>%
@@ -33,12 +43,26 @@ laadKolommen <- function(kolomnamen)
     kolommen$TEMP <- NULL
   }
   
+  
+  #controleer of alle rijen iig iets van data hebben
+  # als er ook maar 1 kolom leeg is gooien we de regel weg
+  for(naam in names(kolomnamen))
+  {
+    uniek <- unique( kolommen[[naam]] )
+    
+    if(sum(uniek == "") == 1 & sum(uniek != "") == 0)
+      return(kolommen %>% filter(FALSE))
+    
+    keepThese <- str_trim(kolommen[[naam]]) != ''
+    kolommen <- kolommen[keepThese,]
+  }
+  
   return(kolommen)
 }
 
 herordenVaak <- function(kolom, heen=TRUE)
 {
-  vaak <- c('Dagelijks', 'Altijd', 'Wekelijks', 'Vaak', 'Maandelijks', 'Soms', 'Af & toe', 'Nooit', '')
+  vaak <- c( 'Altijd', 'Dagelijks', 'Wekelijks', 'Vaak', 'Maandelijks', 'Soms', 'Af & toe', 'Nooit', '')
   
   if(heen)
     vaak <- rev(vaak)
@@ -49,12 +73,12 @@ herordenVaak <- function(kolom, heen=TRUE)
   return(factor(as.character(kolom), levels=vaak))
 }
 
-isFilterSensible <- function(filter)
+isFilterSensible <- function(filter, studenten)
 {
   if(filter == 'geen')
     return(TRUE)
   
-  sum("" != laadKolommen(filter)[[filter]]) > 0
+  sum("" != laadKolommen(filter, studenten)[[filter]]) > 0
 }
 
 afronder <- function(plot, plotFolder, plotFile, width, height, titel, filter, bottomLegend=FALSE)
@@ -122,10 +146,14 @@ procentAsY <- function()
 
 horizontaalPerLabelFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
 {
-  if(!isFilterSensible(filter))
+  if(!isFilterSensible(filter, studenten))
     return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
   
-  kolommen        <- laadKolommen(c(kolom, filter))
+  kolommen        <- laadKolommen(c(kolom, filter), studenten)
+  
+  if(nrow(kolommen) == 0)
+    return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
+  
   tafelPerGender  <- table(kolommen)
   dfPer		        <- as.data.frame(tafelPerGender)
 
@@ -142,58 +170,45 @@ horizontaalPerLabelFunc <- function(plotFolder, plotFile, width, height, titel, 
 	    plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel,
 		  plot=ggplot(dfPer, aes(x=Filter, y=`Hoe vaak`, fill=kolom)) + geom_bar(position=position_stack(reverse = TRUE), stat="identity") + coord_flip() +
 		  procentAsY() + xlab("") + ylab("") + theme(aspect.ratio=0.3) +
-		  scale_fill_manual("", values=c(Altijd=kleuren$rozig, Vaak=kleuren$lichtblauwig, Soms=kleuren$lichtrozig, Nooit=kleuren$blauwig))
+		  scale_fill_manual(paste0("N: ", nrow(kolommen)), values=c(Altijd=kleuren$rozig, Vaak=kleuren$lichtblauwig, Soms=kleuren$lichtrozig, Nooit=kleuren$blauwig))
 	)
 }
 
-horizontaalMeerdereKolomFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
+horizontaalMeerdereFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
 {
-  if(!isFilterSensible(filter))
+  if(!isFilterSensible(filter, studenten))
     return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
   
-  kolommen <- laadKolommen(c(kolom, filter))
+  kolomnamen <- str_split_1(kolom, ',')
+  kolommen   <- laadKolommen(kolomnamen, studenten)
+  rijen      <- nrow(kolommen)
   
-  dfGraag <- as.data.frame(table(kolommen$graagNaarSchool))
-  dfBang  <- as.data.frame(table(kolommen$bangOpSchool))
+  if(nrow(kolommen) == 0)
+    return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
   
- 
-  
-  df <- df %>% rowwise() %>% select(Var1, Freq, Kolom) %>% mutate(`Procent`= Freq / length(kolommen$graagNaarSchool), `Hoe vaak`=Var1)
-  
-  df <- dplyr::filter(df, `Hoe vaak` != "")
-  
-  df$`Hoe vaak` <- herordenVaak(df$`Hoe vaak`, FALSE)
-  
-  df <- arrange(df, desc(`Hoe vaak`))
-  
-  afronder(
-    plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel,
-    plot=ggplot(df, aes(x=Kolom, y=`Procent`, fill=`Hoe vaak`)) + theme(aspect.ratio=0.3) +
-      geom_bar( stat="identity", na.rm=TRUE, position = position_stack(reverse = TRUE)) +
-      procentAsY() + xlab("") + ylab("") +
-      scale_fill_manual("", values=c(Altijd=kleuren$rozig, Vaak=kleuren$lichtblauwig, Soms=kleuren$lichtrozig, Nooit=kleuren$blauwig))
+  mooieTitelAUB <- list(
+    graagNaarSchool="Graag naar school",
+    bangOpSchool="Bang op school",
+    werkMetPlezier="Werk met plezier op school"
   )
-}
+  
+  df <- NULL
+  for(kolomnaam in kolomnamen)
+  {
+    dfHier <- as.data.frame(table(kolommen[[kolomnaam]]))
+    dfHier$Kolom <- mooieTitelAUB[[kolomnaam]]
+    
+    if(is.null(df))
+      df <- dfHier
+    else
+      df <- rbind(df, dfHier)
+  }
+  
+  
 
-
-horizontaalMeerdereGaSchoolFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
-{
-  if(!isFilterSensible(filter))
-    return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
+  df <- df %>% rowwise() %>% select(Var1, Freq, Kolom) %>% mutate(`Procent`= Freq / rijen, `Hoe vaak`=Var1)
   
-  kolommen <- laadKolommen(c('graagNaarSchool', 'bangOpSchool'))
-  
-  dfGraag <- as.data.frame(table(kolommen$graagNaarSchool))
-  dfBang  <- as.data.frame(table(kolommen$bangOpSchool))
-  
-  dfGraag$Kolom <- "Graag naar school"
-  dfBang$Kolom  <- "Bang op school"
-  
-  df <- rbind(dfGraag, dfBang)
-  
-  df <- df %>% rowwise() %>% select(Var1, Freq, Kolom) %>% mutate(`Procent`= Freq / length(kolommen$graagNaarSchool), `Hoe vaak`=Var1)
-  
-  df <- dplyr::filter(df, `Hoe vaak` != "")
+  #df <- dplyr::filter(df, `Hoe vaak` != "")
   
   df$`Hoe vaak` <- herordenVaak(df$`Hoe vaak`, FALSE)
   
@@ -205,16 +220,19 @@ horizontaalMeerdereGaSchoolFunc <- function(plotFolder, plotFile, width, height,
       geom_bar( stat="identity", na.rm=TRUE, position = position_stack(reverse = TRUE)) +
       coord_flip() +
       procentAsY() + xlab("") + ylab("") +
-      scale_fill_manual("", values=c(Altijd=kleuren$rozig, Vaak=kleuren$lichtblauwig, Soms=kleuren$lichtrozig, Nooit=kleuren$blauwig))
+      scale_fill_manual(paste0("N: ", nrow(kolommen)), values=c(Altijd=kleuren$rozig, Vaak=kleuren$lichtblauwig, Soms=kleuren$lichtrozig, Nooit=kleuren$blauwig))
   )
 }
 
 horizontaalLabelsGroepenFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
 {
-  if(!isFilterSensible(filter))
+  if(!isFilterSensible(filter, studenten))
     return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
   
-  allesPerCulturen <- laadKolommen(c(kolom=kolom, filter=filter))
+  allesPerCulturen <- laadKolommen(c(kolom=kolom, filter=filter), studenten)
+  
+  if(nrow(allesPerCulturen) == 0)
+    return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
 
   tafelTotaal       <- table(allesPerCulturen$filter)
 	allesPerCultuur   <- allesPerCulturen %>% mutate(kolom=strsplit(kolom, ", ")) %>% unnest(kolom)
@@ -227,7 +245,7 @@ horizontaalLabelsGroepenFunc <- function(plotFolder, plotFile, width, height, ti
 	dffilter	        <- table(allesPerCulturen$filter)
 	
 	dfPer <- dfPer %>% rowwise() %>% select(filter, kolom, Freq) %>% mutate(Procent = Freq / tafelTotaal[[filter]], totaalCultuur = tafelTotaal[[filter]])
-	dfPer <- dplyr::filter(dfPer, filter != "")
+	#dfPer <- dplyr::filter(dfPer, filter != "")
 			 
 	#if(kolom == 'onveiligHier' & length(hoeVaaks) > 1 ) #haal nergens onveilig weg want die verstoord alles alleen maar. Tenzij het de enige is...
 	#  dfPer <- dplyr::filter(dfPer, kolom != "" & str_count(kolom, "nergens onveilig") == 0)
@@ -247,7 +265,7 @@ horizontaalLabelsGroepenFunc <- function(plotFolder, plotFile, width, height, ti
     procentAsY() + xlab("") + ylab("") + theme(aspect.ratio=2.0) 
     #scale_x_discrete(labels = function(x) str_wrap(x, width = 20))
   
-  hetPlot <- doeCMPalet(hetPlot, length(filters))
+  hetPlot <- doeCMPalet(hetPlot, length(filters), paste0("N: ", nrow(allesPerCulturen)))
   
   bodemLegenda <- length(hoeVaaks) > 6
   
@@ -259,6 +277,7 @@ horizontaalLabelsGroepenFunc <- function(plotFolder, plotFile, width, height, ti
                       * length(unique(dfPer$filter))  
                       )
                     + ifelse(bodemLegenda, 150, 0)
+                    + 100
                )
             )
   
@@ -271,7 +290,7 @@ horizontaalLabelsGroepenFunc <- function(plotFolder, plotFile, width, height, ti
 
 horizontaalLabelPerTypeRespondentFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
 {
-  if(!isFilterSensible(filter))
+  if(!isFilterSensible(filter, studenten))
     return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
   
     welkeKolommen <- 'ikMijn'
@@ -295,7 +314,10 @@ horizontaalLabelPerTypeRespondentFunc <- function(plotFolder, plotFile, width, h
 					buitensluit = "Bij buitensluiting...",
 					mentor      = "Docenten & mentoren")
 
-    allesPerType <- laadKolommen(c("type", kolommen))
+    allesPerType <- laadKolommen(c("type", kolommen), studenten)
+    
+    if(nrow(allesPerType) == 0)
+      return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
 
 
     renamer <- switch(welkeKolommen,
@@ -343,7 +365,7 @@ horizontaalLabelPerTypeRespondentFunc <- function(plotFolder, plotFile, width, h
       coord_flip() +
 		  procentAsY() + xlab("") + ylab("") + theme(aspect.ratio=2.0) +
 		  scale_x_discrete(labels = function(x) str_wrap(x, width = 30)) +
-      scale_fill_manual("",
+      scale_fill_manual(paste0("N: ", nrow(allesPerType)),
 	             values=c(
 							  Leerlingen  = kleuren$rozig,
 							  Docenten     = kleuren$lichtblauwig,
@@ -353,14 +375,17 @@ horizontaalLabelPerTypeRespondentFunc <- function(plotFolder, plotFile, width, h
 
 verticaalStaafFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
 {
-  if(!isFilterSensible(filter))
+  if(!isFilterSensible(filter, studenten))
     return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
 
   if(filter == 'geen')
     return(dummyPlot(titel="Kan niet zonder filter", plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
   
-  kolommen   <- laadKolommen(c(kolom, filter))
+  kolommen   <- laadKolommen(c(kolom, filter), studenten)
   deKolommen <- dplyr::filter(kolommen, .data[[filter]] != "" & .data[[kolom]] != "")
+  
+  if(nrow(deKolommen) == 0)
+    return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
   
   df              <- as.data.frame(table(deKolommen))
   tafelPerFilter  <- table(deKolommen[[filter]])
@@ -393,10 +418,10 @@ verticaalStaafFunc <- function(plotFolder, plotFile, width, height, titel, kolom
 
 taartFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
 {
-  if(!isFilterSensible(filter))
+  if(!isFilterSensible(filter, studenten))
     return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
   
-  deKolom             <- laadKolommen(c(kolom))
+  deKolom             <- laadKolommen(c(kolom), studenten)
   deKolom[["kolom"]]  <- deKolom[[kolom]]
   deKolom[[kolom]]    <- NULL
   
@@ -406,6 +431,9 @@ taartFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter,
   totaal   <- length(df$kolom)
   df$kolom <- factor(as.character(df$kolom), levels=levelsHier)
   df       <- as.data.frame(table(df))
+  
+  if(nrow(df) == 0)
+    return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
   
   df <- df %>% rowwise() %>% select(kolom, Freq) %>% mutate(Procent= Freq / totaal)
   

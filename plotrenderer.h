@@ -7,7 +7,7 @@
 #include <QDir>
 #include <QTimer>
 
-DECLARE_ENUM(PlotType,		horizontaalPerLabel, horizontaalMeerdereGaSchool, horizontaalMeerdereKolom, horizontaalLabelsGroepen, horizontaalLabelPerTypeRespondent, verticaalStaaf, taart)
+DECLARE_ENUM(PlotType,		horizontaalPerLabel, horizontaalMeerdere, horizontaalLabelsGroepen, horizontaalLabelPerTypeRespondent, verticaalStaaf, taart)
 DECLARE_ENUM(PlotFilter,	Geen, School, Locatie, Sector, Niveau, Jaar, Klas, Gender, Cultuur)
 
 class PlotRenderers;
@@ -38,6 +38,7 @@ public:
 				int			width()			const { return _width;			}
 				int			height()		const { return _height;			}
 				int			revision()		const { return _revision;		}
+				bool		studenten()		const { return _studenten;		}
 				QDir		plotFolder()	const;
 				QString		plotUrl()		const;
 				QString		fileName()		const { return _fileName;		}

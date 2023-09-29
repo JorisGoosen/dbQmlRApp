@@ -5,6 +5,7 @@
 #include "schoolscannerdefinities.h"
 #include "filterlistmodel.h"
 #include "plotrenderer.h"
+#include <QTimer>
 
 class SchoolScannerTable : public TableModel
 {
@@ -43,7 +44,9 @@ public slots:
 	void loadFilters();
 	void initRStuff();
 
+
 signals:
+	void initRStuffDelay();
 	void renderPlots();
 	void schoolChanged();
 	void locatieChanged();
@@ -71,6 +74,7 @@ private:
 	FilterListModels				_filters;
 
 	TableModel					*	_textOnly	= nullptr;
+	QTimer							_delayTimer;
 
 	std::vector<QStringList>		_columns;
 

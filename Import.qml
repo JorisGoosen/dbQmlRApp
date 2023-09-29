@@ -17,26 +17,29 @@ ColumnLayout
 	{
 		visible:	!importeerKnop.visible
 
-		Text
+		RectButton
 		{
-			text:			"Voer in:"
-			font.family:	fontFamilie
+			id:			laadKnop
+			text:		"Laad bestand"
+			onClicked:	selecteerBestand.open()
+			visible:	!importeerKnop.visible
 		}
 
-		TextField
+		MyCheckBox
 		{
 			id:					schoolType
-			placeholderText:	"VO, MBO of ?"
-			onTextChanged:		importer.schoolType = text
-			font.family:		fontFamilie
+			checked:			importer.schoolType === "MBO"
+			text:				"MBO"
+			onCheckedChanged:	importer.schoolType = checked ? "MBO" : "VO"
+
 		}
 
 		TextField
 		{
 			id:					respondentType
-			placeholderText:	"Docenten, Leerlingen of Studenten?"
-			onTextChanged:		importer.type = text
-			font.family:		fontFamilie
+			checked:			importer.type === "Docenten"
+			text:				"Docenten"
+			onCheckedChanged:	importer.type = checked ? "Docenten" : "Leerlingen"
 		}
 
 		Text
@@ -44,17 +47,12 @@ ColumnLayout
 			font.family:	fontFamilie
 			text:			"<i>nb. dit wordt enkel gebruikt als de ingelezen data niet vermeld om welke type school of respondent het gaat</i>"
 		}
+
+
 	}
 
 
-	RectButton
-	{
-		id:			laadKnop
-		text:		"Laad bestand"
-		onClicked:	selecteerBestand.open()
-		enabled:	respondentType.text !== "" && schoolType.text !== ""
-		visible:	!importeerKnop.visible
-	}
+
 
 	Tafel
 	{
