@@ -34,7 +34,7 @@ ColumnLayout
 
 		}
 
-		TextField
+		MyCheckBox
 		{
 			id:					respondentType
 			checked:			importer.type === "Docenten"

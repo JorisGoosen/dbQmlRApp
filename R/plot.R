@@ -62,7 +62,7 @@ laadKolommen <- function(kolomnamen, studenten)
 
 herordenVaak <- function(kolom, heen=TRUE)
 {
-  vaak <- c( 'Altijd', 'Dagelijks', 'Wekelijks', 'Vaak', 'Maandelijks', 'Soms', 'Af & toe', 'Nooit', '')
+  vaak <- c( 'Altijd', 'Dagelijks', 'Wekelijks', 'Vaak', 'Maandelijks', 'Soms', 'Af & toe', 'Nooit', 'Nvt')
   
   if(heen)
     vaak <- rev(vaak)
@@ -397,14 +397,14 @@ verticaalStaafFunc <- function(plotFolder, plotFile, width, height, titel, kolom
 
   df[[kolom]] <- factor(as.character(df[[kolom]]), (c('1', '2', '3', '4', '5', '6', '7', '8', '9', '10')))
   
-  # df <- arrange(df, asc(`Hoe vaak`))
+  # df <- arrange(df, desc(filter))
   # print(deKolommen[[kolom]])
 
   hetPlot <-       ggplot(df, aes(x=.data[[kolom]], y=`Procent`, fill=.data[[filter]])) +
-  	geom_bar( stat="identity", na.rm=TRUE, position = position_dodge2(reverse=TRUE, width=1)) +
+  	geom_bar( stat="identity", na.rm=TRUE, position = position_dodge2(reverse=FALSE, width=1)) +
   	# coord_flip() +
     procentAsY() + xlab(str_to_title(filter)) + #ylab("") +
-  	geom_text(size=basisGrootteText, aes(y = `Procent`, label=ifelse(Freq>0, Freq, '')), vjust=-0.5, position=position_dodge2(reverse=TRUE, width=1))# +
+  	geom_text(size=basisGrootteText, aes(y = `Procent`, label=ifelse(Freq>0, Freq, '')), vjust=-0.5, position=position_dodge2(reverse=FALSE, width=1))# +
     ##  geom_text(size=4, aes(y = 0, label={{kolom}}), vjust=-0.5,  position=position_dodge2(reverse=TRUE, width=1))
   
   hetPlot <- doeCMPalet(hetPlot, length(unique(df[[filter]])), paste0("N: ", length(deKolommen[[kolom]])))
