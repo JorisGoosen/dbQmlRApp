@@ -43,33 +43,11 @@ Window
 		{
 			model:	mainModel.qmlsShown
 
-			TabButton
+			MyTabButton
 			{
-				id:		tabButton
-				text:	modelData
-
-				property bool selected: index == tabBar.currentIndex
-
-				contentItem:	Text
-				{
-					color:						tabButton.selected ? controlForegroundFocus : controlForegroundNeutral
-					text:						"<b>" + tabButton.text + "</b>"
-					anchors.fill:				parent
-					font.family:				fontFamilie
-					horizontalAlignment:		Text.AlignHCenter
-					verticalAlignment:			Text.AlignVCenter
-				}
-
-				background: Item {
-					Rectangle
-					{
-							color:				tabButton.selected ? controlBackgroundFocus : controlBackgroundNeutral
-							border.color:		tabButton.selected ? controlForegroundFocus : controlBackgroundNeutral
-							border.width:		1
-							anchors.fill:		parent
-							anchors.margins:	dikkeLijnDikte / 2
-					}
-				}
+				id:			tabButton
+				text:		modelData
+				selected:	index == tabBar.currentIndex
 			}
 		}
 	}

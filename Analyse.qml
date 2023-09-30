@@ -21,8 +21,7 @@ SplitView
 
 	Plots
 	{
-		visible:	plotList.showMe
-		height:		parent.height
+		visible:			plotList.showMe
 	}
 
 	Item

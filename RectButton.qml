@@ -9,14 +9,15 @@ Rectangle
 
 	property alias text:		buttonText.text
 	property string toolTip:	""
-	property int margins:		generalMargin
+	property int margins:		groot ? generalMargin : generalMargin / 2
+	property bool groot:		true
 
 	implicitWidth:	buttonText.contentWidth  + margins * 2
 	implicitHeight:	buttonText.contentHeight + margins * 2
 
 	color:			!enabled ? controlBackgroundDisabled : buttonMouseArea.pressed ? controlBackgroundPressed : buttonMouseArea.containsMouse ? controlBackgroundFocus : controlBackgroundNeutral
 	border.color:	!enabled ? controlForegroundDisabled : buttonMouseArea.pressed ? controlForegroundPressed : buttonMouseArea.containsMouse ? controlForegroundFocus : controlForegroundNeutral
-	border.width:	1
+	border.width:	2
 
 	Text
 	{
@@ -24,8 +25,9 @@ Rectangle
 		color:					buttonRoot.border.color
 		anchors.fill:			parent
 		anchors.margins:		buttonRoot.margins
+		font.bold:				true
 		font.family:			fontFamilie
-		font.pixelSize:			25
+		font.pixelSize:			groot ? 25 : 14
 		horizontalAlignment:	Text.AlignHCenter
 		verticalAlignment:		Text.AlignVCenter
 	}
@@ -41,5 +43,6 @@ Rectangle
 		anchors.fill:	parent
 		onPressed:		buttonRoot.clicked()
 		hoverEnabled:	true
+		cursorShape:	Qt.PointingHandCursor
 	}
 }

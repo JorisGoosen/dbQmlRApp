@@ -151,6 +151,7 @@ qt_add_qml_module(qmlR
     MyCheckBox.qml
 		FilterList.qml
 		PlotFilters.qml
+    MyTabButton.qml
 		FileBrowser.qml
     FilteredData.qml
 	NO_RESOURCE_TARGET_PATH

@@ -18,28 +18,14 @@ Item
 	SplitView.fillHeight:		splitView.fillThisOne === model
 	SplitView.minimumHeight:	titleText.height
 
-	Text
+	RectButton
 	{
 		id:						titleText
-		color:					controlForegroundNeutral
-		font.family:			fontFamilie
-		wrapMode:				Text.WrapAtWordBoundaryOrAnywhere
-		horizontalAlignment:	Text.AlignHCenter
-		verticalAlignment:		Text.AlignVCenter
-		padding: 				5
 		text:					column.model ? column.model.title : "???"
-		font.bold:				true
+		width:					parent.width
+		groot:					false
+		onClicked:				column.enlargeMe()
 
-		anchors
-		{
-			horizontalCenter:	parent.horizontalCenter
-		}
-
-		MouseArea
-		{
-			anchors.fill:		parent
-			onClicked:			column.enlargeMe()
-		}
 	}
 
 	ListView
@@ -64,6 +50,7 @@ Item
 				checked:			model.checkState
 				text:				model.display
 				onCheckedChanged:	model.checkState = checked
+				width:				ListView.view.width
 			}
 	}
 }

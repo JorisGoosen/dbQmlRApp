@@ -148,7 +148,7 @@ procentAsY <- function()
   scale_y_continuous(labels = scales::percent, breaks=c(0, 0.25, 0.5, 0.75, 1), limits=c(0, 1)) 
 }
 
-horizontaalPerLabelFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
+HoriStaafPerLabelFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
 {
   if(!isFilterSensible(filter, studenten))
     return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
@@ -178,7 +178,7 @@ horizontaalPerLabelFunc <- function(plotFolder, plotFile, width, height, titel, 
 	)
 }
 
-horizontaalMeerdereFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
+HoriStaafMeerdereKolommenFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
 {
   if(!isFilterSensible(filter, studenten))
     return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
@@ -228,7 +228,7 @@ horizontaalMeerdereFunc <- function(plotFolder, plotFile, width, height, titel, 
   )
 }
 
-horizontaalLabelsGroepenFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
+HoriStaafGroepPerFilterFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
 {
   if(!isFilterSensible(filter, studenten))
     return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
@@ -292,7 +292,7 @@ horizontaalLabelsGroepenFunc <- function(plotFolder, plotFile, width, height, ti
 	)
 }
 
-horizontaalLabelPerTypeRespondentFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
+HoriStaafPerTypeRespondentFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
 {
   studenten <- NULL
   
@@ -379,7 +379,7 @@ horizontaalLabelPerTypeRespondentFunc <- function(plotFolder, plotFile, width, h
 	)
 }
 
-verticaalStaafFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
+VerticaalStaafFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
 {
   if(!isFilterSensible(filter, studenten))
     return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
@@ -422,7 +422,7 @@ verticaalStaafFunc <- function(plotFolder, plotFile, width, height, titel, kolom
   )
 }
 
-taartFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
+TaartFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
 {
   if(!isFilterSensible(filter, studenten))
     return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))

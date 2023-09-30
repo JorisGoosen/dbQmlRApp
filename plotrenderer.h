@@ -7,7 +7,7 @@
 #include <QDir>
 #include <QTimer>
 
-DECLARE_ENUM(PlotType,		horizontaalPerLabel, horizontaalMeerdere, horizontaalLabelsGroepen, horizontaalLabelPerTypeRespondent, verticaalStaaf, taart)
+DECLARE_ENUM(PlotType,		HoriStaafPerLabel, HoriStaafMeerdereKolommen, HoriStaafGroepPerFilter, HoriStaafPerTypeRespondent, VerticaalStaaf, Taart)
 DECLARE_ENUM(PlotFilter,	Geen, School, Locatie, Sector, Niveau, Jaar, Klas, Gender, Cultuur, Type)
 
 class PlotRenderers;
@@ -90,7 +90,7 @@ private:
 									_height,
 									_revision	= 0;
 				QTimer				_timer;
-				PlotType			_welkPlot	= PlotType::horizontaalLabelPerTypeRespondent;
+				PlotType			_welkPlot	= PlotType::HoriStaafPerTypeRespondent;
 				PlotFilter			_welkFilter = PlotFilter::Geen;
 };
 

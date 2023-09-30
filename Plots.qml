@@ -2,26 +2,31 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-
-
-ListView
+Rectangle
 {
-	id:			lijstje
-	model:		plotList
+	color: controlForegroundNeutral
 
-
-	delegate: PlotsHori
+	ListView
 	{
-		width:				ListView.view.width
-		model:				display
-		modelFilters:		filters
-		aspecten:			aspectData
-		hoogtes:			hoogteData
-		titels:				titelData
-		bestanden:			bestandData
-		bestandenAbs:		bestandAbsData
+		id:				lijstje
+		model:			plotList
+		spacing:		generalMargin
+		anchors.fill:	parent
+		clip:			true
+
+		delegate: PlotsHori
+		{
+			width:				ListView.view.width
+			model:				display
+			modelFilters:		filters
+			aspecten:			aspectData
+			hoogtes:			hoogteData
+			titels:				titelData
+			bestanden:			bestandData
+			bestandenAbs:		bestandAbsData
+		}
+
+
+
 	}
-
-
-
 }

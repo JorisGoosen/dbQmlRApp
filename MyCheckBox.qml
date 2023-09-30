@@ -7,12 +7,21 @@ CheckBox
 
 	padding: 			10
 
+	MouseArea
+	{
+		id:					muisje
+		acceptedButtons:	Qt.NoButton
+		hoverEnabled:		true
+		anchors.fill:		parent
+		cursorShape:		Qt.PointingHandCursor
+	}
+
 	background: Rectangle
 	{
 			 implicitWidth:		100
 			 implicitHeight:	40
 			 opacity:			enabled ? 1 : 0.3
-			 color:				control.activeFocus ? controlBackgroundFocus : controlBackgroundNeutral
+			 color:				control.activeFocus || muisje.containsMouse ? controlBackgroundFocus : controlBackgroundNeutral
 	}
 
 
@@ -22,7 +31,7 @@ CheckBox
 		text:				control.text
 		font:				control.font
 		opacity:			enabled ? 1.0 : 0.3
-		color:				control.activeFocus ? controlForegroundFocus : controlForegroundNeutral
+		color:				control.activeFocus || muisje.containsMouse ? controlForegroundFocus : controlForegroundNeutral
 		verticalAlignment:	Text.AlignVCenter
 		leftPadding:		control.indicator.width + control.spacing
 	}
@@ -34,7 +43,7 @@ CheckBox
 			 x:					control.leftPadding
 			 y:					parent.height / 2 - height / 2
 			// radius:			4
-			 border.color:		control.activeFocus ? controlForegroundFocus : controlForegroundNeutral
+			 border.color:		control.activeFocus || muisje.containsMouse ? controlForegroundFocus : controlForegroundNeutral
 			 border.width:		4
 			 color:				"transparent"
 
@@ -44,9 +53,10 @@ CheckBox
 				 height:	14
 				 x:			6
 				 y:			6
+				 opacity:	control.checked ? 1.0 : 0.25
 				// radius:	2
-				 color:		control.activeFocus ? controlForegroundFocus : controlForegroundNeutral
-				 visible:	control.checked
+				 color:		control.activeFocus || muisje.containsMouse ? controlForegroundFocus : controlForegroundNeutral
+				 visible:	control.checked     || muisje.containsMouse
 			 }
 		 }
 

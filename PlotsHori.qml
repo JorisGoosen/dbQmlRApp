@@ -63,8 +63,6 @@ Rectangle
 		}
 	}
 
-
-
 	TabBar
 	{
 		id:		tabBar
@@ -84,33 +82,11 @@ Rectangle
 		{
 			id:	repeatFilter
 
-			TabButton
+			MyTabButton
 			{
-				id:		tabButton
-				text:	modelData === 'Geen' || modelData === 'Type' ? 'Geen filters' : modelData
-
-				property bool selected: index === tabBar.currentIndex && tabBar.count > 1
-
-				contentItem:	Text
-				{
-					color:						tabButton.selected ? controlForegroundFocus : controlForegroundNeutral
-					text:						"<b>" + tabButton.text + "</b>"
-					anchors.fill:				parent
-					font.family:				fontFamilie
-					horizontalAlignment:		Text.AlignHCenter
-					verticalAlignment:			Text.AlignVCenter
-				}
-
-				background: Item {
-					Rectangle
-					{
-							color:				tabButton.selected ? controlBackgroundFocus : controlBackgroundNeutral
-							border.color:		tabButton.selected ? controlForegroundFocus : controlBackgroundNeutral
-							border.width:		1
-							anchors.fill:		parent
-							anchors.margins:	dikkeLijnDikte / 2
-					}
-				}
+				id:			tabButton
+				text:		modelData === 'Geen' || modelData === 'Type' ? 'Geen filters' : modelData
+				selected:	index === tabBar.currentIndex && tabBar.count > 1
 			}
 		}
 	}
@@ -149,12 +125,12 @@ Rectangle
 
 	RectButton
 	{
-		id:		bodemVak
+						id:			bodemVak
+						groot:		false
+						text:		swiper.bestanden.length === 0 ? "???" : swiper.bestanden[curIndex]
+		property int	curIndex:	Math.min(swiper.bestanden.length-1, tabBar.currentIndex)
 
-		property int curIndex: Math.min(swiper.bestanden.length-1, tabBar.currentIndex)
-		text:	swiper.bestanden.length === 0 ? "???" : swiper.bestanden[curIndex]
-
-		onClicked:	if(swiper.bestanden.length > 0) mainModel.showInFolder(swiper.bestandenAbs[curIndex])
+						onClicked:	if(swiper.bestanden.length > 0) mainModel.showInFolder(swiper.bestandenAbs[curIndex])
 
 		anchors
 		{
