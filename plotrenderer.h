@@ -8,7 +8,7 @@
 #include <QTimer>
 
 DECLARE_ENUM(PlotType,		horizontaalPerLabel, horizontaalMeerdere, horizontaalLabelsGroepen, horizontaalLabelPerTypeRespondent, verticaalStaaf, taart)
-DECLARE_ENUM(PlotFilter,	Geen, School, Locatie, Sector, Niveau, Jaar, Klas, Gender, Cultuur)
+DECLARE_ENUM(PlotFilter,	Geen, School, Locatie, Sector, Niveau, Jaar, Klas, Gender, Cultuur, Type)
 
 class PlotRenderers;
 

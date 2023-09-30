@@ -33,25 +33,27 @@ PlotRenderers::PlotRenderers( QObject *parent)
 	{
 
 		//veiligheid leerlingen
-		{ new PlotRenderer(this,	PlotType::taart,						PlotFilter::Geen,	true,	"veiligSchool",						"Veilig op school",						1280,		1280	)},
-		{ new PlotRenderer(this,	PlotType::taart,						PlotFilter::Geen,	true,	"veiligKlas",						"Veilig in de klas",					1280,		1280	)},
-		{ GENEREERHET(				PlotType::verticaalStaaf,									true,	"veiligSchool",						"Veilig op school",						1280,		720		)},
-		{ GENEREERHET(				PlotType::verticaalStaaf,									true,	"veiligKlas",						"Veilig in de klas",					1280,		720		)},
-		{ GENEREERHET(				PlotType::horizontaalLabelsGroepen,							true,	"onveiligHier",						"Voel me onveilig in bij",				1280,		2560	)},
-		{ new PlotRenderer(this,	PlotType::horizontaalMeerdere,			PlotFilter::Geen,	true,	"bangOpSchool,graagNaarSchool",		"Hoe graag naar school en hoe bang",	1280,		400		)},
-		{ GENEREERHET(				PlotType::horizontaalLabelsGroepen,							true,	"bangOpSchool",						"Bang op school",						1280,		2560	)},
-		{ GENEREERHET(				PlotType::horizontaalLabelsGroepen,							true,	"graagNaarSchool",					"Graag naar school",					1280,		2560	)},
+		{ new PlotRenderer(this,	PlotType::taart,								PlotFilter::Geen,	true,	"veiligSchool",						"Veilig op school",						1280,		1280	)},
+		{ new PlotRenderer(this,	PlotType::taart,								PlotFilter::Geen,	true,	"veiligKlas",						"Veilig in de klas",					1280,		1280	)},
+		{ GENEREERHET(				PlotType::verticaalStaaf,											true,	"veiligSchool",						"Veilig op school",						1280,		720		)},
+		{ GENEREERHET(				PlotType::verticaalStaaf,											true,	"veiligKlas",						"Veilig in de klas",					1280,		720		)},
+		{ GENEREERHET(				PlotType::horizontaalLabelsGroepen,									true,	"onveiligHier",						"Voel me onveilig in bij",				1280,		2560	)},
+		{ new PlotRenderer(this,	PlotType::horizontaalMeerdere,					PlotFilter::Geen,	true,	"bangOpSchool,graagNaarSchool",		"Hoe graag naar school en hoe bang",	1280,		400		)},
+		{ GENEREERHET(				PlotType::horizontaalLabelsGroepen,									true,	"bangOpSchool",						"Bang op school",						1280,		2560	)},
+		{ GENEREERHET(				PlotType::horizontaalLabelsGroepen,									true,	"graagNaarSchool",					"Graag naar school",					1280,		2560	)},
+		{ GENEREERHET(				PlotType::horizontaalLabelsGroepen,									true,	"bangOpSchool",						"Bang op school",						1280,		2560	)},
 
 		//veiligheid docenten
-		{ new PlotRenderer(this,	PlotType::taart,						PlotFilter::Geen,	false,	"veiligSchool",						"Veilig op school",						1280,		1280	)},
-		{ new PlotRenderer(this,	PlotType::taart,						PlotFilter::Geen,	false,	"veiligKlas",						"Veilig in de klas",					1280,		1280	)},
-		{ GENEREERHETDOC(			PlotType::verticaalStaaf,									false,	"veiligSchool",						"Veilig op school",						1280,		720		)},
-		{ GENEREERHETDOC(			PlotType::verticaalStaaf,									false,	"veiligKlas",						"Veilig in de klas",					1280,		720		)},
-		//{ GENEREERHETDOC(			PlotType::horizontaalLabelsGroepen,							false,	"onveiligHier",						"Voel me onveilig in bij",				1280,		2560	)},
-		{ new PlotRenderer(this,	PlotType::horizontaalMeerdere,			PlotFilter::Geen,	false,	"bangOpSchool,werkMetPlezier",		"Bang op school en werkplezier",		1280,		400		)},
-		{ GENEREERHETDOC(			PlotType::horizontaalLabelsGroepen,							false,	"bangOpSchool",						"Bang op school",						1280,		2560	)},
-		{ GENEREERHETDOC(			PlotType::horizontaalLabelsGroepen,							false,	"graagNaarSchool",					"Graag naar school",					1280,		2560	)},
+		{ new PlotRenderer(this,	PlotType::taart,								PlotFilter::Geen,	false,	"veiligSchool",						"Veilig op school",						1280,		1280	)},
+		{ new PlotRenderer(this,	PlotType::taart,								PlotFilter::Geen,	false,	"veiligKlas",						"Veilig in de klas",					1280,		1280	)},
+		{ GENEREERHETDOC(			PlotType::verticaalStaaf,											false,	"veiligSchool",						"Veilig op school",						1280,		720		)},
+		{ GENEREERHETDOC(			PlotType::verticaalStaaf,											false,	"veiligKlas",						"Veilig in de klas",					1280,		720		)},
+		//{ GENEREERHETDOC(			PlotType::horizontaalLabelsGroepen,									false,	"onveiligHier",						"Voel me onveilig in bij",				1280,		2560	)},
+		{ new PlotRenderer(this,	PlotType::horizontaalMeerdere,					PlotFilter::Geen,	false,	"bangOpSchool,werkMetPlezier",		"Bang op school en werkplezier",		1280,		400		)},
+		{ GENEREERHETDOC(			PlotType::horizontaalLabelsGroepen,									false,	"bangOpSchool",						"Bang op school",						1280,		2560	)},
+		{ GENEREERHETDOC(			PlotType::horizontaalLabelsGroepen,									false,	"werkMetPlezier",					"Werk met plezier",						1280,		2560	)},
 
+		{ new PlotRenderer(this,	PlotType::horizontaalLabelsGroepen,				PlotFilter::Type,	false,	"bangOpSchool",						"Bang op school",						1280,		1280	)},
 	};
 
 
@@ -97,7 +99,7 @@ QVariant PlotRenderers::data(const QModelIndex & index, int role) const
 		if(role < Qt::UserRole)
 			lijst.append(plot->plotUrl());
 		else if(role == Qt::UserRole + 3)
-			lijst.append((plot->studenten() ? "Student - " : "Docent - ") + plot->title());
+			lijst.append((plot->welkFilter() == PlotFilter::Type ? "Iedereen - " : plot->studenten() ? "Student - " : "Docent - ") + plot->title());
 		else if(role == Qt::UserRole + 2)
 			lijst.append(plot->height());
 		else if(role == Qt::UserRole + 1)

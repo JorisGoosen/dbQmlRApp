@@ -11,7 +11,11 @@ laadKolommen <- function(kolomnamen, studenten)
   if(length(intersect(kolomnamen, names(SchoolScannerTextOnlysql))) != length(kolomnamen))
     return(data.frame())
   
-  kolommen <- collect(SchoolScannerTextOnlysql %>% filter((type != "Docenten") == studenten)  %>% select(all_of(kolomnamen)) )
+  kolommen <-
+    if(is.null(studenten) | length(intersect(kolomnamen, 'type')) > 0)
+      collect(SchoolScannerTextOnlysql %>%                                                select(all_of(kolomnamen)))
+    else
+      collect(SchoolScannerTextOnlysql %>% filter((type != "Docenten") == studenten)  %>% select(all_of(kolomnamen)))
   
   naamCultuur <- ""
   for(naam in names(kolomnamen))
@@ -290,6 +294,8 @@ horizontaalLabelsGroepenFunc <- function(plotFolder, plotFile, width, height, ti
 
 horizontaalLabelPerTypeRespondentFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
 {
+  studenten <- NULL
+  
   if(!isFilterSensible(filter, studenten))
     return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
   
@@ -306,15 +312,15 @@ horizontaalLabelPerTypeRespondentFunc <- function(plotFolder, plotFile, width, h
 						  mentor      = c("mentorIkHebGoedContact", "docentIkHebGoedContact", "docentenKunnenGoedOrdeHouden", "docentenGevenMijComplimenten", "docentenHebbenLageVerwachtingVanMij", "docentenLettenOpTaalgebruikStudenten", "docentenlettenOpEigenTaalgebruik", "docentenBelonenPositiefGedrag", "docentenGrijpenInWanneerDatNodigIs", "mentorenWetenWatErInDeKlasSpeelt", "mentorenBespreektWatErInDeKlasSpeelt", "actueleGebeurtenissenSamenlevingWordenInKlasBesproken"))
 
     TITEL <- switch(welkeKolommen,
-	                klas.       = "In de klas...",
+	        klas        = "In de klas...",
 					studenten   = "Bij mij in de klas/op school zie ik dat andere studenten...",
 					ikMijn      = "In de klas/op school word ik/worden mijn... ",
-					school.     = "Op school...",
+					school     = "Op school...",
 					vervelend   = "Als iemand vervelend doet tegen een klasgenoot dan...",
 					buitensluit = "Bij buitensluiting...",
 					mentor      = "Docenten & mentoren")
 
-    allesPerType <- laadKolommen(c("type", kolommen), studenten)
+    allesPerType <- laadKolommen(c("type", kolommen), studenten=NULL)
     
     if(nrow(allesPerType) == 0)
       return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
