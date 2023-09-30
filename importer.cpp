@@ -83,6 +83,20 @@ void Importer::collectDbColumns()
 	if(!hasColumn("schoolType"))	_columns.push_back(new ImportColumn(schoolTypeCd,	QStringList(_columns[0]->values.size(), _schoolType)) );
 	if(!hasColumn("type"))			_columns.push_back(new ImportColumn(typeCd,			QStringList(_columns[0]->values.size(), _type)) );
 
+	auto getImportColumn = [&](const QString & colName)->ImportColumn*
+	{
+		for(ImportColumn * col : _columns)
+			if(col->nameDB == colName)
+				return col;
+		return nullptr;
+	};
+
+	ImportColumn	* schoolTypeImport	= getImportColumn("schoolType"),
+					* typeImport		= getImportColumn("type");
+
+	for(qsizetype i=0; i<typeImport->values.size(); i++)
+		if(schoolTypeImport->values[i].trimmed() == "MBO" && typeImport->values[i].trimmed() == "Leerlingen")
+			typeImport->values[i] = "Studenten";
 }
 
 void Importer::processValues()

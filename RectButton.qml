@@ -9,9 +9,10 @@ Rectangle
 
 	property alias text:		buttonText.text
 	property string toolTip:	""
+	property int margins:		generalMargin
 
-	implicitWidth:	buttonText.contentWidth  + generalMargin
-	implicitHeight:	buttonText.contentHeight + generalMargin
+	implicitWidth:	buttonText.contentWidth  + margins * 2
+	implicitHeight:	buttonText.contentHeight + margins * 2
 
 	color:			!enabled ? controlBackgroundDisabled : buttonMouseArea.pressed ? controlBackgroundPressed : buttonMouseArea.containsMouse ? controlBackgroundFocus : controlBackgroundNeutral
 	border.color:	!enabled ? controlForegroundDisabled : buttonMouseArea.pressed ? controlForegroundPressed : buttonMouseArea.containsMouse ? controlForegroundFocus : controlForegroundNeutral
@@ -22,7 +23,7 @@ Rectangle
 		id:						buttonText
 		color:					buttonRoot.border.color
 		anchors.fill:			parent
-		anchors.margins:		generalMargin
+		anchors.margins:		buttonRoot.margins
 		font.family:			fontFamilie
 		font.pixelSize:			25
 		horizontalAlignment:	Text.AlignHCenter

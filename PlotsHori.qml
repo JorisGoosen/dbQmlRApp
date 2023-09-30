@@ -11,8 +11,10 @@ Rectangle
 	property list<real>		aspecten:		[]
 	property list<int>		hoogtes:		[]
 	property list<string>	titels:			[]
+	property list<string>	bestanden:		[]
+	property list<string>	bestandenAbs:	[]
 							clip:			true
-							implicitHeight:	aspecten.length > tabBar.currentIndex ? aspecten[tabBar.currentIndex] * width : implicitHeight
+							implicitHeight:	aspecten.length > tabBar.currentIndex ? tabBar.y + tabBar.height + bodemVak.height + aspecten[tabBar.currentIndex] * width : implicitHeight
 							color:			controlBackgroundPlots
 	Rectangle
 	{
@@ -85,7 +87,7 @@ Rectangle
 			TabButton
 			{
 				id:		tabButton
-				text:	modelData === 'Geen' ? 'Geen filters' : modelData
+				text:	modelData === 'Geen' || modelData === 'Type' ? 'Geen filters' : modelData
 
 				property bool selected: index === tabBar.currentIndex && tabBar.count > 1
 
@@ -141,7 +143,24 @@ Rectangle
 			top:	tabBar.bottom
 			left:	parent.left
 			right:	parent.right
-			bottom:	parent.bottom
+			bottom:	bodemVak.top
+		}
+	}
+
+	RectButton
+	{
+		id:		bodemVak
+
+		property int curIndex: Math.min(swiper.bestanden.length-1, tabBar.currentIndex)
+		text:	swiper.bestanden.length === 0 ? "???" : swiper.bestanden[curIndex]
+
+		onClicked:	if(swiper.bestanden.length > 0) mainModel.showInFolder(swiper.bestandenAbs[curIndex])
+
+		anchors
+		{
+			left:			parent.left
+			bottom:			parent.bottom
+			right:			parent.right
 		}
 	}
 }

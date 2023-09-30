@@ -18,6 +18,8 @@ ListView
 		aspecten:			aspectData
 		hoogtes:			hoogteData
 		titels:				titelData
+		bestanden:			bestandData
+		bestandenAbs:		bestandAbsData
 	}
 
 

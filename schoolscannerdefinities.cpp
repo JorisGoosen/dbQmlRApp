@@ -22,8 +22,8 @@ const ColumnDefinitions & SchoolScannerDefinities::columnDefsText()
 const ColumnDefinitions SchoolScannerDefinities::_columnDefs =
 {
 
-	new CD("Tijdstempel",																														"timestamp",															ColumnType::Text		),
-	new CD("Wat is de datum?",																													"datum",																ColumnType::Text		),
+	//new CD("Tijdstempel",																														"timestamp",															ColumnType::Text		),
+	//new CD("Wat is de datum?",																													"datum",																ColumnType::Text		),
 	new CD("Type respondent",																													"type",																	ColumnType::Label   	),
 	new CD("Type Medewerker",																													"medewerkerType",														ColumnType::Label   	),
 	new CD("Ben je een jongen of meisje?",																										"gender",																ColumnType::Label   	),

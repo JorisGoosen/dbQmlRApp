@@ -28,6 +28,7 @@ Item
 		verticalAlignment:		Text.AlignVCenter
 		padding: 				5
 		text:					column.model ? column.model.title : "???"
+		font.bold:				true
 
 		anchors
 		{
@@ -49,10 +50,10 @@ Item
 
 		anchors
 		{
+			top:				titleText.bottom
 			left:				parent.left
 			right:				parent.right
 			bottom:				parent.bottom
-			top:				titleText.bottom
 			margins:			generalMargin
 		}
 

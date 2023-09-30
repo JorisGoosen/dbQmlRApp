@@ -33,7 +33,7 @@ CheckBox
 			 implicitHeight:	26
 			 x:					control.leftPadding
 			 y:					parent.height / 2 - height / 2
-			 radius:			4
+			// radius:			4
 			 border.color:		control.activeFocus ? controlForegroundFocus : controlForegroundNeutral
 			 border.width:		4
 			 color:				"transparent"
@@ -44,7 +44,7 @@ CheckBox
 				 height:	14
 				 x:			6
 				 y:			6
-				 radius:	2
+				// radius:	2
 				 color:		control.activeFocus ? controlForegroundFocus : controlForegroundNeutral
 				 visible:	control.checked
 			 }

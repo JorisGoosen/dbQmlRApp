@@ -25,10 +25,15 @@ SplitView
 		height:		parent.height
 	}
 
-	RectButton
+	Item
 	{
-		text:					"Maak & toon grafieken"
-		visible:				!plotList.renderMaar
-		onClicked:				plotList.renderMaar = true
+		visible:					!plotList.renderMaar
+		RectButton
+		{
+			text:					"Maak & toon grafieken"
+			onClicked:				plotList.renderMaar = true
+			anchors.centerIn:		parent
+			margins:				parent.width / 8
+		}
 	}
 }

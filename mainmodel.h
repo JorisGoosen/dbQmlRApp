@@ -28,10 +28,12 @@ public:
 	void		setPlotFilterNames(	const QStringList & newPlotFilterNames);
 	void		setDbPath(			const QString & newDbPath);
 
+
 public slots:
 	bool		selectDatabase(		const QString & path);
 	bool		loadDatabase(		      QString   path = "");
 	void		showData();
+	void		showInFolder(		const QString & path);
 
 
 signals:

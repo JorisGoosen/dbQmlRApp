@@ -2,6 +2,8 @@
 #include "database.h"
 #include <QFile>
 #include <QUrl>
+#include <QProcess>
+#include <QDesktopServices>
 
 MainModel::MainModel(Database * db, QObject *parent)
 	: QObject{parent}, _db(db), _settings("GoosenAutomatisering", "School Scanner")
@@ -99,4 +101,28 @@ void MainModel::setDbPath(const QString & newDbPath)
 	emit dbPathChanged();
 
 	_settings.setValue("dbPath", _dbPath);
+}
+
+//Thanks https://stackoverflow.com/a/46019091
+void MainModel::showInFolder(const QString& path)
+{
+	QFileInfo info(path);
+#if defined(Q_OS_WIN)
+	QStringList args;
+	if (!info.isDir())
+		args << "/select,";
+	args << QDir::toNativeSeparators(path);
+	if (QProcess::startDetached("explorer", args))
+		return;
+#elif defined(Q_OS_MAC)
+	QStringList args;
+	args << "-e" << "tell application \"Finder\"";
+	args << "-e" << "activate";
+	args << "-e" << "select POSIX file \"" + path + "\"";
+	args << "-e" << "end tell";
+	args << "-e" << "return";
+	if (!QProcess::execute("/usr/bin/osascript", args))
+		return;
+#endif
+	QDesktopServices::openUrl(QUrl::fromLocalFile(info.isDir()? path : info.path()));
 }

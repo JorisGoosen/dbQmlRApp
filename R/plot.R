@@ -281,7 +281,7 @@ horizontaalLabelsGroepenFunc <- function(plotFolder, plotFile, width, height, ti
                       * length(unique(dfPer$filter))  
                       )
                     + ifelse(bodemLegenda, 150, 0)
-                    + 100
+                    + 150
                )
             )
   

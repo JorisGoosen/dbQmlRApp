@@ -82,6 +82,8 @@ QHash<int, QByteArray> PlotRenderers::roleNames() const
 		namen[Qt::UserRole+1] = "aspectData";
 		namen[Qt::UserRole+2] = "hoogteData";
 		namen[Qt::UserRole+3] = "titelData";
+		namen[Qt::UserRole+4] = "bestandData";
+		namen[Qt::UserRole+5] = "bestandAbsData";
 		return namen;
 	}();
 
@@ -98,6 +100,10 @@ QVariant PlotRenderers::data(const QModelIndex & index, int role) const
 	for(PlotRenderer * plot : _plots[index.row()])
 		if(role < Qt::UserRole)
 			lijst.append(plot->plotUrl());
+		else if(role == Qt::UserRole + 5)
+			lijst.append(plot->plotFolder().absoluteFilePath(plot->fileName()));
+		else if(role == Qt::UserRole + 4)
+			lijst.append(plot->fileName());
 		else if(role == Qt::UserRole + 3)
 			lijst.append((plot->welkFilter() == PlotFilter::Type ? "Iedereen - " : plot->studenten() ? "Student - " : "Docent - ") + plot->title());
 		else if(role == Qt::UserRole + 2)
