@@ -153,7 +153,7 @@ HoriStaafPerLabelFunc <- function(plotFolder, plotFile, width, height, titel, ko
   if(!isFilterSensible(filter, studenten))
     return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
   
-  kolommen        <- laadKolommen(c(kolom, filter), studenten)
+  kolommen        <- laadKolommen(c(kolom=kolom, filter=filter), studenten)
   
   if(nrow(kolommen) == 0)
     return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
@@ -161,18 +161,18 @@ HoriStaafPerLabelFunc <- function(plotFolder, plotFile, width, height, titel, ko
   tafelPerGender  <- table(kolommen)
   dfPer		        <- as.data.frame(tafelPerGender)
 
-  hoeVaaks        <- levels(as.factor(kolommen[[kolom]]))
-	genders         <- levels(as.factor(kolommen[[filter]]))
-	dfGender	      <- table(kolommen[[filter]])
+  hoeVaaks        <- levels(as.factor(kolommen$kolom))
+	genders         <- levels(as.factor(kolommen$filter))
+	dfGender	      <- table(kolommen$filter)
 
-  dfPer[[kolom]]	<- factor(as.character(dfPer[[kolom]], rev(c("Nooit", "Soms", "Vaak", "Altijd"))))
-	dfPer			      <- dfPer %>% rowwise() %>% select({{filter}}, {{kolom}}, Freq) %>%  mutate(`Hoe vaak` = Freq / dfGender[[filter]], Filter={{filter}}, kolom={{kolom}})
-	dfPer			      <- dplyr::filter(dfPer, Filter != "")
+  dfPer[[kolom]]	<- factor(as.character(dfPer$kolom, rev(c("Nooit", "Soms", "Vaak", "Altijd"))))
+	dfPer			      <- dfPer %>% rowwise() %>% select(filter, kolom, Freq) %>%  mutate(`Hoe vaak` = Freq / dfGender[[filter]])
+	dfPer			      <- dplyr::filter(dfPer, filter != "")
   dfPer           <- arrange(dfPer, desc(kolom))
 
     afronder(
 	    plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel,
-		  plot=ggplot(dfPer, aes(x=Filter, y=`Hoe vaak`, fill=kolom)) + geom_bar(position=position_stack(reverse = TRUE), stat="identity") + coord_flip() +
+		  plot=ggplot(dfPer, aes(x=filter, y=`Hoe vaak`, fill=kolom)) + geom_bar(position=position_stack(reverse = TRUE), stat="identity") + coord_flip() +
 		  procentAsY() + xlab("") + ylab("") + theme(aspect.ratio=0.3) +
 		  scale_fill_manual(paste0("N: ", nrow(kolommen)), values=c(Altijd=kleuren$rozig, Vaak=kleuren$lichtblauwig, Soms=kleuren$lichtrozig, Nooit=kleuren$blauwig))
 	)

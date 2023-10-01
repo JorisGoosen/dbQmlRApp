@@ -29,41 +29,72 @@ PlotRenderers::PlotRenderers( QObject *parent)
 
 	_plotFolder = _plotFolder.absoluteFilePath(naamMap);
 
-	const QString klasKolommen = "klasJezelf,klasSfeerGoed,klasSchoolGemopper,klasOpschietenMet,klasGoedSamenWerken,klasAfkomstKlit,klasOnaardigGepraat,klasVeelRuzie,klasKunJeZeggenVervelend,klasDurfUitDeKast,klasKwetstMetMijnIdentiteit,klasWeetHoeHetMetMijGaat,klasVoeltOnveilig";
+	const QString	klasKolommen		= "klasJezelf,klasSfeerGoed,klasSchoolGemopper,klasOpschietenMet,klasGoedSamenWerken,klasAfkomstKlit,klasOnaardigGepraat,klasVeelRuzie,klasKunJeZeggenVervelend,klasDurfUitDeKast,klasKwetstMetMijnIdentiteit,klasWeetHoeHetMetMijGaat,klasVoeltOnveilig",
+					studentKolommen		= "studentenBuitenGesloten,studentenUitgescholden,studentenExpresLesVerstoren,studentenSpullenSlopenJatten,studentenGepest,studentenDigitaalGepest,studentenGediscrimineerdDoorLeerlingen,studentenGediscrimineerdDoorLeraren,studentenBedreigdGeintimideerd,studentenGeduwdGeschoptGeslagen,studentenVechten,studentenSeksueelGetinteOpmerkingenMaken,studentenSeksueleAfbeeldingenVerspreiden,studentenOnveiligVoelenInKlas",
+					ikWordKolommen		= "ikBuitengesloten,ikUitgescholden,ikExpresGestoord,ikGepest,ikDigitaalGepest,ikGediscrimineerdDoorLeerlingen,ikGediscrimineerdDoorLeraren,ikBedreigdGeintimideerd,ikGeduwdGeschoptGeslagen,ikUitgedaagdOmTeVechten,ikAangesprokenMetSeksueelGetinteOpmerkingen,ikAangesprokenOpVervelendGedrag",
+					mijnWordkolommen	= "mijnSpullenGeslooptGejat,mijnPriveFotosVerspreid",
+					schoolKolommen		= "schoolJezelfZijn,schoolSfeerIsGoed,schoolRaadIkAan,schoolStudentenGediscrimineerd,schoolDiversVoeltThuis,schoolGoedOpschietenElkaar,schoolLiefstMetGelijkeAfkomstOm,schoolAnderenVoorgetrokkenAfkomstCultuurGeloof,schoolActueleGebeurtenissenMijAangaanBehandeldOpSchool,schoolStudentenZittenOngewildAlleen";
+
+
+	const int BB = 1280; //basisbreedte
 
 	_plots =
 	{
 
 		//veiligheid leerlingen
-		{ new PlotRenderer(this,	PlotType::Taart,								PlotFilter::Geen,	true,	"veiligSchool",						"Veilig op school",						1280,		1280	)},
-		{ new PlotRenderer(this,	PlotType::Taart,								PlotFilter::Geen,	true,	"veiligKlas",						"Veilig in de klas",					1280,		1280	)},
-		{ GENEREERHET(				PlotType::VerticaalStaaf,											true,	"veiligSchool",						"Veilig op school",						1280,		720		)},
-		{ GENEREERHET(				PlotType::VerticaalStaaf,											true,	"veiligKlas",						"Veilig in de klas",					1280,		720		)},
-		{ GENEREERHET(				PlotType::HoriStaafGroepPerFilter,									true,	"onveiligHier",						"Voel me onveilig in bij",				1280,		2560	)},
-		{ new PlotRenderer(this,	PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	"bangOpSchool,graagNaarSchool",		"Hoe graag naar school en hoe bang",	1280,		400		)},
-		{ GENEREERHET(				PlotType::HoriStaafGroepPerFilter,									true,	"bangOpSchool",						"Bang op school",						1280,		2560	)},
-		{ GENEREERHET(				PlotType::HoriStaafGroepPerFilter,									true,	"graagNaarSchool",					"Graag naar school",					1280,		2560	)},
-		{ GENEREERHET(				PlotType::HoriStaafGroepPerFilter,									true,	"bangOpSchool",						"Bang op school",						1280,		2560	)},
+		{ new PlotRenderer(this,	PlotType::Taart,								PlotFilter::Geen,	true,	"veiligSchool",						"Veilig op school",									BB,		BB			)},
+		{ new PlotRenderer(this,	PlotType::Taart,								PlotFilter::Geen,	true,	"veiligKlas",						"Veilig in de klas",								BB,		BB			)},
+		{ GENEREERHET(				PlotType::VerticaalStaaf,											true,	"veiligSchool",						"Veilig op school",									BB,		BB * 0.75	)},
+		{ GENEREERHET(				PlotType::VerticaalStaaf,											true,	"veiligKlas",						"Veilig in de klas",								BB,		BB * 0.75	)},
+		{ GENEREERHET(				PlotType::HoriStaafGroepPerFilter,									true,	"onveiligHier",						"Voel me onveilig in bij",							BB,		BB + BB		)},
+		{ new PlotRenderer(this,	PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	"bangOpSchool,graagNaarSchool",		"Hoe graag naar school en hoe bang",				BB,		BB / 3		)},
+		{ GENEREERHET(				PlotType::HoriStaafPerLabel,										true,	"bangOpSchool",						"Bang op school",									BB,		BB + BB		)},
+		{ GENEREERHET(				PlotType::HoriStaafPerLabel,										true,	"graagNaarSchool",					"Graag naar school",								BB,		BB + BB		)},
 
-		//veiligheid docenten
-		{ new PlotRenderer(this,	PlotType::Taart,								PlotFilter::Geen,	false,	"veiligSchool",						"Veilig op school",						1280,		1280	)},
-		{ new PlotRenderer(this,	PlotType::Taart,								PlotFilter::Geen,	false,	"veiligKlas",						"Veilig in de klas",					1280,		1280	)},
-		{ GENEREERHETDOC(			PlotType::VerticaalStaaf,											false,	"veiligSchool",						"Veilig op school",						1280,		720		)},
-		{ GENEREERHETDOC(			PlotType::VerticaalStaaf,											false,	"veiligKlas",						"Veilig in de klas",					1280,		720		)},
-		//{ GENEREERHETDOC(			PlotType::HoriStaafGroepPerFilter,									false,	"onveiligHier",						"Voel me onveilig in bij",				1280,		2560	)},
-		{ new PlotRenderer(this,	PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	false,	"bangOpSchool,werkMetPlezier",		"Bang op school en werkplezier",		1280,		400		)},
-		{ GENEREERHETDOC(			PlotType::HoriStaafGroepPerFilter,									false,	"bangOpSchool",						"Bang op school",						1280,		2560	)},
-		{ GENEREERHETDOC(			PlotType::HoriStaafGroepPerFilter,									false,	"werkMetPlezier",					"Werk met plezier",						1280,		2560	)},
+		// 3 veiligheid docenten
+		{ new PlotRenderer(this,	PlotType::Taart,								PlotFilter::Geen,	false,	"veiligSchool",						"Veilig op school",									BB,		BB			)},
+		{ new PlotRenderer(this,	PlotType::Taart,								PlotFilter::Geen,	false,	"veiligKlas",						"Veilig in de klas",								BB,		BB			)},
+		{ GENEREERHETDOC(			PlotType::VerticaalStaaf,											false,	"veiligSchool",						"Veilig op school",									BB,		BB * 0.75	)},
+		{ GENEREERHETDOC(			PlotType::VerticaalStaaf,											false,	"veiligKlas",						"Veilig in de klas",								BB,		BB * 0.75	)},
+		//{ GENEREERHETDOC(			PlotType::HoriStaafGroepPerFilter,									false,	"onveiligHier",						"Voel me (on?)veilig in bij",						BB,		BB + BB		)},
+		{ new PlotRenderer(this,	PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	false,	"bangOpSchool,werkMetPlezier",		"Bang op school en werkplezier",					BB,		BB / 3		)},
+		{ GENEREERHETDOC(			PlotType::HoriStaafPerLabel,										false,	"bangOpSchool",						"Bang op school",									BB,		BB + BB		)},
+		{ GENEREERHETDOC(			PlotType::HoriStaafPerLabel,										false,	"werkMetPlezier",					"Werk met plezier",									BB,		BB + BB		)},
 
-		{ new PlotRenderer(this,	PlotType::HoriStaafGroepPerFilter,				PlotFilter::Type,	false,	"bangOpSchool",						"Bang op school",						1280,		1280	)},
+		// 4 veiligheid II/doc
+		{ new PlotRenderer(this,	PlotType::HoriStaafPerTypeRespondent,			PlotFilter::Geen,	true,	"bangOpSchool",						"Bang op school",									BB,		BB			)},
+		//{ new PlotRenderer(this,	PlotType::HoriStaafGroepPerFilter,				PlotFilter::Type,	false,	"bangOpSchool",						"Bang op school",									BB,		BB			)},
 
 
-		{ new PlotRenderer(this,	PlotType::HoriStaafPerTypeRespondent,			PlotFilter::Geen,	true,	"klas",								"In de klas...",						1280,		1280	)},
-		{ new PlotRenderer(this,	PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Type,	true,	"",								"In de klas...",						1280,		1280	)},
-		{ GENEREERHET(				PlotType::HoriStaafGroepPerFilter,									true,	"klasJezelf,klasSfeerGoed,klasSchoolGemopper,klasOpschietenMet,klasGoedSamenWerken,klasAfkomstKlit,klasOnaardigGepraat,klasVeelRuzie,klasKunJeZeggenVervelend,klasDurfUitDeKast,klasKwetstMetMijnIdentiteit,klasWeetHoeHetMetMijGaat,klasVoeltOnveilig",								"In de klas...",						1280,		1280	)},
-		{ GENEREERHET(				PlotType::HoriStaafPerTypeRespondent,								true,	"studenten",						"Vervelende dingen in de klas",			1280,		1280	)},
-		{ new PlotRenderer(this,	PlotType::HoriStaafPerTypeRespondent,			PlotFilter::Type,	true,	"ikMijn",							"In de klas/op school word ik/worden mijn...",						1280,		1280	)},
+		//5.1 + 5.2 In de klas:
+		{ new PlotRenderer(this,	PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	klasKolommen,						"In de klas...",									BB,		BB			)},
+		{ GENEREERHET(				PlotType::HoriStaafPerLabel,										true,	"waaromVervelendeDingenInDeKlas" ,	"Waarom vervelende dingen in de klas",				BB,		BB			)},
+		{ GENEREERHET(				PlotType::HoriStaafPerLabel,										true,	klasKolommen,						"In de klas (Altijd + vaak)...",					BB,		BB			)},
 
+		//6 In de klas - II/doc
+		{ new PlotRenderer(this,	PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Type,	true,	klasKolommen,						"In de klas (Altijd + vaak)...",					BB,		BB			)},
+		{ new PlotRenderer(this,	PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Type,	true,	"waaromVervelendeDingenInDeKlas",	"Waarom vervelende dingen in de klas",				BB,		BB			)},
+
+		//7.1 + 7.2 + 7.3 In de klas op school
+		{ new PlotRenderer(this,	PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	studentKolommen,					"In de klas/op school zie ik",						BB,		BB			)},
+		{ new PlotRenderer(this,	PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	ikWordKolommen,						"In de klas/op school word ik",						BB,		BB			)},
+		{ new PlotRenderer(this,	PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	mijnWordkolommen,					"In de klas/op school worden mijn",					BB,		BB			)},
+		{ new PlotRenderer(this,	PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	"klasOnveilig,schoolOnveilig",		"Onveilig voelen",									BB,		BB			)},
+
+		{ GENEREERHET(				PlotType::HoriStaafGroepPerFilter,									true,	studentKolommen,					"In de klas/op school zie ik",						BB,		BB			)},
+		{ GENEREERHET(				PlotType::HoriStaafGroepPerFilter,									true,	ikWordKolommen,						"In de klas/op school word ik",						BB,		BB			)},
+		{ new PlotRenderer(this,	PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	mijnWordkolommen,					"In de klas/op school worden mijn",					BB,		BB			)},
+		{ new PlotRenderer(this,	PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	"klasOnveilig,schoolOnveilig",		"Onveilig voelen (altijd + vaak)",					BB,		BB			)},
+
+		// 8 In de klas zie ik (dagelijks + wekelijks), leerlingen en docenten
+		{ new PlotRenderer(this,	PlotType::HoriStaafGroepPerFilter,				PlotFilter::Type,	true,	studentKolommen,					"In de klas/op school zie ik (dagelijks + wekelijks)",	BB,		BB			)},
+
+		// 10 Op school
+		{ new PlotRenderer(this,	PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	schoolKolommen,						"Op school - ...",										BB,		BB			)},
+		{ GENEREERHET(				PlotType::HoriStaafGroepPerFilter,									true,	schoolKolommen,						"Op school (altijd + vaak) - ...",						BB,		BB			)},
+
+		// 11 Op school en werkwijze II/doc
+		{ new PlotRenderer(this,	PlotType::HoriStaafGroepPerFilter,				PlotFilter::Geen,	false,	schoolKolommen,						"Op school (altijd + vaak) - ...",						BB,		BB			)},
 	};
 
 
