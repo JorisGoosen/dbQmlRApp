@@ -311,15 +311,15 @@ HoriStaafPerTypeRespondentFunc <- function(plotFolder, plotFile, width, height, 
 						  buitensluit = c("alsEenStudentWordtBuitengeslotenDanIsDatEigenKeuze", "alsEenStudentWordtBuitengeslotenDanIsDatEigenSchuld", "voelMeVerantwoordelijkOmBuitensluitenTegenTeGaan", "voelMeVerantwoordelijkOmInTeGrijpenAlsIemandWordtGediscrimineerd", "voelMeVerantwoordelijkOmInTeGrijpenAlsIemandWordtGepest", "ikStuurWelEensPrivefotosAnderenDoorOfIkGrijpIn"),
 						  mentor      = c("mentorIkHebGoedContact", "docentIkHebGoedContact", "docentenKunnenGoedOrdeHouden", "docentenGevenMijComplimenten", "docentenHebbenLageVerwachtingVanMij", "docentenLettenOpTaalgebruikStudenten", "docentenlettenOpEigenTaalgebruik", "docentenBelonenPositiefGedrag", "docentenGrijpenInWanneerDatNodigIs", "mentorenWetenWatErInDeKlasSpeelt", "mentorenBespreektWatErInDeKlasSpeelt", "actueleGebeurtenissenSamenlevingWordenInKlasBesproken"))
 
-    TITEL <- switch(welkeKolommen,
-	        klas        = "In de klas...",
-					studenten   = "Bij mij in de klas/op school zie ik dat andere studenten...",
-					ikMijn      = "In de klas/op school word ik/worden mijn... ",
-					school     = "Op school...",
-					vervelend   = "Als iemand vervelend doet tegen een klasgenoot dan...",
-					buitensluit = "Bij buitensluiting...",
-					mentor      = "Docenten & mentoren")
-
+#    titel <- switch(welkeKolommen,
+#	        klas        = "In de klas...",
+#					studenten   = "Bij mij in de klas/op school zie ik dat andere studenten...",
+#					ikMijn      = "In de klas/op school word ik/worden mijn... ",
+#					school     = "Op school...",
+#					vervelend   = "Als iemand vervelend doet tegen een klasgenoot dan...",
+#					buitensluit = "Bij buitensluiting...",
+#					mentor      = "Docenten & mentoren")
+#
     allesPerType <- laadKolommen(c("type", kolommen), studenten=NULL)
     
     if(nrow(allesPerType) == 0)

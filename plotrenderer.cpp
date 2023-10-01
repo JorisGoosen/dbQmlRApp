@@ -27,7 +27,7 @@ PlotRenderer::PlotRenderer(PlotRenderers * renderers, PlotType plotType, PlotFil
 : QObject{renderers}, _ouder(renderers), _title(title), _kolom(kolom), _studenten(studenten), _width(width), _height(height), _welkPlot(plotType), _welkFilter(filter)
 {
 	const QString baseName =  (_welkFilter == PlotFilter::Type ? "Iedereen_" : (studenten ? "Studenten_" : "Docenten_")) + PlotTypeToQString(_welkPlot) +
-							  "_" + PlotFilterToQString(_welkFilter) + "Filter_" + kolom;
+							  "_" + PlotFilterToQString(_welkFilter) + "Filter_" + kolom.left(std::min(qsizetype(20), kolom.size()));
 
 	if(_title == "")
 		_title = baseName;
