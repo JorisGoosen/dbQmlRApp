@@ -148,6 +148,25 @@ procentAsY <- function()
   scale_y_continuous(labels = scales::percent, breaks=c(0, 0.25, 0.5, 0.75, 1), limits=c(0, 1)) 
 }
 
+
+HoriHoogteBepaler <- function(width, column1ValCount, column2ValCount, extraHeight=0)
+{
+  return(
+    max(width / 4, 
+        min(width * 4, 
+            floor(
+              (50) 
+              * column1ValCount
+              * column2ValCount  
+            )
+            + 150
+            + extraHeight
+        )
+    )
+  )
+}
+
+
 HoriStaafPerLabelFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
 {
   if(!isFilterSensible(filter, studenten))
@@ -169,6 +188,8 @@ HoriStaafPerLabelFunc <- function(plotFolder, plotFile, width, height, titel, ko
 	dfPer			      <- dfPer %>% rowwise() %>% select(filter, kolom, Freq) %>%  mutate(`Hoe vaak` = Freq / dfGender[[filter]])
 	dfPer			      <- dplyr::filter(dfPer, filter != "")
   dfPer           <- arrange(dfPer, desc(kolom))
+  
+  height <- HoriHoogteBepaler(width, length(unique(dfPer$filter)), 1)
 
     afronder(
 	    plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel,
@@ -184,7 +205,15 @@ HoriStaafMeerdereKolommenFunc <- function(plotFolder, plotFile, width, height, t
     return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
   
   kolomnamen <- str_split_1(kolom, ',')
-  kolommen   <- laadKolommen(kolomnamen, studenten)
+  
+  kolommen   <- c()
+  
+  if(length(kolomnamen) > 1) {
+    kolommen <- laadKolommen(kolomnamen, studenten)
+  } else {
+    kolommen <- laadKolommen(c(kolom=kolom), studenten)
+  }
+
   rijen      <- nrow(kolommen)
   
   if(nrow(kolommen) == 0)
@@ -197,26 +226,41 @@ HoriStaafMeerdereKolommenFunc <- function(plotFolder, plotFile, width, height, t
   )
   
   df <- NULL
-  for(kolomnaam in kolomnamen)
+  
+  if(length(kolomnamen) > 1)
   {
-    dfHier <- as.data.frame(table(kolommen[[kolomnaam]]))
-    dfHier$Kolom <- mooieTitelAUB[[kolomnaam]]
+    for(kolomnaam in kolomnamen)
+    {
+      dfHier <- as.data.frame(table(kolommen[[kolomnaam]]))
+      dfHier$Kolom <- mooieTitelAUB[[kolomnaam]]
+      
+      if(is.null(df))
+        df <- dfHier
+      else
+        df <- rbind(df, dfHier)
+      
+      df <- df %>% rowwise() %>% select(Var1, Freq, Kolom) %>% mutate(`Procent`= Freq / rijen, `Hoe vaak`=Var1)
+    }
     
-    if(is.null(df))
-      df <- dfHier
-    else
-      df <- rbind(df, dfHier)
+  }else{ #if length kolomnamen == 1
+    
+    kolommen <- kolommen                              %>%
+      mutate(rij=row_number())              %>% 
+      mutate(kolom=strsplit(kolom, ", "))   %>% 
+      unnest_longer(kolom)       
+    
+    #length(intersect(nieuweKolomNaam, kolommen[kolommen$rij==rij,][['kolom']])) > 0
+    nieuweKolomNamen <- unique(kolommen$kolom)
+    
+    df <- tibble(Kolom=nieuweKolomNamen) %>% rowwise() %>% mutate(Freq=sum(kolommen$kolom==Kolom)) %>%
+      mutate(Procent=Freq/rijen, `Hoe vaak`=Kolom)
   }
-  
-  
-
-  df <- df %>% rowwise() %>% select(Var1, Freq, Kolom) %>% mutate(`Procent`= Freq / rijen, `Hoe vaak`=Var1)
-  
-  #df <- dplyr::filter(df, `Hoe vaak` != "")
   
   df$`Hoe vaak` <- herordenVaak(df$`Hoe vaak`, FALSE)
   
   df <- arrange(df, desc(`Hoe vaak`))
+  
+  height <- HoriHoogteBepaler(width, length(unique(df$Kolom)), length(unique(df$`Hoe vaak`)))
   
   afronder(
     plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel,
@@ -273,19 +317,7 @@ HoriStaafGroepPerFilterFunc <- function(plotFolder, plotFile, width, height, tit
   
   bodemLegenda <- length(hoeVaaks) > 6
   
-  height <- max(width / 4, 
-                min(width * 4, 
-                    floor(
-                      (50) 
-                      * length(unique(dfPer$kolom)) 
-                      * length(unique(dfPer$filter))  
-                      )
-                    + ifelse(bodemLegenda, 150, 0)
-                    + 150
-               )
-            )
-  
-  
+  height <- HoriHoogteBepaler(width, length(unique(dfPer$kolom)), length(unique(dfPer$filter)), ifelse(bodemLegenda, 150, 0))
 
   afronder(
     plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel, bottomLegend=bodemLegenda, plot=hetPlot
@@ -299,7 +331,7 @@ HoriStaafPerTypeRespondentFunc <- function(plotFolder, plotFile, width, height, 
   if(!isFilterSensible(filter, studenten))
     return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
   
-    welkeKolommen <- 'ikMijn'
+    welkeKolommen <- kolom
 
     kolommen <- switch(welkeKolommen,
 	            klas        = c("klasJezelf", "klasSfeerGoed", "klasSchoolGemopper", "klasOpschietenMet", "klasGoedSamenWerken", "klasAfkomstKlit", "klasOnaardigGepraat", "klasVeelRuzie", "klasKunJeZeggenVervelend", "klasDurfUitDeKast", "klasKwetstMetMijnIdentiteit", "klasWeetHoeHetMetMijGaat", "klasVoeltOnveilig"),
@@ -357,6 +389,8 @@ HoriStaafPerTypeRespondentFunc <- function(plotFolder, plotFile, width, height, 
   dfPer <- dplyr::filter(dfPer, type != "")
 
   # dfPer <- arrange(dfPer, desc(name))
+  
+  height <- HoriHoogteBepaler(width, length(unique(dfPer$name)), length(unique(dfPer$type)))
 
   afronder(
     plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel,
@@ -370,7 +404,7 @@ HoriStaafPerTypeRespondentFunc <- function(plotFolder, plotFile, width, height, 
 									   hjust=-0.1, vjust=0.4, y=0.0, position = position_dodge2(reverse=TRUE, width=1)) +
       coord_flip() +
 		  procentAsY() + xlab("") + ylab("") + theme(aspect.ratio=2.0) +
-		  scale_x_discrete(labels = function(x) str_wrap(x, width = 30)) +
+		  scale_x_discrete(labels = function(x) str_wrap(x, width = 60)) +
       scale_fill_manual(paste0("N: ", nrow(allesPerType)),
 	             values=c(
 							  Leerlingen  = kleuren$rozig,
@@ -451,8 +485,8 @@ TaartFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter,
   
   afronder(
     plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel,
-    plot=ggplot(df, aes(x="", y=Freq, fill=kolom)) + 
-      geom_bar( stat="identity", position = position_stack(reverse = TRUE)) +
+    plot=ggplot(df, aes(x='', y=Freq, fill=kolom)) + 
+      geom_bar( stat="identity", position = position_stack(reverse = TRUE), aes(hjust=-0.5)) +
       # coord_flip() +
       scale_y_continuous(breaks=NULL, labels=NULL) + 
       xlab("") + ylab("") +

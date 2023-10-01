@@ -27,6 +27,7 @@ class PlotRenderer : public QObject
 	Q_PROPERTY(PlotFilter	welkFilter	READ welkFilter WRITE setWelkFilter NOTIFY welkFilterChanged)
 	Q_PROPERTY(QString		kolom		READ kolom		WRITE setKolom		NOTIFY kolomChanged		)
 	Q_PROPERTY(QString		title		READ title		WRITE setTitle		NOTIFY titleChanged		)
+	Q_PROPERTY(bool			running		READ running	WRITE setRunning	NOTIFY runningChanged	)
 
 
 public:
@@ -46,6 +47,7 @@ public:
 				QString		title()			const;
 				PlotFilter	welkFilter()	const;
 				QString		kolom()			const;
+				bool		running()		const;
 
 
 				void		setWidth(		int					  newWidth		);
@@ -55,8 +57,10 @@ public:
 				void		setWelkPlot(	const PlotType		& newWelkPlot	);
 				void		setTitle(		const QString		& newTitle		);
 				void		setWelkFilter(	const PlotFilter	& newWelkFilter	);
+				void		setRunning(		bool				  newRunning	);
 
 				void		incRevision();
+
 
 public slots:
 				void		runRCode();
@@ -76,6 +80,7 @@ signals:
 				void		welkFilterChanged();
 				void		kolomChanged();
 				void		iUpdated(PlotRenderer * me);
+				void		runningChanged();
 
 private:
 				void		init();
@@ -85,7 +90,8 @@ private:
 									_fileName,
 									_title,
 									_kolom;
-				bool				_studenten;
+				bool				_studenten,
+									_running = true;
 				int					_width,
 									_height,
 									_revision	= 0;

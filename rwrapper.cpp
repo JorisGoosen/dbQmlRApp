@@ -51,7 +51,17 @@ QString RWrapper::runRCommand(QString command)
 	}
 	catch(Rcpp::exception & e)
 	{
-		outQ = "Exception caught: " + QString::fromStdString(e.what());
+		outQ = "Rcpp::exception caught: " + QString::fromStdString(e.what());
+		std::cerr << outQ.toStdString() << std::endl;
+	}
+	catch(std::runtime_error & e)
+	{
+		outQ = "std::runtime_error caught: " + QString::fromStdString(e.what());
+		std::cerr << outQ.toStdString() << std::endl;
+	}
+	catch(std::exception & e)
+	{
+		outQ = "std::exception caught: " + QString::fromStdString(e.what());
 		std::cerr << outQ.toStdString() << std::endl;
 	}
 

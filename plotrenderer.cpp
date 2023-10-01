@@ -43,6 +43,9 @@ QDir PlotRenderer::plotFolder() const
 
 QString PlotRenderer::plotUrl() const
 {
+	if(_running)
+		return "";
+
 	QString folder=plotFolder().absolutePath(),
 			absFolder = plotFolder().absoluteFilePath(_fileName);
 	QString out = QUrl::fromLocalFile(absFolder).toString() + "?" + QString::number(revision());
@@ -70,6 +73,7 @@ void PlotRenderer::init()
 
 void PlotRenderer::runRCodeDelayed()
 {
+	setRunning(true);
 	_timer.start();
 }
 
@@ -94,6 +98,7 @@ void PlotRenderer::runRCode()
 	if(ok)
 		setHeight(h);
 
+	setRunning(false);
 	incRevision();
 }
 
@@ -132,7 +137,6 @@ void PlotRenderer::incRevision()
 
 	emit revisionChanged();
 	emit iUpdated(this);
-	emit plotUrlChanged();
 }
 
 
@@ -186,4 +190,18 @@ void PlotRenderer::setKolom(const QString & newKolom)
 		return;
 	_kolom = newKolom;
 	emit kolomChanged();
+}
+
+bool PlotRenderer::running() const
+{
+	return _running;
+}
+
+void PlotRenderer::setRunning(bool newRunning)
+{
+	if (_running == newRunning)
+		return;
+	_running = newRunning;
+	emit runningChanged();
+	emit plotUrlChanged();
 }

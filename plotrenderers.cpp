@@ -68,12 +68,12 @@ PlotRenderers::PlotRenderers( QObject *parent)
 
 		//5.1 + 5.2 In de klas:
 		{ new PlotRenderer(this,	PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	klasKolommen,						"In de klas...",									BB,		BB			)},
-		{ GENEREERHET(				PlotType::HoriStaafPerLabel,										true,	"waaromVervelendeDingenInDeKlas" ,	"Waarom vervelende dingen in de klas",				BB,		BB			)},
+		{ GENEREERHET(				PlotType::HoriStaafGroepPerFilter,									true,	"waaromVervelendeDingenInDeKlas" ,	"Waarom vervelende dingen in de klas",				BB,		BB			)},
 		{ GENEREERHET(				PlotType::HoriStaafPerLabel,										true,	klasKolommen,						"In de klas (Altijd + vaak)...",					BB,		BB			)},
 
 		//6 In de klas - II/doc
 		{ new PlotRenderer(this,	PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Type,	true,	klasKolommen,						"In de klas (Altijd + vaak)...",					BB,		BB			)},
-		{ new PlotRenderer(this,	PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Type,	true,	"waaromVervelendeDingenInDeKlas",	"Waarom vervelende dingen in de klas",				BB,		BB			)},
+		{ new PlotRenderer(this,	PlotType::HoriStaafGroepPerFilter,				PlotFilter::Type,	true,	"waaromVervelendeDingenInDeKlas",	"Waarom vervelende dingen in de klas",				BB,		BB			)},
 
 		//7.1 + 7.2 + 7.3 In de klas op school
 		{ new PlotRenderer(this,	PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	studentKolommen,					"In de klas/op school zie ik",						BB,		BB			)},
