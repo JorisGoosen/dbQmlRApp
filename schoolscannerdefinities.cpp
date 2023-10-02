@@ -107,6 +107,7 @@ const ColumnDefinitions SchoolScannerDefinities::_columnDefs =
 	new CD("5. Zo werken wij op school      [Studenten hebben respect voor docenten]",															"werkenSchoolStudentenHebbenRespectVoorDocenten",						ColumnType::Label		),
 	new CD("5. Zo werken wij op school      [Docenten hebben respect voor studenten]",															"werkenSchoolDocentenHebbenRespectVoorStudenten",						ColumnType::Label		),
 	new CD("5. Zo werken wij op school      [Docenten geven op school het goede voorbeeld]",													"werkenSchoolDocentenGevenGoedeVoorbeeld",								ColumnType::Label		),
+	new CD("Bij pesten en discriminatie trekt team één lijn",																					"medewerkerPestenEtcTeamEenLijn",										ColumnType::Label		),
 	new CD("Als iemand vervelend doet tegen een klasgenoot dan .... [... ga ik helpen]",														"vervelendDanGaIkHelpen",												ColumnType::Label		),
 	new CD("Als iemand vervelend doet tegen een klasgenoot dan .... [... kijk ik weg]",															"vervelendDanKijkIkWeg",												ColumnType::Label		),
 	new CD("Als iemand vervelend doet tegen een klasgenoot dan .... [... loop ik weg]",															"vervelendDanLoopIkWeg",												ColumnType::Label		),
@@ -149,8 +150,11 @@ const ColumnDefinitions SchoolScannerDefinities::_columnDefs =
 	new CD("Onze school heeft een visie over omgaan met diversiteit",																			"docentenSchoolHeeftDuidelijkeVisieDiversiteit",						ColumnType::Label		),
 	new CD("Sociale veiligheid staat op de teamagenda",																							"docentenSocialeVeiligheidOpTeamAgenda",								ColumnType::Label		),
 	new CD("Mening docenten telt",																												"docentenMeningTelt",													ColumnType::Label		),
+	
 	new CD("Hoge verwachtingen van leerlingen",																									"docentenHogeVerwachtingLeerlingen",									ColumnType::Label		),
+	
 	new CD("Functie Medewerker",																												"medewerkerFunctie",													ColumnType::Label		),
+	
 	new CD("Ik treed op bij vooroordelen en discriminatie",																						"medewerkerTreedOpDiscriminatie",										ColumnType::Label		),
 	new CD("Anderen treden op bij vooroordelen en discriminatie",																				"medewerkerAnderenTredenOpDiscriminatie",								ColumnType::Label		),
 	new CD("School brengt leerlingen actief in contact met andere culturen",																	"medewerkerSchoolActiefContactAndereCulturen",							ColumnType::Label		),
@@ -158,20 +162,20 @@ const ColumnDefinitions SchoolScannerDefinities::_columnDefs =
 	new CD("Ik ken de thuiscultuur van mijn leerlingen",																						"medewerkerKentDeThuisCultuurLeerlingen",								ColumnType::Label		),
 	new CD("Ik kan goed omgaan met culturele verschillen van leerlingen",																		"medewerkerKanOmgaanCultureVerschillenLeerlingen",						ColumnType::Label		),
 	new CD("Kwetsende opmerkingen over mijn identiteit (docent)",																				"docentKwetsendeOpmerkingen",											ColumnType::Label		),
-	new CD("Er zijn duidelijke omgangsregels en -afspraken",																					"medewerkerDuidelijkeOmgangsregels",																		ColumnType::Label		),
-	new CD("Regels op school voor iedereen gelijk",																								"medewerkerRegelsGelijkIedereen",																		ColumnType::Label		),
-	new CD("Leerlingen aangesproken op regels",																									"medewerkerLeerlingAangesprokenRegels",																		ColumnType::Label		),
-	new CD("Docenten aangesproken op regels",																									"medewerkerDocentAangesprokenRegels",																		ColumnType::Label		),
-	new CD("Regels bij elke docent hetzelfde",																									"medewerkerBijElkeDocentGelijk",																		ColumnType::Label		),
-	new CD("Leerlingen weten waar ze terecht kunnen",																							"medewerkerLeerlingenWetenWaarZeHeenKunnen",																		ColumnType::Label		),
-	new CD("Bij pesten en discriminatie trekt team één lijn",																					"medewerkerPestenEtcTeamEenLijn",																		ColumnType::Label		),
-	new CD("Mening leerlingen telt mee",																										"medewerkerMeningLeerlingenTelt",																		ColumnType::Label		),
-	new CD("Leerlingen respect voor docenten",																									"medewerkerLeerlingenRespectVoorDocenten",																		ColumnType::Label		),
-	new CD("Docenten respect voor leerlingen",																									"medewerkerDocentenRespectVoorLeerlingen",																		ColumnType::Label		),
-	new CD("Docenten geven goed voorbeeld",																										"medewerkerDocentenGoedeVoorbeeld",																		ColumnType::Label		),
-
-
+	
+	new CD("Er zijn duidelijke omgangsregels en -afspraken",																					"werkenSchoolDuidelijkeRegelsOmgang",																		ColumnType::Label		),
+	new CD("Regels op school voor iedereen gelijk",																								"werkenSchoolRegelsIedereenGelijk",																		ColumnType::Label		),
+	new CD("Leerlingen aangesproken op regels",																									"werkenSchoolStudentenDieRegelsBrekenAangesproken",																		ColumnType::Label		),
+	new CD("Docenten aangesproken op regels",																									"werkenSchoolDocentenDieRegelsBrekenAangesproken",																		ColumnType::Label		),
+	new CD("Regels bij elke docent hetzelfde",																									"werkenSchoolRegelsIedereDocentGelijk",																		ColumnType::Label		),
+	new CD("Leerlingen/Studenten weten waar ze terecht kunnen",																					"werkenSchoolOmbudBekend",																		ColumnType::Label		),
+	new CD("Mening leerlingen telt mee",																										"werkenSchoolMeningStudentenTelt",																		ColumnType::Label		),
+	new CD("Leerlingen/Studenten respect voor docenten",																						"werkenSchoolStudentenHebbenRespectVoorDocenten",																		ColumnType::Label		),
+	new CD("Docenten respect voor leerlingen/studenten",																						"werkenSchoolDocentenHebbenRespectVoorStudenten",																		ColumnType::Label		),
+	new CD("Docenten geven goed voorbeeld",																										"werkenSchoolDocentenGevenGoedeVoorbeeld",																		ColumnType::Label		),
 };
+
+		
 
 const std::map<QString, QString> SchoolScannerDefinities::_mapCsvToDb =
 {
@@ -511,17 +515,17 @@ const std::map<QString, QString> SchoolScannerDefinities::_mapCsvToDb =
 	{ "Ik ken de thuiscultuur van mijn leerlingen",																			    			"medewerkerKentDeThuisCultuurLeerlingen"},
 	{ "Ik kan goed omgaan met culturele verschillen van leerlingen",																		"medewerkerKanOmgaanCultureVerschillenLeerlingen"},
 	{ "Kwetsende opmerkingen over mijn identiteit (docent)",																				"docentKwetsendeOpmerkingen"},
-	{ "Er zijn duidelijke omgangsregels en -afspraken",																		    			"medewerkerDuidelijkeOmgangsregels"},
-	{ "Regels op school voor iedereen gelijk",																								"medewerkerRegelsGelijkIedereen"},
-	{ "Leerlingen aangesproken op regels",																									"medewerkerLeerlingAangesprokenRegels"},
-	{ "Docenten aangesproken op regels",																									"medewerkerDocentAangesprokenRegels"},
+	{ "Er zijn duidelijke omgangsregels en -afspraken",																		    			"werkenSchoolDuidelijkeRegelsOmgang"},
+	{ "Regels op school voor iedereen gelijk",																								"werkenSchoolRegelsIedereenGelijk"},
+	{ "Leerlingen aangesproken op regels",																									"werkenSchoolDocentenDieRegelsBrekenAangesproken"},
+	{ "Docenten aangesproken op regels",																									"werkenSchoolRegelsIedereDocentGelijk"},
 	{ "Regels bij elke docent hetzelfde",																									"medewerkerBijElkeDocentGelijk"},
-	{ "Leerlingen weten waar ze terecht kunnen",																							"medewerkerLeerlingenWetenWaarZeHeenKunnen"},
+	{ "Leerlingen weten waar ze terecht kunnen",																							"werkenSchoolOmbudBekend"},
 	{ "Bij pesten en discriminatie trekt team één lijn",																					"medewerkerPestenEtcTeamEenLijn"},
-	{ "Mening leerlingen telt mee",																								    		"medewerkerMeningLeerlingenTelt"},
-	{ "Leerlingen respect voor docenten",																									"medewerkerLeerlingenRespectVoorDocenten"},
-	{ "Docenten respect voor leerlingen",																									"medewerkerDocentenRespectVoorLeerlingen"},
-	{ "Docenten geven goed voorbeeld",																										"medewerkerDocentenGoedeVoorbeeld"},
+	{ "Mening leerlingen telt mee",																								    		"werkenSchoolMeningStudentenTelt"},
+	{ "Leerlingen respect voor docenten",																									"werkenSchoolStudentenHebbenRespectVoorDocenten"},
+	{ "Docenten respect voor leerlingen",																									"werkenSchoolDocentenHebbenRespectVoorStudenten"},
+	{ "Docenten geven goed voorbeeld",																										"werkenSchoolDocentenGevenGoedeVoorbeeld"},
 	{"Leerlingen worden gediscrimineerd",																									"studentenGediscrimineerd"},
 
 	
