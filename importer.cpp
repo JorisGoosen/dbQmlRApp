@@ -57,10 +57,14 @@ QVariant Importer::headerData(int section, Qt::Orientation orientation, int) con
 
 void Importer::collectDbColumns()
 {
-	for(ImportColumn * column : _columns)
-		for(ColumnDefinition * cd : SchoolScannerDefinities::columnDefs())
+    for(ImportColumn * column : _columns)
+    {
+        std::cout << "checking " << column->nameCSV.toStdString() << std::endl;
+
+        for(ColumnDefinition * cd : SchoolScannerDefinities::columnDefs())
 			if(cd->csvColumnIsForMe(column->nameCSV))
-				column->setCD(cd);
+                column->setCD(cd);
+    }
 
 	//See if we have to add schoolType or type
 	ColumnDefinition	*	schoolTypeCd	= nullptr,

@@ -275,7 +275,7 @@ HoriStaafMeerdereKolommenFunc <- function(plotFolder, plotFile, width, height, t
   
   df <- arrange(df, desc(`Hoe vaak`))
   
-  height <- HoriHoogteBepaler(width, length(unique(df$Kolom)), length(unique(df$`Hoe vaak`)))
+  height <- HoriHoogteBepaler(width, 0.5 * length(unique(df$Kolom)), length(unique(df$`Hoe vaak`)))
   
   afronder(
     plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel,
@@ -284,7 +284,7 @@ HoriStaafMeerdereKolommenFunc <- function(plotFolder, plotFile, width, height, t
       coord_flip() +
       procentAsY() + xlab("") + ylab("") +
  #     scale_x_discrete(labels = function(x) str_wrap(x, width = 40)) +
-      scale_fill_manual(paste0("N: ", nrow(kolommen)), values=c(Altijd=kleuren$rozig, Vaak=kleuren$lichtblauwig, Soms=kleuren$lichtrozig, Nooit=kleuren$blauwig))
+      scale_fill_manual(paste0("N: ", nrow(kolommen)), values=c(Ja=kleuren$rozig, Nee=kleuren$blauwig, Altijd=kleuren$rozig, Dagelijks=kleuren$rozig, Vaak=kleuren$lichtblauwig, Wekelijks=kleuren$lichtblauwig, Soms=kleuren$lichtrozig, Maandelijks=kleuren$lichtrozig, `Af & toe`=kleuren$lichtgeel, Nooit=kleuren$blauwig))
   )
 }
 
