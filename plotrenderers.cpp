@@ -27,13 +27,17 @@ PlotRenderers::PlotRenderers( QObject *parent)
 {
 	_plotFolder = QDir::home();
 
-	const QString naamMap = "SchoolScannerGrafieken";
-	if(!_plotFolder.exists(naamMap))
-		_plotFolder.mkdir(naamMap);
+    const QString naamMap = "SchoolScannerGrafieken";
 
+    if(_plotFolder.exists(naamMap))
+        QDir(_plotFolder.absoluteFilePath(naamMap)).removeRecursively();
+
+    _plotFolder.mkdir(naamMap);
 	_plotFolder = _plotFolder.absoluteFilePath(naamMap);
 
-	const QString	klasKolommen		= "klasJezelf,klasSfeerGoed,klasSchoolGemopper,klasOpschietenMet,klasGoedSamenWerken,klasAfkomstKlit,klasOnaardigGepraat,klasVeelRuzie,klasKunJeZeggenVervelend,klasDurfUitDeKast,klasKwetstMetMijnIdentiteit,klasWeetHoeHetMetMijGaat,klasVoeltOnveilig",
+
+
+	const QString	klasKolommen		= "klasJezelf,klasSfeerGoed,klasSchoolGemopper,klasOpschietenMet,klasGoedSamenWerken,klasAfkomstKlit,klasOnaardigGepraat,klasVeelRuzie,klasKunJeZeggenVervelend,klasDurfUitDeKast,klasKwetstMetMijnIdentiteit,klasWeetHoeHetMetMijGaat",
 					studentKolommen		= "studentenBuitenGesloten,studentenUitgescholden,studentenExpresLesVerstoren,studentenSpullenSlopenJatten,studentenGepest,studentenDigitaalGepest,studentenGediscrimineerdDoorLeerlingen,studentenGediscrimineerdDoorLeraren,studentenBedreigdGeintimideerd,studentenGeduwdGeschoptGeslagen,studentenVechten,studentenSeksueelGetinteOpmerkingenMaken,studentenSeksueleAfbeeldingenVerspreiden,studentenOnveiligVoelenInKlas",
 					ikWordKolommen		= "ikBuitengesloten,ikUitgescholden,ikExpresGestoord,ikGepest,ikDigitaalGepest,ikGediscrimineerdDoorLeerlingen,ikGediscrimineerdDoorLeraren,ikBedreigdGeintimideerd,ikGeduwdGeschoptGeslagen,ikUitgedaagdOmTeVechten,ikAangesprokenMetSeksueelGetinteOpmerkingen,ikAangesprokenOpVervelendGedrag",
 					mijnWordkolommen	= "mijnSpullenGeslooptGejat,mijnPriveFotosVerspreid",
@@ -139,15 +143,15 @@ PlotRenderers::PlotRenderers( QObject *parent)
 		{ GENEREERHET(				"15 Docenten en Mentoren",			PlotType::HoriStaafGroepPerFilter,									false,	docentenMentoren,					"Docenten en mentoren (altijd + vaak)",			BB,		BB			)},
 
 		//16
-		{ new PlotRenderer(this,	"16 Docenten/Mentoren meer doen II",			PlotType::HoriStaafPerTypeRespondent,			PlotFilter::Type,	false,	docentenMentoren,				"Docenten en mentoren (altijd + vaak)",			BB,		BB			)},
-		{ new PlotRenderer(this,	"16 Docenten/Mentoren meer doen II",			PlotType::HoriStaafPerTypeRespondent,			PlotFilter::Type,	false,	"waarMoetSchoolMeerAanDoen",	"Waar moet school meer aan doen?",			BB,		BB			)},
+        { new PlotRenderer(this,	"16 Docenten/Mentoren meer doen II",	PlotType::HoriStaafPerTypeRespondent,		PlotFilter::Type,	false,	docentenMentoren,				"Docenten en mentoren (altijd + vaak)",			BB,		BB			)},
+        { new PlotRenderer(this,	"16 Docenten/Mentoren meer doen II",	PlotType::HoriStaafPerTypeRespondent,		PlotFilter::Type,	false,	"waarMoetSchoolMeerAanDoen",	"Waar moet school meer aan doen?",			BB,		BB			)},
 
 		// 17
-		{ GENEREERHET(				"17 Meer doen",			PlotType::HoriStaafGroepPerFilter,				false,	"waarMoetSchoolMeerAanDoen",	"Waar moet school meer aan doen?",			BB,		BB			)},
+        { GENEREERHET(				"17 Meer doen",                         PlotType::HoriStaafGroepPerFilter,                              false,	"waarMoetSchoolMeerAanDoen",	"Waar moet school meer aan doen?",			BB,		BB			)},
 
-		// 18
-		{ new PlotRenderer(this,	"18 Beleid",			PlotType::HoriStaafMeerdereKolommen,			false, beleidKolommen,	"Beleid",				BB,		BB			)},
-		{ GENEREERHETSL(			"18 Beleid",			PlotType::HoriStaafGroepPerFilter,				false, beleidKolommen,	"Beleid (ja)",			BB,		BB			)},
+        // 18
+        { new PlotRenderer(this,	"18 Beleid",                            PlotType::HoriStaafMeerdereKolommen,		PlotFilter::Geen,	false, beleidKolommen,	"Beleid",				BB,		BB			)},
+        { GENEREERHETSL(			"18 Beleid",                            PlotType::HoriStaafGroepPerFilter,                              false, beleidKolommen,	"Beleid (ja)",			BB,		BB			)},
 
 	};
 
@@ -200,7 +204,7 @@ QVariant PlotRenderers::data(const QModelIndex & index, int role) const
 		else if(role == Qt::UserRole + 4)
 			lijst.append(plot->fileName());
 		else if(role == Qt::UserRole + 3)
-			lijst.append((plot->welkFilter() == PlotFilter::Type ? "Iedereen - " : plot->studenten() ? "Student - " : "Docent - ") + plot->title());
+            lijst.append(plot->_sectie + " - " + (plot->welkFilter() == PlotFilter::Type ? "Iedereen - " : plot->studenten() ? "Student - " : "Docent - ") + plot->title());
 		else if(role == Qt::UserRole + 2)
 			lijst.append(plot->height());
 		else if(role == Qt::UserRole + 1)

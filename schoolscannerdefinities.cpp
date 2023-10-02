@@ -162,17 +162,6 @@ const ColumnDefinitions SchoolScannerDefinities::_columnDefs =
 	new CD("Ik ken de thuiscultuur van mijn leerlingen",																						"medewerkerKentDeThuisCultuurLeerlingen",								ColumnType::Label		),
 	new CD("Ik kan goed omgaan met culturele verschillen van leerlingen",																		"medewerkerKanOmgaanCultureVerschillenLeerlingen",						ColumnType::Label		),
 	new CD("Kwetsende opmerkingen over mijn identiteit (docent)",																				"docentKwetsendeOpmerkingen",											ColumnType::Label		),
-	
-	new CD("Er zijn duidelijke omgangsregels en -afspraken",																					"werkenSchoolDuidelijkeRegelsOmgang",																		ColumnType::Label		),
-	new CD("Regels op school voor iedereen gelijk",																								"werkenSchoolRegelsIedereenGelijk",																		ColumnType::Label		),
-	new CD("Leerlingen aangesproken op regels",																									"werkenSchoolStudentenDieRegelsBrekenAangesproken",																		ColumnType::Label		),
-	new CD("Docenten aangesproken op regels",																									"werkenSchoolDocentenDieRegelsBrekenAangesproken",																		ColumnType::Label		),
-	new CD("Regels bij elke docent hetzelfde",																									"werkenSchoolRegelsIedereDocentGelijk",																		ColumnType::Label		),
-	new CD("Leerlingen/Studenten weten waar ze terecht kunnen",																					"werkenSchoolOmbudBekend",																		ColumnType::Label		),
-	new CD("Mening leerlingen telt mee",																										"werkenSchoolMeningStudentenTelt",																		ColumnType::Label		),
-	new CD("Leerlingen/Studenten respect voor docenten",																						"werkenSchoolStudentenHebbenRespectVoorDocenten",																		ColumnType::Label		),
-	new CD("Docenten respect voor leerlingen/studenten",																						"werkenSchoolDocentenHebbenRespectVoorStudenten",																		ColumnType::Label		),
-	new CD("Docenten geven goed voorbeeld",																										"werkenSchoolDocentenGevenGoedeVoorbeeld",																		ColumnType::Label		),
 };
 
 		

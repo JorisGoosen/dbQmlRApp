@@ -12,10 +12,11 @@ laadKolommen <- function(kolomnamen, studenten)
     return(data.frame())
   
   kolommen <-
-    if(is.null(studenten) | length(intersect(kolomnamen, 'type')) > 0)
+    if(is.null(studenten) | length(intersect(kolomnamen, 'type')) > 0) {
       collect(SchoolScannerTextOnlysql %>%                                                select(all_of(kolomnamen)))
-    else
+    } else {
       collect(SchoolScannerTextOnlysql %>% filter((type != "Docenten") == studenten)  %>% select(all_of(kolomnamen)))
+    }
   
   naamCultuur <- ""
   for(naam in names(kolomnamen))
@@ -234,13 +235,14 @@ HoriStaafMeerdereKolommenFunc <- function(plotFolder, plotFile, width, height, t
       dfHier <- as.data.frame(table(kolommen[[kolomnaam]]))
       dfHier$Kolom <- mooieTitelAUB[[kolomnaam]]
       
-      if(is.null(df))
+      if(is.null(df)) {
         df <- dfHier
-      else
+      }else{
         df <- rbind(df, dfHier)
-      
-      df <- df %>% rowwise() %>% select(Var1, Freq, Kolom) %>% mutate(`Procent`= Freq / rijen, `Hoe vaak`=Var1)
+      }
     }
+    
+    df <- df %>% rowwise() %>% select(Var1, Freq, Kolom) %>% mutate(`Procent`= Freq / rijen, `Hoe vaak`=Var1)
     
   }else{ #if length kolomnamen == 1
     
@@ -342,9 +344,12 @@ HoriStaafPerTypeRespondentFunc <- function(plotFolder, plotFile, width, height, 
 					  vervelend   = c("vervelendDanGaIkHelpen", "vervelendDanKijkIkWeg", "vervelendDanLoopIkWeg", "vervelendDanDoeIkMee", "vervelendDanZegIkErWatVan", "vervelendDanWaarschuwIkSchoolMedewerker", "vervelendDanLaatIkMedelevenWeten", "vervelendDanZieIkDatAndereStudentIngrijpt", "vervelendDanZieIkDatDocentIngrijpt", "vervelendDanZieIkDatAfdelingsleiderIngrijpt","alsIkVervelendeSituatieZieDanVindIkDatIkWatMoetDoen", "alsIkVervelendeSituatieZieDanWeetIkWatIkKanDoen"),
 					  buitensluit = c("alsEenStudentWordtBuitengeslotenDanIsDatEigenKeuze", "alsEenStudentWordtBuitengeslotenDanIsDatEigenSchuld", "voelMeVerantwoordelijkOmBuitensluitenTegenTeGaan", "voelMeVerantwoordelijkOmInTeGrijpenAlsIemandWordtGediscrimineerd", "voelMeVerantwoordelijkOmInTeGrijpenAlsIemandWordtGepest", "ikStuurWelEensPrivefotosAnderenDoorOfIkGrijpIn"),
 					  mentor      = c("mentorIkHebGoedContact", "docentIkHebGoedContact", "docentenKunnenGoedOrdeHouden", "docentenGevenMijComplimenten", "docentenHebbenLageVerwachtingVanMij", "docentenLettenOpTaalgebruikStudenten", "docentenlettenOpEigenTaalgebruik", "docentenBelonenPositiefGedrag", "docentenGrijpenInWanneerDatNodigIs", "mentorenWetenWatErInDeKlasSpeelt", "mentorenBespreektWatErInDeKlasSpeelt", "actueleGebeurtenissenSamenlevingWordenInKlasBesproken"),
+					  ingrijpenVervelend = c("vervelendDanKijkIkWeg", "vervelendDanLoopIkWeg", "vervelendDanDoeIkMee", "vervelendDanZegIkErWatVan", "vervelendDanWaarschuwIkSchoolMedewerker", "vervelendDanLaatIkMedelevenWeten", "vervelendDanZieIkDatAndereStudentIngrijpt", "vervelendDanZieIkDatDocentIngrijpt", "vervelendDanZieIkDatAfdelingsleiderIngrijpt"),
+					  ingrijpenPesten= c("alsIkVervelendeSituatieZieDanVindIkDatIkWatMoetDoen", "alsIkVervelendeSituatieZieDanWeetIkWatIkKanDoen", "alsEenStudentWordtBuitengeslotenDanIsDatEigenKeuze", "alsEenStudentWordtBuitengeslotenDanIsDatEigenSchuld", "voelMeVerantwoordelijkOmBuitensluitenTegenTeGaan", "voelMeVerantwoordelijkOmInTeGrijpenAlsIemandWordtGediscrimineerd", "voelMeVerantwoordelijkOmInTeGrijpenAlsIemandWordtGepest", "ikStuurWelEensPrivefotosAnderenDoorOfIkGrijpIn"),
+					  docentenMentoren=c("mentorIkHebGoedContact", "docentIkHebGoedContact", "docentenKunnenGoedOrdeHouden", "docentenGevenMijComplimenten", "docentenHebbenLageVerwachtingVanMij", "docentenLettenOpTaalgebruikStudenten", "docentenlettenOpEigenTaalgebruik", "docentenBelonenPositiefGedrag", "docentenGrijpenInWanneerDatNodigIs", "mentorenWetenWatErInDeKlasSpeelt", "mentorenBespreektWatErInDeKlasSpeelt", "actueleGebeurtenissenSamenlevingWordenInKlasBesproken"),
 					  welkeKolommen
 					  )
-
+  
 #    titel <- switch(welkeKolommen,
 #	        klas        = "In de klas...",
 #					studenten   = "Bij mij in de klas/op school zie ik dat andere studenten...",
@@ -368,16 +373,17 @@ HoriStaafPerTypeRespondentFunc <- function(plotFolder, plotFile, width, height, 
 					  vervelend   = c(`ga ik helpen`='vervelendDanGaIkHelpen',  `kijk ik weg`='vervelendDanKijkIkWeg',  `loop ik weg`='vervelendDanLoopIkWeg',  `doe ik mee`='vervelendDanDoeIkMee',  `zeg ik er wat van`='vervelendDanZegIkErWatVan',  `waarschuw ik een schoolmedewerker`='vervelendDanWaarschuwIkSchoolMedewerker',  `laat ik medeleven weten`='vervelendDanLaatIkMedelevenWeten',  `zie ik dat andere leerling ingrijpt`='vervelendDanZieIkDatAndereStudentIngrijpt',  `zie ik dat docent ingrijpt`='vervelendDanZieIkDatDocentIngrijpt',  `zie ik dat afdelingsleider ingrijpt`='vervelendDanZieIkDatAfdelingsleiderIngrijpt', `vind ik dat ik wat moet doen`='alsIkVervelendeSituatieZieDanVindIkDatIkWatMoetDoen',  `weet ik wat ik moet doen`='alsIkVervelendeSituatieZieDanWeetIkWatIkKanDoen'),
 					  buitensluit = c(`is dat de eigen keuze`='alsEenStudentWordtBuitengeslotenDanIsDatEigenKeuze',  `is dat de eigen schuld`='alsEenStudentWordtBuitengeslotenDanIsDatEigenSchuld',  `voel ik me verantwoordelijk dat tegen te gaan`='voelMeVerantwoordelijkOmBuitensluitenTegenTeGaan',  `door discriminatie voel ik me verantwoordelijk om in te grijpen`='voelMeVerantwoordelijkOmInTeGrijpenAlsIemandWordtGediscrimineerd',  `door pesten voel ik me verantwoordelijk om in te grijpen`='voelMeVerantwoordelijkOmInTeGrijpenAlsIemandWordtGepest',  `.. stuur ik wel eens prive fotos van anderen door`='ikStuurWelEensPrivefotosAnderenDoorOfIkGrijpIn'),
 					  mentor      = c(`Ik heb goed contact met mijn mentor`='mentorIkHebGoedContact',  `Ik heb goed contact met mijn docent`='docentIkHebGoedContact',  `Docenten kunnen goed orde houden`='docentenKunnenGoedOrdeHouden',  `Docenten geven mij complimenten`='docentenGevenMijComplimenten',  `Docenten hebben lage verwachting van mij`='docentenHebbenLageVerwachtingVanMij',  `Docenten letten op taalgebruik van de leerlingen`='docentenLettenOpTaalgebruikStudenten',  `Docenten letten op eigen taalgebruik`='docentenlettenOpEigenTaalgebruik',  `Docenten belonen positief gedrag`='docentenBelonenPositiefGedrag',  `Docenten grijpen in wanneer dat nodig is`='docentenGrijpenInWanneerDatNodigIs',  `Mentoren weten wat er in de klas speelt`='mentorenWetenWatErInDeKlasSpeelt',  `Mentoren bespreekt wat er in de klas speelt`='mentorenBespreektWatErInDeKlasSpeelt',  `Actuele gebeurtenissen samenleving worden in klas besproken`='actueleGebeurtenissenSamenlevingWordenInKlasBesproken'),
-					  switch(kolom,
-					     bangOpSchool='Bang op school'
-					  )
-	)
-
+					  ingrijpenVervelend = c(`kijk ik weg`="vervelendDanKijkIkWeg", `loop ik weg`="vervelendDanLoopIkWeg", `doe ik mee`="vervelendDanDoeIkMee", `zeg ik er wat van`="vervelendDanZegIkErWatVan", `waarschuw ik medewerker`="vervelendDanWaarschuwIkSchoolMedewerker", `laat ik medeleven weten`="vervelendDanLaatIkMedelevenWeten", `zie ik dat andere student ingrijpt`="vervelendDanZieIkDatAndereStudentIngrijpt", `zie ik dat docent ingrijpt`="vervelendDanZieIkDatDocentIngrijpt", `zie ik dat afdelingsleider ingrijpt`="vervelendDanZieIkDatAfdelingsleiderIngrijpt"),
+					  ingrijpenPesten= c(`vind ik dat ik wat moet doen`="alsIkVervelendeSituatieZieDanVindIkDatIkWatMoetDoen", `weet ik wat ik kan doen`="alsIkVervelendeSituatieZieDanWeetIkWatIkKanDoen", `buitengesloten is eigen keuze`="alsEenStudentWordtBuitengeslotenDanIsDatEigenKeuze", `buitengesloten is eigen schuld`="alsEenStudentWordtBuitengeslotenDanIsDatEigenSchuld", `voel me verantwoordelijk buitensluiting tegen te gaan`="voelMeVerantwoordelijkOmBuitensluitenTegenTeGaan", `voel me verantwoordelijk om in te grijpen bij discriminatie`="voelMeVerantwoordelijkOmInTeGrijpenAlsIemandWordtGediscrimineerd", `voel me verantwoordelijk om in te grijpen bij pesten`="voelMeVerantwoordelijkOmInTeGrijpenAlsIemandWordtGepest", `privefotos doorsturen`="ikStuurWelEensPrivefotosAnderenDoorOfIkGrijpIn"),
+					  docentenMentoren=c(`goed contact mentor`="mentorIkHebGoedContact", `docent goed contact`="docentIkHebGoedContact", `docenten goed orde houden`="docentenKunnenGoedOrdeHouden", `docenten geven mij complimenten`="docentenGevenMijComplimenten", `docenten hebben lage verwachtingen van mij`="docentenHebbenLageVerwachtingVanMij", `docenten letten op taalgebruik studenten`="docentenLettenOpTaalgebruikStudenten", `docenten letten op eigen taalgebruik`="docentenlettenOpEigenTaalgebruik", `docenten belonen positief gedrag`="docentenBelonenPositiefGedrag", `docenten grijpen in wanneer nodig`="docentenGrijpenInWanneerDatNodigIs", `mentoren weten wat er in de klas speelt`="mentorenWetenWatErInDeKlasSpeelt", `mentoren bespreken wat er in de klas speelt`="mentorenBespreektWatErInDeKlasSpeelt", `actuele gebeurtenissen samenleving worden in de klas besproken`="actueleGebeurtenissenSamenlevingWordenInKlasBesproken"),
+					  c(`Bang op school`='bangOpSchool', `Graag naar school`='graagNaarSchool', `Werk met plezier op school`="werkMetPlezier")
+	)  
+    
   tafelTotaal      <- table(allesPerType$type)
   
   allesPerType <- allesPerType %>% mutate_at(kolommen, funs(sapply(., function(x) {switch(x, FALSE, Dagelijks=TRUE, Wekelijks=TRUE, Altijd=TRUE, Vaak=TRUE, Ja=TRUE)})))
   
-  allesPerType <- rename(allesPerType, all_of(renamer))
+  allesPerType <- rename(allesPerType, any_of(renamer))
   
   allesPerType <- allesPerType %>% pivot_longer(!type)
   allesPerType <- dplyr::filter(allesPerType, value)
@@ -409,7 +415,7 @@ HoriStaafPerTypeRespondentFunc <- function(plotFolder, plotFile, width, height, 
 									   hjust=-0.1, vjust=0.4, y=0.0, position = position_dodge2(reverse=TRUE, width=1)) +
       coord_flip() +
 		  procentAsY() + xlab("") + ylab("") + theme(aspect.ratio=2.0) +
-		  scale_x_discrete(labels = function(x) str_wrap(x, width = 60)) +
+		  scale_x_discrete(labels = function(x) str_wrap(x, width = 40)) +
       scale_fill_manual(paste0("N: ", nrow(allesPerType)),
 	             values=c(
 							  Leerlingen  = kleuren$rozig,
