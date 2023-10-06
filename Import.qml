@@ -34,7 +34,11 @@ ColumnLayout
 			id:					schoolTypeMBO
 			checked:			importer.schoolType === "MBO"
 			text:				"MBO"
-			onCheckedChanged:	importer.schoolType = (checked ? "MBO" : "VO")
+			onCheckedChanged:
+			{
+				importer.schoolType = (checked ? "MBO" : "VO")
+				respondentType.zetRespondentType();
+			}
 
 		}
 
@@ -43,7 +47,12 @@ ColumnLayout
 			id:					respondentType
 			checked:			importer.type === "Docenten"
 			text:				"Docenten"
-			onCheckedChanged:	importer.type = (checked ? "Docenten" : schoolTypeMBO.checked ? "Studenten" : "Leerlingen")
+			onCheckedChanged:	zetRespondentType()
+
+			function  zetRespondentType()
+			{
+				importer.type = (respondentType.checked ? "Docenten" : importer.schoolType === "MBO" ? "Studenten" : "Leerlingen")
+			}
 		}
 
 		Text

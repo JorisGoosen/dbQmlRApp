@@ -83,8 +83,8 @@ private:
 	SchoolScannerTable	*	_table	= nullptr;
 	Labels				*	_labels	= nullptr;
 
-	QString					_schoolType,
-							_type;
+	QString					_schoolType		= "VO",
+							_type			= "Leerlingen";
 	bool					_canImport		= false;
 };
 
