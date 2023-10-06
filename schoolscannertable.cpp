@@ -14,7 +14,8 @@ SchoolScannerTable::SchoolScannerTable(Database * db)
 		&_leerjaar,
 		&_klas,
 		&_gender,
-		&_cultuur
+		&_cultuur,
+		&_type
 	};
 
 	for(FilterListModel * lm : _filters)
@@ -43,6 +44,7 @@ SchoolScannerTable::SchoolScannerTable(Database * db)
 	connect(&_klas,		&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuffDelay);
 	connect(&_gender,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuffDelay);
 	connect(&_cultuur,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuffDelay);
+	connect(&_type,		&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuffDelay);
 
 	connect(&_school,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::loadFilters);
 	connect(&_locatie,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::loadFilters);
@@ -52,6 +54,7 @@ SchoolScannerTable::SchoolScannerTable(Database * db)
 	connect(&_klas,		&FilterListModel::filterChanged,	this, &SchoolScannerTable::loadFilters);
 	connect(&_gender,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::loadFilters);
 	connect(&_cultuur,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::loadFilters);
+	connect(&_type,		&FilterListModel::filterChanged,	this, &SchoolScannerTable::loadFilters);
 
 	loadFilters();
 }
@@ -110,6 +113,7 @@ void SchoolScannerTable::loadFilters()
 	_klas		.setLabels(_textOnly->allUniqueLabels("klas"));
 	_gender		.setLabels(_textOnly->allUniqueLabels("gender"));
 	_cultuur	.setLabels(_textOnly->allUniqueLabels("cultuur"));
+	_type		.setLabels(_textOnly->allUniqueLabels("type"));
 
 	emit schoolChanged();
 	emit locatieChanged();

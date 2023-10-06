@@ -25,4 +25,5 @@ SplitView
 	FilterList	{ model:	!schoolScannerTable ? null : schoolScannerTable.klas		}
 	FilterList	{ model:	!schoolScannerTable ? null : schoolScannerTable.gender		}
 	FilterList	{ model:	!schoolScannerTable ? null : schoolScannerTable.cultuur 	}
+	FilterList	{ model:	!schoolScannerTable ? null : schoolScannerTable.type	 	}
 }

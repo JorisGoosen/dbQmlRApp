@@ -18,6 +18,7 @@ class SchoolScannerTable : public TableModel
 	Q_PROPERTY(FilterListModel	* klas		READ klas		NOTIFY klasChanged)
 	Q_PROPERTY(FilterListModel	* gender	READ gender		NOTIFY genderChanged)
 	Q_PROPERTY(FilterListModel	* cultuur	READ cultuur	NOTIFY cultuurChanged)
+	Q_PROPERTY(FilterListModel	* type		READ type		NOTIFY typeChanged)
 	Q_PROPERTY(TableModel		* textOnly	READ textOnly	NOTIFY textOnlyChanged)
 
 
@@ -36,6 +37,7 @@ public:
 	FilterListModel * klas()		{ return &_klas;		}
 	FilterListModel * gender()		{ return &_gender;		}
 	FilterListModel * cultuur()		{ return &_cultuur;		}
+	FilterListModel * type()		{ return &_type;		}
 
 	QString dbplyerFilter() const;
 
@@ -56,6 +58,7 @@ signals:
 	void klasChanged();
 	void genderChanged();
 	void cultuurChanged();
+	void typeChanged();
 	void textOnlyChanged();
 	void runRCommand(const QString & command);
 	void plotWidthChanged(int plotWidth);
@@ -70,7 +73,8 @@ private:
 									_leerjaar	= FilterListModel("Leerjaar",	"jaar"),
 									_klas		= FilterListModel("Klas",		"klas"),
 									_gender		= FilterListModel("Gender",		"gender"),
-									_cultuur	= FilterListModel("Cultuur",	"cultuur");
+									_cultuur	= FilterListModel("Cultuur",	"cultuur"),
+									_type		= FilterListModel("Type",		"type");
 	FilterListModels				_filters;
 
 	TableModel					*	_textOnly	= nullptr;
