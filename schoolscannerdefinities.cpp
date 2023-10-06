@@ -37,11 +37,13 @@ const ColumnDefinitions SchoolScannerDefinities::_columnDefs =
 	new CD("In welke klas zit je?",																												"klas",																	ColumnType::Label    	),
 	new CD("Welk opleidingstraject volg je?",																									"opleidingstraject",													ColumnType::Label    	),
 	new CD("Welk niveau volg je?",																												"niveau",																ColumnType::Label   	),
-	new CD("Ik voel me veilig  [Ik voel me veilig op school]",																					"veiligSchool",															ColumnType::NumInt  	),
-	new CD("Ik voel me veilig  [Ik voel me veilig in de klas]",																					"veiligKlas",															ColumnType::NumInt     	),
+	new CD("Ik voel me veilig op school",																										"veiligSchool",															ColumnType::NumInt  	),
+	new CD("k voel me veilig in de klas]",																										"veiligKlas",															ColumnType::NumInt     	),
+	new CD("In de klas voel ik me onveilig",																									"klasVoeltOnveilig",													ColumnType::Label		),
+	new CD("Op school voel ik me onveilig",																										"schoolVoeltOnveilig",													ColumnType::Label		),
 	new CD("Ik voel me onveilig in/op/bij",																										"onveiligHier",															ColumnType::Labels    	),
-	new CD(" [Ik ben wel eens bang op school]",																									"bangOpSchool",															ColumnType::Label		),
-	new CD(" [Ik ga graag naar school]",																										"graagNaarSchool",														ColumnType::Label		),
+	new CD("Ik ben wel eens bang op school",																									"bangOpSchool",															ColumnType::Label		),
+	new CD("Ik ga graag naar school",																											"graagNaarSchool",														ColumnType::Label		),
 	new CD("Ik werk met veel plezier op school",																								"werkMetPlezier",														ColumnType::Label		),
 	new CD("2. In de klas [In onze klas kun je jezelf zijn]",																					"klasJezelf",															ColumnType::Label		),
 	new CD("2. In de klas [De sfeer in de klas is goed]",																						"klasSfeerGoed",														ColumnType::Label		),
@@ -63,13 +65,13 @@ const ColumnDefinitions SchoolScannerDefinities::_columnDefs =
 	new CD("Bij mij in de klas/op school zie ik dat andere studenten... [...worden gepest]",				                                    "studentenGepest",														ColumnType::Label		),
 	new CD("Bij mij in de klas/op school zie ik dat andere studenten... [...worden gepest via internet, smartphone, social media]",				"studentenDigitaalGepest",												ColumnType::Label		),
 	new CD("Bij mij in de klas/op school zie ik dat andere studenten... [...worden gediscrimineerd (ongelijk behandeld) door medeleerlingen]",	"studentenGediscrimineerdDoorLeerlingen",								ColumnType::Label		),
-	new CD("Leerlingen worden gediscrimineerd",																									"studentenGediscrimineerd",												ColumnType::Label		),
-	new CD("Bij mij in de klas/op school zie ik dat andere studenten... [...worden gediscrimineerd (ongelijk behandeld) door docenten]",			"studentenGediscrimineerdDoorLeraren",									ColumnType::Label		),
+	
+	new CD("Bij mij in de klas/op school zie ik dat andere studenten... [...worden gediscrimineerd (ongelijk behandeld) door docenten]",		"studentenGediscrimineerdDoorLeraren",									ColumnType::Label		),
 	new CD("Bij mij in de klas/op school zie ik dat andere studenten... [...worden bedreigd of geïntimideerd]",									"studentenBedreigdGeintimideerd",										ColumnType::Label		),
 	new CD("Bij mij in de klas/op school zie ik dat andere studenten... [...worden geduwd, geschopt of geslagen]",								"studentenGeduwdGeschoptGeslagen",										ColumnType::Label		),
-	new CD("Bij mij in de klas/op school zie ik dat andere studenten... [...met elkaar vechten]",												 	"studentenVechten",														ColumnType::Label		),
-	new CD("Bij mij in de klas/op school zie ik dat andere studenten... [...seksueel getinte opmerkingen maken]",								    "studentenSeksueelGetinteOpmerkingenMaken",								ColumnType::Label		),
-	new CD("Bij mij in de klas/op school zie ik dat andere studenten... [...seksuele afbeeldingen verspreiden]",									"studentenSeksueleAfbeeldingenVerspreiden",								ColumnType::Label		),
+	new CD("Bij mij in de klas/op school zie ik dat andere studenten... [...met elkaar vechten]",											 	"studentenVechten",														ColumnType::Label		),
+	new CD("Bij mij in de klas/op school zie ik dat andere studenten... [...seksueel getinte opmerkingen maken]",							    "studentenSeksueelGetinteOpmerkingenMaken",								ColumnType::Label		),
+	new CD("Bij mij in de klas/op school zie ik dat andere studenten... [...seksuele afbeeldingen verspreiden]",								"studentenSeksueleAfbeeldingenVerspreiden",								ColumnType::Label		),
 	new CD("Bij mij in de klas/op school zie ik dat andere studenten... [...zich niet veilig voelen in de klas]",								"studentenOnveiligVoelenInKlas",										ColumnType::Label		),
 	new CD("In de klas/op school word ik...  [...buitengesloten]",																				"ikBuitengesloten",														ColumnType::Label		),
 	new CD("In de klas/op school word ik...  [...uitgescholden]",																				"ikUitgescholden",														ColumnType::Label		),
@@ -85,8 +87,6 @@ const ColumnDefinitions SchoolScannerDefinities::_columnDefs =
 	new CD("In de klas/op school word ik...  [...aangesproken op vervelend gedrag]",															"ikAangesprokenOpVervelendGedrag",										ColumnType::Label		),
 	new CD("In de klas/op school worden mijn...  [...spullen met opzet vernield, verstopt of kwijtgemaakt]",									"mijnSpullenGeslooptGejat",												ColumnType::Label		),
 	new CD("In de klas/op school worden mijn...  [...privéfoto’s verspreid]",																	"mijnPriveFotosVerspreid",												ColumnType::Label		),
-	new CD(" [In de klas voel ik me onveilig]",																									"klasVoeltOnveilig",													ColumnType::Label		),
-	new CD(" [Op school voel ik me onveilig]",																									"schoolVoeltOnveilig",													ColumnType::Label		),
 	new CD("4. Op school [Op onze school kun je jezelf zijn]",																					"schoolJezelfZijn",														ColumnType::Label		),
 	new CD("4. Op school [De sfeer op school is goed]",																							"schoolSfeerIsGoed",													ColumnType::Label		),
 	new CD("4. Op school [Ik raad mijn school aan anderen aan]",																				"schoolRaadIkAan",														ColumnType::Label		),
@@ -107,7 +107,7 @@ const ColumnDefinitions SchoolScannerDefinities::_columnDefs =
 	new CD("5. Zo werken wij op school      [Studenten hebben respect voor docenten]",															"werkenSchoolStudentenHebbenRespectVoorDocenten",						ColumnType::Label		),
 	new CD("5. Zo werken wij op school      [Docenten hebben respect voor studenten]",															"werkenSchoolDocentenHebbenRespectVoorStudenten",						ColumnType::Label		),
 	new CD("5. Zo werken wij op school      [Docenten geven op school het goede voorbeeld]",													"werkenSchoolDocentenGevenGoedeVoorbeeld",								ColumnType::Label		),
-	new CD("Bij pesten en discriminatie trekt team één lijn",																					"medewerkerPestenEtcTeamEenLijn",										ColumnType::Label		),
+	
 	new CD("Als iemand vervelend doet tegen een klasgenoot dan .... [... ga ik helpen]",														"vervelendDanGaIkHelpen",												ColumnType::Label		),
 	new CD("Als iemand vervelend doet tegen een klasgenoot dan .... [... kijk ik weg]",															"vervelendDanKijkIkWeg",												ColumnType::Label		),
 	new CD("Als iemand vervelend doet tegen een klasgenoot dan .... [... loop ik weg]",															"vervelendDanLoopIkWeg",												ColumnType::Label		),
@@ -142,6 +142,10 @@ const ColumnDefinitions SchoolScannerDefinities::_columnDefs =
 	new CD("8. Waaraan vind jij dat jouw school meer moet doen? (max 3 antwoorden mogelijk)",													"waarMoetSchoolMeerAanDoen",											ColumnType::Labels		),
 
 	//Docent specifiek:
+	new CD("Functie Medewerker",																												"medewerkerFunctie",													ColumnType::Label		),
+
+	new CD("Leerlingen worden gediscrimineerd",																									"studentenGediscrimineerd",												ColumnType::Label		),
+	new CD("Bij pesten en discriminatie trekt team één lijn",																					"medewerkerPestenEtcTeamEenLijn",										ColumnType::Label		),
 	new CD("Sociaal veiligheidsplan aanwezig",																									"docentenSociaalVeiligheidsplan",										ColumnType::Label		),
 	new CD("Pesten onder docenten onderdeel van plan",																							"docentenPestenOnderlingPlan",											ColumnType::Label		),
 	new CD("Pestprotocol aanwezig",																												"docentenPestProtocol",													ColumnType::Label		),
@@ -150,11 +154,7 @@ const ColumnDefinitions SchoolScannerDefinities::_columnDefs =
 	new CD("Onze school heeft een visie over omgaan met diversiteit",																			"docentenSchoolHeeftDuidelijkeVisieDiversiteit",						ColumnType::Label		),
 	new CD("Sociale veiligheid staat op de teamagenda",																							"docentenSocialeVeiligheidOpTeamAgenda",								ColumnType::Label		),
 	new CD("Mening docenten telt",																												"docentenMeningTelt",													ColumnType::Label		),
-	
 	new CD("Hoge verwachtingen van leerlingen",																									"docentenHogeVerwachtingLeerlingen",									ColumnType::Label		),
-	
-	new CD("Functie Medewerker",																												"medewerkerFunctie",													ColumnType::Label		),
-	
 	new CD("Ik treed op bij vooroordelen en discriminatie",																						"medewerkerTreedOpDiscriminatie",										ColumnType::Label		),
 	new CD("Anderen treden op bij vooroordelen en discriminatie",																				"medewerkerAnderenTredenOpDiscriminatie",								ColumnType::Label		),
 	new CD("School brengt leerlingen actief in contact met andere culturen",																	"medewerkerSchoolActiefContactAndereCulturen",							ColumnType::Label		),
@@ -334,9 +334,17 @@ const std::map<QString, QString> SchoolScannerDefinities::_mapCsvToDb =
 	{ "Bij mij in de klas/op school zie ik dat andere studenten... [...met opzet de les verstoren]",			                        	"studentenExpresLesVerstoren"	},
 	{ "Bij mij in de klas/op school zie ik dat andere studenten... [...met opzet spullen vernielen, verstoppen of kwijtmaken]",			    "studentenSpullenSlopenJatten"	},
 	{ "Bij mij in de klas/op school zie ik dat andere studenten... [...worden gepest]",				                                        "studentenGepest"	},
-	{ "Bij mij in de klas/op school zie ik dat andere studenten... [...worden gepest via internet, smartphone, social media]",				"studentenDigitaalGepest"	},
-	{ "Bij mij in de klas/op school zie ik dat andere studenten... [...worden gediscrimineerd (ongelijk behandeld) door medeleerlingen]", 	"studentenGediscrimineerdDoorLeerlingen"	},
-	{ "Bij mij in de klas/op school zie ik dat andere studenten... [...worden gediscrimineerd (ongelijk behandeld) door docenten]",			"studentenGediscrimineerdDoorLeraren"	},
+    { "Bij mij in de klas/op school zie ik dat andere studenten... [...worden gepest via internet, smartphone, social media]",				"studentenDigitaalGepest"	},
+    { "Bij mij in de klas/op school zie ik dat andere studenten... [...worden gediscrimineerd (ongelijk behandeld) door medeleerlingen]", 	"studentenGediscrimineerdDoorLeerlingen"	},
+    { "Bij mij in de klas/op school zie ik dat andere studenten... [...worden gediscrimineerd (ongelijk behandeld) door docenten]",			"studentenGediscrimineerdDoorLeraren"	},
+
+
+    { "...gediscrimineerd door medeleerlingen", 	"studentenGediscrimineerdDoorLeerlingen"	},
+    { "...gediscrimineerd door docenten",			"studentenGediscrimineerdDoorLeraren"	},
+
+
+
+
 	{ "Bij mij in de klas/op school zie ik dat andere studenten... [...worden bedreigd of geïntimideerd]",									"studentenBedreigdGeintimideerd"	},
 	{ "Bij mij in de klas/op school zie ik dat andere studenten... [...worden geduwd, geschopt of geslagen]",							    	"studentenGeduwdGeschoptGeslagen"	},
 	{ "Bij mij in de klas/op school zie ik dat andere studenten... [...met elkaar vechten]",												 	"studentenVechten"	},
@@ -358,13 +366,18 @@ const std::map<QString, QString> SchoolScannerDefinities::_mapCsvToDb =
     { "In de klas/op school worden mijn...  [...spullen met opzet vernield, verstopt of kwijtgemaakt]",							    		"mijnSpullenGeslooptGejat"	},
     { "In de klas/op school worden mijn...  [...privéfoto’s verspreid]",																	"mijnPriveFotosVerspreid"	},
 
+    { "Leerlingen aangesproken op regels",													    		"ikAangesprokenOpVervelendGedrag"	},
+
     { "...buitengesloten",																				"ikBuitengesloten"	},
     { "...uitgescholden",																				"ikUitgescholden"	},
     { "...expres gestoord",																				"ikExpresGestoord"	},
     { "...gepest",																						"ikGepest"	},
     { "...gepest via internet, smartphone, social media",												"ikDigitaalGepest"	},
+    {"... gecyberpest",                                                                                 "ikDigitaalGepest" },
     { "...gediscrimineerd (ongelijk behandeld) door medestudent",										"ikGediscrimineerdDoorLeerlingen"	},
     { "...gediscrimineerd (ongelijk behandeld) door docenten",											"ikGediscrimineerdDoorLeraren"	},
+    { "...discriminatie door medeleerlingen",                                                      		"ikGediscrimineerdDoorLeerlingen"	},
+    { "...discriminatie door docenten",                                                             	"ikGediscrimineerdDoorLeraren"	},
     { "...bedreigd of geïntimideerd",																	"ikBedreigdGeintimideerd"	},
     { "...geduwd, geschopt of geslagen",														    	"ikGeduwdGeschoptGeslagen"	},
     { "...uitgedaagd om te vechten",															    	"ikUitgedaagdOmTeVechten"	},
@@ -375,10 +388,18 @@ const std::map<QString, QString> SchoolScannerDefinities::_mapCsvToDb =
 
 	{ " [In de klas voel ik me onveilig]",																									"klasVoeltOnveilig"	},
 	{ " [Op school voel ik me onveilig]",																									"schoolVoeltOnveilig"	},
+	{ "Onveilig voelen in de klas",																											"klasVoeltOnveilig"	},
+	{ "Onveilig voelen op school",																											"schoolVoeltOnveilig"	},
 	{ "4. Op school [Op onze school kun je jezelf zijn]",																					"schoolJezelfZijn"	},
 	{ "4. Op school [De sfeer op school is goed]",																							"schoolSfeerIsGoed"	},
 	{ "4. Op school [Ik raad mijn school aan anderen aan]",																			    	"schoolRaadIkAan"	},
 	{ "4. Op school [Op school worden studenten gediscrimineerd (ongelijk behandeld)]",												    	"schoolStudentenGediscrimineerd"	},
+
+    {"Leerlingen worden gediscrimineerd", "schoolStudentenGediscrimineerd"	},
+    { "Anderen worden voorgetrokken op afkomst, cultuur, geloof",										"schoolAnderenVoorgetrokkenAfkomstCultuurGeloof"	},
+
+
+
 	{ "4. Op school [Studenten van verschillende afkomsten voelen zich thuis bij ons op school]",											"schoolDiversVoeltThuis"	},
 	{ "4. Op school [Studenten kunnen op school goed met elkaar opschieten]",																"schoolGoedOpschietenElkaar"	},
 	{ "4. Op school [Op school ga ik het liefst om met studenten die dezelfde afkomst hebben als ik]",										"schoolLiefstMetGelijkeAfkomstOm"	},
@@ -430,6 +451,7 @@ const std::map<QString, QString> SchoolScannerDefinities::_mapCsvToDb =
 	{ "7. Docenten & mentoren [Ik heb goed contact met mijn mentor]",																		"mentorIkHebGoedContact"	},
 	{ "7. Docenten & mentoren [Ik heb goed contact met mijn docenten]",																    	"docentIkHebGoedContact"	},
 	{ "7. Docenten & mentoren [Docenten kunnen goed orde houden in de klas]",																"docentenKunnenGoedOrdeHouden"	},
+    { "Docenten houden orde in de klas",																"docentenKunnenGoedOrdeHouden"	},
 	{ "7. Docenten & mentoren [Ik krijg complimenten van docenten]",																		"docentenGevenMijComplimenten"	},
 	{ "7. Docenten & mentoren [Docenten hebben een lage verwachting van mij]",																"docentenHebbenLageVerwachtingVanMij"	},
 	{ "7. Docenten & mentoren [Docenten letten op het taalgebruik van de leerlingen]",														"docentenLettenOpTaalgebruikStudenten"	},
@@ -564,9 +586,9 @@ const std::map<QString, QString> SchoolScannerDefinities::_mapCsvToDb =
 	{ "Kwetsende opmerkingen over mijn identiteit (docent)",																				"docentKwetsendeOpmerkingen"},
 	{ "Er zijn duidelijke omgangsregels en -afspraken",																		    			"werkenSchoolDuidelijkeRegelsOmgang"},
 	{ "Regels op school voor iedereen gelijk",																								"werkenSchoolRegelsIedereenGelijk"},
-	{ "Leerlingen aangesproken op regels",																									"werkenSchoolDocentenDieRegelsBrekenAangesproken"},
-	{ "Docenten aangesproken op regels",																									"werkenSchoolRegelsIedereDocentGelijk"},
-	{ "Regels bij elke docent hetzelfde",																									"medewerkerBijElkeDocentGelijk"},
+	{ "Leerlingen aangesproken op regels",																									"werkenSchoolStudentenDieRegelsBrekenAangesproken"},
+	{ "Docenten aangesproken op regels",																									"werkenSchoolDocentenDieRegelsBrekenAangesproken"},
+	{ "Regels bij elke docent hetzelfde",																									"werkenSchoolRegelsIedereDocentGelijk"},
 	{ "Leerlingen weten waar ze terecht kunnen",																							"werkenSchoolOmbudBekend"},
 	{ "Bij pesten en discriminatie trekt team één lijn",																					"medewerkerPestenEtcTeamEenLijn"},
 	{ "Mening leerlingen telt mee",																								    		"werkenSchoolMeningStudentenTelt"},
