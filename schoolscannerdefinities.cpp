@@ -749,5 +749,15 @@ const std::map<QString, QString> SchoolScannerDefinities::_mapCsvToDb =
 { " [Als (mentor)docent bespreek ik wat er speelt in de klas]",                                                                "mentorenBespreektWatErInDeKlasSpeelt"   },
 { " [Actuele gebeurtenissen in de samenleving worden in de klas besproken]",                                                   "actueleGebeurtenissenSamenlevingWordenInKlasBesproken"   },
 { "9. Waaraan vind jij dat jouw school meer moet doen? (max 3 antwoorden mogelijk)",                                           "waarMoetSchoolMeerAanDoen"   },
+
+//MBO studenten:
+{ "Bij mij in de klas/op school zie ik dat andere studenten... […worden gepest via internet, smartphone, social media]",                "studentenDigitaalGepest" },
+{ "Bij mij in de klas/op school zie ik dat andere studenten... […worden gediscrimineerd (ongelijk behandeld) door medeleerlingen]",     "studentenGediscrimineerdDoorLeerlingen" },
+{ "Bij mij in de klas/op school zie ik dat andere studenten... […worden gediscrimineerd (ongelijk behandeld) door docenten]",           "studentenGediscrimineerdDoorLeraren" },
+{ "Bij mij in de klas/op school zie ik dat andere studenten... […worden bedreigd of geïntimideerd]",                                    "studentenBedreigdGeintimideerd" },
+{ "Bij mij in de klas/op school zie ik dat andere studenten... […worden geduwd, geschopt of geslagen]",                                 "studentenGeduwdGeschoptGeslagen" },
+{ "Bij mij in de klas/op school zie ik dat andere studenten... […met elkaar vechten]",                                                  "studentenVechten" },
+{ "Bij mij in de klas/op school zie ik dat andere studenten... […seksueel getinte opmerkingen maken]",                                  "studentenSeksueelGetinteOpmerkingenMaken" },
+{ "Bij mij in de klas/op school zie ik dat andere studenten... […seksuele afbeeldingen verspreiden]",                                   "studentenSeksueleAfbeeldingenVerspreiden" },
 };
 

@@ -34,7 +34,7 @@ ColumnLayout
 			id:					schoolTypeMBO
 			checked:			importer.schoolType === "MBO"
 			text:				"MBO"
-			onCheckedChanged:	importer.schoolType = checked ? "MBO" : "VO"
+			onCheckedChanged:	importer.schoolType = (checked ? "MBO" : "VO")
 
 		}
 
@@ -43,7 +43,7 @@ ColumnLayout
 			id:					respondentType
 			checked:			importer.type === "Docenten"
 			text:				"Docenten"
-			onCheckedChanged:	importer.type = checked ? "Docenten" : schoolTypeMBO.checked ? "Studenten" : "Leerlingen"
+			onCheckedChanged:	importer.type = (checked ? "Docenten" : schoolTypeMBO.checked ? "Studenten" : "Leerlingen")
 		}
 
 		Text
