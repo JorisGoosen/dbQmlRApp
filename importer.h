@@ -40,6 +40,7 @@ class Importer : public AbstractSizeProviderTable
 	Q_PROPERTY(QString	schoolType			READ schoolType			WRITE setSchoolType			NOTIFY schoolTypeChanged		)
 	Q_PROPERTY(QString	type				READ type				WRITE setType				NOTIFY typeChanged				)
 	Q_PROPERTY(bool		canImport			READ canImport			WRITE setCanImport			NOTIFY canImportChanged			)
+	Q_PROPERTY(QString	ignoredCols			READ ignoredCols		WRITE setIgnoredCols		NOTIFY ignoredColsChanged		)
 
 
 public:
@@ -65,6 +66,9 @@ public:
 	bool canImport() const;
 	void setCanImport(bool newCanImport);
 
+	QString ignoredCols() const;
+	void setIgnoredCols(const QString &newIgnoredCols);
+
 public slots:
 	void actuallyImport();
 	void setSchoolType(	const QString & newSchoolType);
@@ -78,13 +82,16 @@ signals:
 	void	canImportChanged();
 	void	showData();
 
+	void ignoredColsChanged();
+
 private:
 	ImportColumns			_columns;
 	SchoolScannerTable	*	_table	= nullptr;
 	Labels				*	_labels	= nullptr;
 
 	QString					_schoolType		= "VO",
-							_type			= "Leerlingen";
+							_type			= "Leerlingen",
+							_ignoredCols	= "";
 	bool					_canImport		= false;
 };
 

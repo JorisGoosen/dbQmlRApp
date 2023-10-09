@@ -58,6 +58,7 @@ QVariant Importer::headerData(int section, Qt::Orientation orientation, int) con
 void Importer::collectDbColumns()
 {
 	int missing=0;
+	QStringList missendeKolommen;
 
 	for(ImportColumn * column : _columns)
 	{
@@ -66,11 +67,16 @@ void Importer::collectDbColumns()
 				column->setCD(cd);
 
 		if(!column->cd)
+		{
 			std::cerr << (missing++ == 0 ? "CSV kolom(men) genegeerd: { \"" : "\",\"\" },\n{ \"") << column->nameCSV.toStdString();
+			missendeKolommen.append(column->nameCSV);
+		}
 	}
 
 	if(missing)
 		std::cerr << "\",\"\" }," << std::endl;
+
+	setIgnoredCols(missendeKolommen.join(", "));
 
 	//See if we have to add schoolType or type
 	ColumnDefinition	*	schoolTypeCd	= nullptr,
@@ -276,6 +282,7 @@ void Importer::clearColumns()
 	endResetModel();
 
 	setCanImport(false);
+	setIgnoredCols("");
 }
 
 
@@ -317,4 +324,17 @@ void Importer::setCanImport(bool newCanImport)
 		return;
 	_canImport = newCanImport;
 	emit canImportChanged();
+}
+
+QString Importer::ignoredCols() const
+{
+	return _ignoredCols;
+}
+
+void Importer::setIgnoredCols(const QString &newIgnoredCols)
+{
+	if (_ignoredCols == newIgnoredCols)
+		return;
+	_ignoredCols = newIgnoredCols;
+	emit ignoredColsChanged();
 }

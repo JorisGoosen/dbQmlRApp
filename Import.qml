@@ -79,6 +79,18 @@ ColumnLayout
 
 	}
 
+	TextArea
+	{
+		wrapMode:			Text.WrapAtWordBoundaryOrAnywhere
+		text:				importer.ignoredCols
+		visible:			importer.ignoredCols !== ""
+		implicitWidth:		column.width
+		width:				column.width
+		color:				controlForegroundNeutral
+		font.family:		fontFamilie
+		font.pixelSize:		14
+	}
+
 	RectButton
 	{
 		id:				importeerKnop
