@@ -398,7 +398,7 @@ const std::map<QString, QString> SchoolScannerDefinities::_mapCsvToDb =
     { "...geduwd, geschopt of geslagen",														    	"studentenGeduwdGeschoptGeslagen"	},
     { "...uitgedaagd om te vechten",															    	"studentenVechten"	},
     { "...aangesproken met seksueel getinte opmerkingen",												"studentenSeksueelGetinteOpmerkingenMaken"	},
-    { "...aangesproken op vervelend gedrag",												    		"studentenAangesprokenOpVervelendGedrag"	},
+    { "...aangesproken op vervelend gedrag",												    		"ikAangesprokenOpVervelendGedrag"	},
     { "...spullen met opzet vernield, verstopt of kwijtgemaakt",							    		"studentenSpullenSlopenJatten"	},
     { "...privéfoto’s verspreid",                                                                   	"studentenSeksueleAfbeeldingenVerspreiden"	},
 
