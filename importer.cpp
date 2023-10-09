@@ -66,11 +66,11 @@ void Importer::collectDbColumns()
 				column->setCD(cd);
 
 		if(!column->cd)
-			std::cerr << (missing++ == 0 ? "CSV kolom(men) genegeerd: " : ", ") << column->nameCSV.toStdString();
+			std::cerr << (missing++ == 0 ? "CSV kolom(men) genegeerd: { \"" : "\",\"\" },\n{ \"") << column->nameCSV.toStdString();
 	}
 
 	if(missing)
-		std::cerr << std::endl;
+		std::cerr << "\",\"\" }," << std::endl;
 
 	//See if we have to add schoolType or type
 	ColumnDefinition	*	schoolTypeCd	= nullptr,
