@@ -95,15 +95,15 @@ PlotRenderers::PlotRenderers( QObject *parent)
         { new PlotRenderer(this,	"7.1,2, In de klas/op school",		PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	studentKolommen,								"In de klas/op school zie ik",						BBB,		BB			)},
         { new PlotRenderer(this,	"7.1,2, In de klas/op school",		PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	ikWordKolommen,									"In de klas/op school word ik",						BBB,		BB			)},
         { new PlotRenderer(this,	"7.1,2, In de klas/op school",		PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	mijnWordkolommen,								"In de klas/op school worden mijn",					BBB,		BB			)},
-		{ new PlotRenderer(this,	"7.1,2, In de klas/op school",		PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	"klasVoeltOnveilig,schoolVoeltOnveilig",		"Onveilig voelen",									BB,		BB			)},
+		{ new PlotRenderer(this,	"7.1,2, In de klas/op school",		PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	"klasVoeltOnveilig,schoolVoeltOnveilig",		"Onveilig voelen",									BB,		BB+BB			)},
 
         { GENEREERHET(				"7.1,2, In de klas/op school",		PlotType::HoriStaafGroepPerFilter,									true,	studentKolommen,								"In de klas/op school zie ik",						BB,		BB			)},
         { GENEREERHET(				"7.1,2, In de klas/op school",		PlotType::HoriStaafGroepPerFilter,									true,	ikWordKolommen,									"In de klas/op school word ik",						BB,		BB			)},
-        { new PlotRenderer(this,	"7.1,2, In de klas/op school",		PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	mijnWordkolommen,								"In de klas/op school worden mijn",					BBB,		BB			)},
+		{ new PlotRenderer(this,	"7.1,2, In de klas/op school",		PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	mijnWordkolommen,								"In de klas/op school worden mijn",					BBB,	BBB			)},
 		//{ new PlotRenderer(this,	"7.1,2, In de klas/op school",		PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	"klasOnveilig,schoolOnveilig",					"Onveilig voelen (altijd + vaak)",					BB,		BB			)},
 
 		// 8 In de klas zie ik (dagelijks + wekelijks), leerlingen en docenten			
-		{ new PlotRenderer(this,	"8 In de klas zie ik",				PlotType::HoriStaafGroepPerFilter,				PlotFilter::Type,	true,	studentKolommen,								"In de klas/op school zie ik (dagelijks + wekelijks)",	BB,		BB			)},
+		{ new PlotRenderer(this,	"8 In de klas zie ik",				PlotType::HoriStaafGroepPerFilter,				PlotFilter::Type,	true,	studentKolommen,								"In de klas/op school zie ik",	BB,		BB			)},
 
 		// 10 Op school			
         { new PlotRenderer(this,	"10 Op school",						PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	schoolKolommen,									"Op school - ...",										BBB,		BB			)},
@@ -127,28 +127,28 @@ PlotRenderers::PlotRenderers( QObject *parent)
         { new PlotRenderer(this,	"13 Ingrijpen",						PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	false,	ingrijpenDivers,								"Ingrijpen diversiteit",						BBB,		BB			)},
 
 
-		{ GENEREERHET(				"13 Ingrijpen",						PlotType::HoriStaafGroepPerFilter,									false,	ingrijpenBuitenSl,								"Ingrijpen pesten en buitensluiten",			BB,		BB			)},
-		{ GENEREERHET(				"13 Ingrijpen",						PlotType::HoriStaafGroepPerFilter,									false,	ingrijpenVervelend,								"Ingrijpen vervelend gedrag",					BB,		BB			)},
+		{ GENEREERHET(				"13 Ingrijpen",						PlotType::HoriStaafMeerdereKolommen,									false,	ingrijpenBuitenSl,								"Ingrijpen pesten en buitensluiten",			BB,		BB			)},
+		{ GENEREERHET(				"13 Ingrijpen",						PlotType::HoriStaafMeerdereKolommen,									false,	ingrijpenVervelend,								"Ingrijpen vervelend gedrag",					BB,		BB			)},
 
 		// 14			
 		{ new PlotRenderer(this,	"14 Ingrijpen II - doc",			PlotType::HoriStaafPerTypeRespondent,			PlotFilter::Type,	false,	"ingrijpenVervelend",								"Ingrijpen vervelend",							BB,		BB			)},
-        { new PlotRenderer(this,	"14 Ingrijpen II - doc",			PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Type,	false,	"afgelopenWeekVervelendeSituatiesGezien",		"Afgelopen week iets vervelends gezien?",		BBB,		BB			)},
+		{ new PlotRenderer(this,	"14 Ingrijpen II - doc",			PlotType::HoriStaafGroepPerFilter,				PlotFilter::Type,	false,	"afgelopenWeekVervelendeSituatiesGezien",			"Afgelopen week iets vervelends gezien?",		BBB,		BB			)},
 		{ new PlotRenderer(this,	"14 Ingrijpen II - doc",			PlotType::HoriStaafPerTypeRespondent,			PlotFilter::Type,	false,	"ingrijpenBuitenSl",								"Ingrijpen pesten en buitensluiten",			BB,		BB			)},
 
 		//15			
 		{ new PlotRenderer(this,	"15 Docenten en Mentoren",			PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Type,	false,	docentenMentoren,								"Docenten en mentoren",							BB,		BB			)},
-		{ GENEREERHET(				"15 Docenten en Mentoren",			PlotType::HoriStaafGroepPerFilter,									false,	docentenMentoren,								"Docenten en mentoren",							BB,		BB			)},
+		{ GENEREERHET(				"15 Docenten en Mentoren",			PlotType::HoriStaafMeerdereKolommen,									false,	docentenMentoren,								"Docenten en mentoren",							BB,		BB			)},
 
 		//16							
         { new PlotRenderer(this,	"16 Docenten/Mentoren meer doen II",	PlotType::HoriStaafPerTypeRespondent,		PlotFilter::Type,	false,	"docentenMentoren",								"Docenten en mentoren",							BB,		BB			)},
-        { new PlotRenderer(this,	"16 Docenten/Mentoren meer doen II",	PlotType::HoriStaafPerTypeRespondent,		PlotFilter::Type,	false,	"waarMoetSchoolMeerAanDoen",					"Waar moet school meer aan doen?",				BB,		BB			)},
+		{ new PlotRenderer(this,	"16 Docenten/Mentoren meer doen II",	PlotType::HoriStaafGroepPerFilter,			PlotFilter::Type,	false,	"waarMoetSchoolMeerAanDoen",					"Waar moet school meer aan doen?",				BB,		BB			)},
 
 		// 17				
         { GENEREERHET(				"17 Meer doen",                         PlotType::HoriStaafGroepPerFilter,                              false,	"waarMoetSchoolMeerAanDoen",					"Waar moet school meer aan doen?",			BB,		BB			)},
 
         // 18
         { new PlotRenderer(this,	"18 Beleid",                            PlotType::HoriStaafMeerdereKolommen,		PlotFilter::Geen,	false, beleidKolommen,									"Beleid",				BBB,		BB			)},
-        { GENEREERHETSL(			"18 Beleid",                            PlotType::HoriStaafGroepPerFilter,                              false, beleidKolommen,									"Beleid (ja)",			BB,		BB			)},
+		{ GENEREERHETSL(			"18 Beleid",                            PlotType::HoriStaafMeerdereKolommen,                              false, beleidKolommen,									"Beleid",			BB,		BB			)},
 
 	};
 
