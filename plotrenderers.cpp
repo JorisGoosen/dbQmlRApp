@@ -18,6 +18,7 @@
 
 
 #define GENEREERHETSL(SECTIE, PLOTTYPE, STU, KOLOM, TITEL, W, H)									\
+	new PlotRenderer(this, SECTIE, PLOTTYPE,	PlotFilter::Type,		STU, KOLOM, TITEL, W, H),	\
 	new PlotRenderer(this, SECTIE, PLOTTYPE,	PlotFilter::School,		STU, KOLOM, TITEL, W, H),	\
 	new PlotRenderer(this, SECTIE, PLOTTYPE,	PlotFilter::Locatie,	STU, KOLOM, TITEL, W, H)
 
@@ -49,7 +50,7 @@ PlotRenderers::PlotRenderers( QObject *parent)
 					ingrijpenPesten		= "ingrijpenPestenKlas,ingrijpenPestenGang,ingrijpenPestenAula,ingrijpenPestenSchoolPlein,ingrijpenPestenFietsenStalling,ingrijpenPestenOmgevingSchool",
 					ingrijpenSchelden	= "ingrijpenScheldenKlas,ingrijpenScheldenGang,ingrijpenScheldenAula,ingrijpenScheldenSchoolPlein,ingrijpenScheldenFietsenStalling,ingrijpenScheldenOmgevingSchool",
 					ingrijpenDivers		= "medewerkerTreedOpDiscriminatie,medewerkerAnderenTredenOpDiscriminatie,medewerkerSchoolActiefContactAndereCulturen,medewerkerBewustEigenCulturelePercepties,medewerkerKentDeThuisCultuurLeerlingen,medewerkerKanOmgaanCultureVerschillenLeerlingen",
-					docentenMentoren	= "mentorIkHebGoedContact,docentIkHebGoedContact,docentenKunnenGoedOrdeHouden,docentenGevenMijComplimenten,docentenHebbenLageVerwachtingVanMij,docentenLettenOpTaalgebruikStudenten,docentenlettenOpEigenTaalgebruik,docentenBelonenPositiefGedrag,docentenGrijpenInWanneerDatNodigIs,mentorenWetenWatErInDeKlasSpeelt,mentorenBespreektWatErInDeKlasSpeelt,actueleGebeurtenissenSamenlevingWordenInKlasBesproken",
+					docentenMentoren	= "mentorIkHebGoedContact,docentIkHebGoedContact,docentenKunnenGoedOrdeHouden,docentenGevenStudentenComplimenten,docentenHebbenLageVerwachtingVanMij,docentenLettenOpTaalgebruikStudenten,docentenlettenOpEigenTaalgebruik,docentenBelonenPositiefGedrag,docentenGrijpenInWanneerDatNodigIs,mentorenWetenWatErInDeKlasSpeelt,mentorenBespreektWatErInDeKlasSpeelt,actueleGebeurtenissenSamenlevingWordenInKlasBesproken",
 					beleidKolommen		= "werkenSchoolDuidelijkeRegelsOmgang,werkenSchoolRegelsIedereenGelijk,werkenSchoolStudentenDieRegelsBrekenAangesproken,werkenSchoolDocentenDieRegelsBrekenAangesproken,werkenSchoolRegelsIedereDocentGelijk,werkenSchoolOmbudBekend,werkenSchoolMeningStudentenTelt,werkenSchoolStudentenHebbenRespectVoorDocenten,werkenSchoolDocentenHebbenRespectVoorStudenten,werkenSchoolDocentenGevenGoedeVoorbeeld";
 
     const int BB = 1280, BBB = BB * 1.5; //basisbreedte
@@ -110,8 +111,8 @@ PlotRenderers::PlotRenderers( QObject *parent)
 		{ GENEREERHET(				"10 Op school",						PlotType::HoriStaafGroepPerFilter,									true,	schoolKolommen,									"Op school (altijd + vaak) - ...",						BB,		BB			)},
 
 		// 11 Op school en werkwijze II/doc			
-		{ new PlotRenderer(this,	"11 Op school en werkwijze",		PlotType::HoriStaafGroepPerFilter,				PlotFilter::Geen,	false,	schoolKolommen,									"Op school (altijd + vaak) - ...",						BB,		BB			)},
-		{ new PlotRenderer(this,	"11 Op school en werkwijze",		PlotType::HoriStaafGroepPerFilter,				PlotFilter::Geen,	false,	afsprakenKolommen,								"Afspraken en regels (ja)",						BB,		BB			)},
+		{ GENEREERHETDOC(			"11 Op school en werkwijze",		PlotType::HoriStaafGroepPerFilter,									false,	schoolKolommen,									"Op school (altijd + vaak) - ...",				BB,		BB			)},
+		{ GENEREERHETDOC(			"11 Op school en werkwijze",		PlotType::HoriStaafGroepPerFilter,									false,	afsprakenKolommen,								"Afspraken en regels (ja)",						BB,		BB			)},
 
 		//12			
         { new PlotRenderer(this,	"12 Werkwijze",						PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	false,	afsprakenKolommen,								"Afspraken en regels",							BBB,		BB			)},
@@ -127,8 +128,8 @@ PlotRenderers::PlotRenderers( QObject *parent)
         { new PlotRenderer(this,	"13 Ingrijpen",						PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	false,	ingrijpenDivers,								"Ingrijpen diversiteit",						BBB,		BB			)},
 
 
-		{ GENEREERHET(				"13 Ingrijpen",						PlotType::HoriStaafMeerdereKolommen,									false,	ingrijpenBuitenSl,								"Ingrijpen pesten en buitensluiten",			BB,		BB			)},
-		{ GENEREERHET(				"13 Ingrijpen",						PlotType::HoriStaafMeerdereKolommen,									false,	ingrijpenVervelend,								"Ingrijpen vervelend gedrag",					BB,		BB			)},
+		{ GENEREERHET(				"13 Ingrijpen",						PlotType::HoriStaafGroepPerFilter,									false,	ingrijpenBuitenSl,								"Ingrijpen pesten en buitensluiten",			BB,		BB			)},
+		{ GENEREERHET(				"13 Ingrijpen",						PlotType::HoriStaafGroepPerFilter,									false,	ingrijpenVervelend,								"Ingrijpen vervelend gedrag",					BB,		BB			)},
 
 		// 14			
 		{ new PlotRenderer(this,	"14 Ingrijpen II - doc",			PlotType::HoriStaafPerTypeRespondent,			PlotFilter::Type,	false,	"ingrijpenVervelend",								"Ingrijpen vervelend",							BB,		BB			)},
@@ -137,7 +138,7 @@ PlotRenderers::PlotRenderers( QObject *parent)
 
 		//15			
 		{ new PlotRenderer(this,	"15 Docenten en Mentoren",			PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Type,	false,	docentenMentoren,								"Docenten en mentoren",							BB,		BB			)},
-		{ GENEREERHET(				"15 Docenten en Mentoren",			PlotType::HoriStaafMeerdereKolommen,									false,	docentenMentoren,								"Docenten en mentoren",							BB,		BB			)},
+		{ GENEREERHET(				"15 Docenten en Mentoren",			PlotType::HoriStaafGroepPerFilter,									false,	docentenMentoren,								"Docenten en mentoren",							BB,		BB			)},
 
 		//16							
         { new PlotRenderer(this,	"16 Docenten/Mentoren meer doen II",	PlotType::HoriStaafPerTypeRespondent,		PlotFilter::Type,	false,	"docentenMentoren",								"Docenten en mentoren",							BB,		BB			)},
@@ -148,7 +149,7 @@ PlotRenderers::PlotRenderers( QObject *parent)
 
         // 18
         { new PlotRenderer(this,	"18 Beleid",                            PlotType::HoriStaafMeerdereKolommen,		PlotFilter::Geen,	false, beleidKolommen,									"Beleid",				BBB,		BB			)},
-		{ GENEREERHETSL(			"18 Beleid",                            PlotType::HoriStaafMeerdereKolommen,                              false, beleidKolommen,									"Beleid",			BB,		BB			)},
+		{ GENEREERHETSL(			"18 Beleid",                            PlotType::HoriStaafGroepPerFilter,                              false, beleidKolommen,									"Beleid",			BB,		BB			)},
 
 	};
 
