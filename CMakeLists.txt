@@ -107,7 +107,7 @@ set(sources
 	plotrenderers.cpp
 	filterlistmodel.cpp
 	columndefinition.cpp
-  tablemodelfiltered.cpp
+  	tablemodelfiltered.cpp
 	schoolscannertable.cpp
 	schoolscannerdefinities.cpp
 	abstractsizeprovidertable.cpp

@@ -131,16 +131,16 @@ PlotRenderers::PlotRenderers( QObject *parent)
 		{ GENEREERHET(				"13 Ingrijpen",						PlotType::HoriStaafGroepPerFilter,									false,	ingrijpenVervelend,								"Ingrijpen vervelend gedrag",					BB,		BB			)},
 
 		// 14			
-		{ new PlotRenderer(this,	"14 Ingrijpen II - doc",			PlotType::HoriStaafPerTypeRespondent,			PlotFilter::Type,	false,	ingrijpenVervelend,								"Ingrijpen vervelend",							BB,		BB			)},
+		{ new PlotRenderer(this,	"14 Ingrijpen II - doc",			PlotType::HoriStaafPerTypeRespondent,			PlotFilter::Type,	false,	"ingrijpenVervelend",								"Ingrijpen vervelend",							BB,		BB			)},
         { new PlotRenderer(this,	"14 Ingrijpen II - doc",			PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Type,	false,	"afgelopenWeekVervelendeSituatiesGezien",		"Afgelopen week iets vervelends gezien?",		BBB,		BB			)},
-		{ new PlotRenderer(this,	"14 Ingrijpen II - doc",			PlotType::HoriStaafPerTypeRespondent,			PlotFilter::Type,	false,	ingrijpenBuitenSl,								"Ingrijpen pesten en buitensluiten",			BB,		BB			)},
+		{ new PlotRenderer(this,	"14 Ingrijpen II - doc",			PlotType::HoriStaafPerTypeRespondent,			PlotFilter::Type,	false,	"ingrijpenBuitenSl",								"Ingrijpen pesten en buitensluiten",			BB,		BB			)},
 
 		//15			
 		{ new PlotRenderer(this,	"15 Docenten en Mentoren",			PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Type,	false,	docentenMentoren,								"Docenten en mentoren",							BB,		BB			)},
 		{ GENEREERHET(				"15 Docenten en Mentoren",			PlotType::HoriStaafGroepPerFilter,									false,	docentenMentoren,								"Docenten en mentoren",							BB,		BB			)},
 
 		//16							
-        { new PlotRenderer(this,	"16 Docenten/Mentoren meer doen II",	PlotType::HoriStaafPerTypeRespondent,		PlotFilter::Type,	false,	docentenMentoren,								"Docenten en mentoren",							BB,		BB			)},
+        { new PlotRenderer(this,	"16 Docenten/Mentoren meer doen II",	PlotType::HoriStaafPerTypeRespondent,		PlotFilter::Type,	false,	"docentenMentoren",								"Docenten en mentoren",							BB,		BB			)},
         { new PlotRenderer(this,	"16 Docenten/Mentoren meer doen II",	PlotType::HoriStaafPerTypeRespondent,		PlotFilter::Type,	false,	"waarMoetSchoolMeerAanDoen",					"Waar moet school meer aan doen?",				BB,		BB			)},
 
 		// 17				

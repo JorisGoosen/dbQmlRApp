@@ -29,7 +29,7 @@ paletKleuren <- list(
 palet <- colorRampPalette(paletKleuren, space='rgb', interpolate='spline')
 
 library(showtext)
-font_add_google("Karla", "karla")
+tryCatch(suppressWarnings((font_add_google("Karla", "karla"))))
 
 ## Automatically use showtext to render text
 showtext_auto()

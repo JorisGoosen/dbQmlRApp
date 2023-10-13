@@ -1,5 +1,7 @@
+library(scales)
 
 basisGrootteText <- 5
+maxBreedteLabel <- 20
 
 #kolomnamen is een vector/lijst die genaamde elementen heeft, de namen zijn hoe de kolom moet heten in de output en de waardes is welke kolom uit de database gewenst is
 laadKolommen <- function(kolomnamen, studenten)
@@ -86,15 +88,15 @@ isFilterSensible <- function(filter, studenten)
   sum("" != laadKolommen(filter, studenten)[[filter]]) > 0
 }
 
-afronder <- function(plot, plotFolder, plotFile, width, height, titel, filter, bottomLegend=FALSE)
+afronder <- function(plot, plotFolder, plotFile, width, height, titel, filter, bottomLegendaAantal=0)
 {
     plot <- plot +
   	  theme_classic() +
       theme(text=element_text(          size=18,  family="karla", color="black")) +
       theme(legend.text=element_text(   size=18,  family="karla", color="black")) +
       theme(text=element_text(          size=18,  family="karla", color="black")) +
-      theme(axis.text.x = element_text( size=18,  family="karla", color="black", lineheight=.0)) +
-      theme(axis.text.y = element_text( size=18,  family="karla", color="black", lineheight=.0)) +
+      theme(axis.text.x = element_text( size=18,  family="karla", color="black", lineheight=.25)) +
+      theme(axis.text.y = element_text( size=18,  family="karla", color="black", lineheight=.25)) +
   	  theme(axis.ticks.x=element_blank(), axis.ticks.y=element_blank(), axis.line=element_blank()) +
 
       theme(
@@ -109,16 +111,23 @@ afronder <- function(plot, plotFolder, plotFile, width, height, titel, filter, b
        # legend.key = element_rect(fill = "transparent")
       )
     
-    
-    if(bottomLegend)
-      plot <- plot + theme(legend.position="bottom") 
+    legendaHoogte <- 0
+
+    if(bottomLegendaAantal > 6)
+    {
+      legendaHoogte <- 200 #min(bottomLegendaAantal * 50, 1000)
+      print(paste0("legenda hoogte is ", legendaHoogte))
+      height <- height + legendaHoogte
+      plot <- plot + theme(legend.position="bottom")
+      #c(0.0, 0.0), plot.margin=margin(0, 0, 0, legendaHoogte, "pt"), legend.direction="horizontal")
+    }
     
     if(titel != "")
       plot <- plot +  ggtitle(titel)
 
     writeImage(plot=plot, plotFolder=plotFolder,	plotFile=plotFile,	width=width, height=height)
     
-    HEIGHT <<- height
+    HEIGHT <<- height - legendaHoogte
     
     return(plot)
 }
@@ -154,7 +163,7 @@ HoriHoogteBepaler <- function(width, column1ValCount, column2ValCount, extraHeig
 {
   return(
     max(width / 4, 
-        min(width * 4, 
+        min(width * 6, 
             floor(
               (50) 
               * column1ValCount
@@ -189,8 +198,9 @@ HoriStaafPerLabelFunc <- function(plotFolder, plotFile, width, height, titel, ko
 	dfPer			      <- dfPer %>% rowwise() %>% select(filter, kolom, Freq) %>%  mutate(`Hoe vaak` = Freq / dfGender[[filter]])
 	dfPer			      <- dplyr::filter(dfPer, filter != "")
   dfPer           <- arrange(dfPer, desc(kolom))
-  
-  height <- HoriHoogteBepaler(width, length(unique(dfPer$filter)), 1)
+  uniekeFilters   <- unique(dfPer$filter)
+
+  height <- HoriHoogteBepaler(width, length(uniekeFilters) + sum(str_count(pattern="\n", string=uniekeFilters)), 1)
 
     afronder(
 	    plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel,
@@ -276,16 +286,18 @@ HoriStaafMeerdereKolommenFunc <- function(plotFolder, plotFile, width, height, t
   df$`Hoe vaak` <- herordenVaak(df$`Hoe vaak`, FALSE)
   
   df <- arrange(df, desc(`Hoe vaak`))
+
+  uniekeShit <- unique(df$Kolom)
   
-  height <- HoriHoogteBepaler(width, 0.5 * length(unique(df$Kolom)), length(unique(df$`Hoe vaak`)))
+  height <- HoriHoogteBepaler(width, 0.5 * length(uniekeShit) + sum(str_count(pattern="\n", string=uniekeShit)), length(unique(df$`Hoe vaak`)))
   
   afronder(
     plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel,
     plot=ggplot(df, aes(x=Kolom, y=`Procent`, fill=`Hoe vaak`)) + theme(aspect.ratio=0.3) +
       geom_bar( stat="identity", na.rm=TRUE, position = position_stack(reverse = TRUE)) +
-      coord_flip() +
       procentAsY() + xlab("") + ylab("") +
- #     scale_x_discrete(labels = function(x) str_wrap(x, width = 40)) +
+      scale_x_discrete(labels = label_wrap(maxBreedteLabel)) + 
+      coord_flip() +
       scale_fill_manual(paste0("N: ", nrow(kolommen)), values=c(Ja=kleuren$rozig, Nee=kleuren$blauwig, Altijd=kleuren$rozig, Dagelijks=kleuren$rozig, Vaak=kleuren$lichtblauwig, Wekelijks=kleuren$lichtblauwig, Soms=kleuren$lichtrozig, Maandelijks=kleuren$lichtrozig, `Af & toe`=kleuren$lichtgeel, Nooit=kleuren$blauwig))
   )
 }
@@ -328,17 +340,14 @@ HoriStaafGroepPerFilterFunc <- function(plotFolder, plotFile, width, height, tit
               hjust=1.1, vjust=0.4, y=0.0, position = position_dodge2(reverse=TRUE, width=1)) +
     
     coord_flip() +
-    procentAsY() + xlab("") + ylab("") + theme(aspect.ratio=2.0) 
-    #scale_x_discrete(labels = function(x) str_wrap(x, width = 20))
+    procentAsY() + xlab("") + ylab("") + theme(aspect.ratio=2.0) + 
+    scale_x_discrete(labels = label_wrap(maxBreedteLabel))
+    
   
   hetPlot <- doeCMPalet(hetPlot, length(filters), paste0("N: ", nrow(allesPerCulturen)))
   
-  bodemLegenda <- length(hoeVaaks) > 6
-  
-  height <- HoriHoogteBepaler(width, length(unique(dfPer$kolom)), length(unique(dfPer$filter)), ifelse(bodemLegenda, 150, 0))
-
   afronder(
-    plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel, bottomLegend=bodemLegenda, plot=hetPlot
+    plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel, bottomLegendaAantal=length(hoeVaaks), plot=hetPlot
 	)
 }
 
@@ -416,8 +425,10 @@ HoriStaafPerTypeRespondentFunc <- function(plotFolder, plotFile, width, height, 
   dfPer <- dplyr::filter(dfPer, type != "")
 
   # dfPer <- arrange(dfPer, desc(name))
+  uniekeShit <- unique(dfPer$name)
   
-  height <- HoriHoogteBepaler(width, length(unique(dfPer$name)), length(unique(dfPer$type)))
+  
+  height <- HoriHoogteBepaler(width, length(uniekeShit) + sum(str_count(pattern="\n", string=uniekeShit)), length(unique(dfPer$type)))
 
   afronder(
     plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel,
@@ -431,7 +442,7 @@ HoriStaafPerTypeRespondentFunc <- function(plotFolder, plotFile, width, height, 
 									   hjust=-0.1, vjust=0.4, y=0.0, position = position_dodge2(reverse=TRUE, width=1)) +
       coord_flip() +
 		  procentAsY() + xlab("") + ylab("") + theme(aspect.ratio=2.0) +
-		  scale_x_discrete(labels = function(x) str_wrap(x, width = 40)) +
+		  scale_x_discrete(labels = label_wrap(maxBreedteLabel)) +
       scale_fill_manual(paste0("N: ", nrow(allesPerType)),
 	             values=c(
 							  Leerlingen  = kleuren$rozig,
