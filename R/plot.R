@@ -51,18 +51,18 @@ laadKolommen <- function(kolomnamen, studenten)
   }
   
   
-  #controleer of alle rijen iig iets van data hebben
-  # als er ook maar 1 kolom leeg is gooien we de regel weg
-  for(naam in names(kolomnamen))
-  {
-    uniek <- unique( kolommen[[naam]] )
-    
-    if(sum(uniek == "") == 1 & sum(uniek != "") == 0)
-      return(kolommen %>% filter(FALSE))
-    
-    keepThese <- str_trim(kolommen[[naam]]) != ''
-    kolommen <- kolommen[keepThese,]
-  }
+  # geef alleen de kolommen terug waar om gevraagd is
+  # verder filterde ik hier regels weg die minimaal 1 null hadden maar dan blijft er soms heel weinig data over :p
+  #for(naam in names(kolomnamen))
+  #{
+  #  uniek <- unique( kolommen[[naam]] )
+  #  
+  #  if(sum(uniek == "") == 1 & sum(uniek != "") == 0)
+  #    return(kolommen %>% filter(FALSE))
+  #  
+  #  keepThese <- str_trim(kolommen[[naam]]) != ''
+  #  kolommen <- kolommen[keepThese,]
+  #}
   
   return(kolommen)
 }
@@ -197,7 +197,7 @@ HoriStaafPerLabelFunc <- function(plotFolder, plotFile, width, height, titel, ko
 	dfPer			      <- dfPer %>% rowwise() %>% select(filter, kolom, Freq) %>%  mutate(`Hoe vaak` = Freq / dfGender[[filter]])
 	dfPer			      <- dplyr::filter(dfPer, filter != "")
   dfPer           <- arrange(dfPer, desc(kolom))
-  dfPer$kolom    	<- factor(as.character(dfPer$kolom), levels=rev(c("Nooit", "Soms", "Vaak", "Altijd")))
+  dfPer$kolom    	<- herordenVaak(dfPer$kolom)
   uniekeFilters   <- unique(dfPer$filter)
 
   height <- HoriHoogteBepaler(width, length(uniekeFilters) + sum(str_count(pattern="\n", string=uniekeFilters)), 1)
