@@ -10,7 +10,7 @@ laadKolommen <- function(kolomnamen, studenten)
     names(kolomnamen) <- kolomnamen
   
   # alle kolommen hier?
-    if(length(intersect(kolomnamen, names(SchoolScannerTextOnlysql))) != length(kolomnamen))
+  if(length(intersect(kolomnamen, names(SchoolScannerTextOnlysql))) != length(kolomnamen))
   {
     for(k in kolomnamen)
       if(length(intersect(k, names(SchoolScannerTextOnlysql))) == 0)
@@ -312,14 +312,43 @@ HoriStaafGroepPerFilterFunc <- function(plotFolder, plotFile, width, height, tit
 {
   if(!isFilterSensible(filter, studenten))
     return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
+
+  kolommen <- str_split_1(kolom, ',')
+
+  if(length(kolommen) > 1)
+  {
+    names(kolommen) <- kolommen
+
+    ori <- kolommen
+    kolommen <- append(kolommen, c(filter=filter))
+
+    allesPerCulturen <- laadKolommen(kolommen, studenten)
+
+    allesPerCulturen$kolom <- apply(allesPerCulturen, 1,
+    function(x)
+    {
+      filter <- x[names(x) == 'filter']
+
+      x <- x[names(x) != 'filter']
+      x <- x[x == 'Ja' | x == 'Altijd' | x == 'Vaak' | x == 'Dagelijks' | x == 'Wekelijks']
+
+      c(kolom=paste(names(x), collapse=', '))
+    })
+
+    allesPerCulturen <- allesPerCulturen %>% select(kolom, filter)
   
-  allesPerCulturen <- laadKolommen(c(kolom=kolom, filter=filter), studenten)
+  } else {
+    allesPerCulturen <- laadKolommen(c(kolom=kolom, filter=filter), studenten)
+  }
   
   if(nrow(allesPerCulturen) == 0)
     return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
 
+  allesPerCultuur   <- allesPerCulturen %>% mutate(kolom=strsplit(kolom, ", ")) %>% unnest(kolom)
+    
+
   tafelTotaal       <- table(allesPerCulturen$filter)
-	allesPerCultuur   <- allesPerCulturen %>% mutate(kolom=strsplit(kolom, ", ")) %>% unnest(kolom)
+
 	tafelPerCultuur   <- table(allesPerCultuur)
 	
   dfPer		          <- as.data.frame(tafelPerCultuur)
