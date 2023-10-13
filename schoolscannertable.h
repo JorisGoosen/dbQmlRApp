@@ -25,7 +25,7 @@ class SchoolScannerTable : public TableModel
 public:
 	SchoolScannerTable(Database * db);
 
-	const ColumnDefinition * findDbColumn(const QString & csvName);
+	//const ColumnDefinition * findDbColumn(const QString & csvName);
 
 	TableModel * textOnly() { return _textOnly; }
 

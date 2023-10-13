@@ -63,7 +63,7 @@ void Importer::collectDbColumns()
 	for(ImportColumn * column : _columns)
 	{
 		for(ColumnDefinition * cd : SchoolScannerDefinities::columnDefs())
-			if(cd->csvColumnIsForMe(column->nameCSV))
+			if(SchoolScannerDefinities::isColumnForCsvColumn(column->nameCSV, cd->dbName(), _type == "Docenten"))
 				column->setCD(cd);
 
 		if(!column->cd)

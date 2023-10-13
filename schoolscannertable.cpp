@@ -59,13 +59,13 @@ SchoolScannerTable::SchoolScannerTable(Database * db)
 	loadFilters();
 }
 
-const ColumnDefinition * SchoolScannerTable::findDbColumn(const QString & csvName)
-{
-	for(const auto * cd : SchoolScannerDefinities::columnDefs())
-		if(cd->csvColumnIsForMe(csvName))
-			return cd;
-	return nullptr;
-}
+//const ColumnDefinition * SchoolScannerTable::findDbColumn(const QString & csvName)
+//{
+//	for(const auto * cd : SchoolScannerDefinities::columnDefs())
+//		if(cd->csvColumnIsForMe(csvName))
+//			return cd;
+//	return nullptr;
+//}
 
 QString SchoolScannerTable::dbplyerFilter() const
 {

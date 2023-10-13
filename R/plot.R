@@ -197,7 +197,7 @@ HoriStaafPerLabelFunc <- function(plotFolder, plotFile, width, height, titel, ko
 	dfPer			      <- dfPer %>% rowwise() %>% select(filter, kolom, Freq) %>%  mutate(`Hoe vaak` = Freq / dfGender[[filter]])
 	dfPer			      <- dplyr::filter(dfPer, filter != "")
   dfPer           <- arrange(dfPer, desc(kolom))
-  dfPer$kolom    	<- herordenVaak(dfPer$kolom)
+  dfPer$kolom    	<- factor(as.character(dfPer$kolom), levels=rev(c("Nooit", "Soms", "Vaak", "Altijd")))
   uniekeFilters   <- unique(dfPer$filter)
 
   height <- HoriHoogteBepaler(width, length(uniekeFilters) + sum(str_count(pattern="\n", string=uniekeFilters)), 1)

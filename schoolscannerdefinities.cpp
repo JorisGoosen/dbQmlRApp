@@ -383,24 +383,6 @@ const std::map<QString, QString> SchoolScannerDefinities::_mapCsvToDb =
     { "In de klas/op school worden mijn...  [...spullen met opzet vernield, verstopt of kwijtgemaakt]",							    		"mijnSpullenGeslooptGejat"	},
     { "In de klas/op school worden mijn...  [...privéfoto’s verspreid]",																	"mijnPriveFotosVerspreid"	},
  
-//De volgende lijkt heel erg op bovenstaande van de sik voor studenten maar is uit de docentenlijst en dus niet ik* student*. Hoop ik
-    { "...buitengesloten",																				"studentenBuitenGesloten"	},
-    { "...uitgescholden",																				"studentenUitgescholden"	},
-    { "...expres gestoord",																				"studentenExpresLesVerstoren"	},
-    { "...gepest",																						"studentenGepest"	},
-    { "...gepest via internet, smartphone, social media",												"studentenDigitaalGepest"	},
-    {"... gecyberpest",                                                                                 "studentenDigitaalGepest" },
-    { "...gediscrimineerd (ongelijk behandeld) door medestudent",										"studentenGediscrimineerdDoorLeerlingen"	},
-    { "...gediscrimineerd (ongelijk behandeld) door docenten",											"studentenGediscrimineerdDoorLeraren"	},
-    { "...discriminatie door medeleerlingen",                                                      		"studentenGediscrimineerdDoorLeerlingen"	},
-    { "...discriminatie door docenten",                                                             	"studentenGediscrimineerdDoorLeraren"	},
-    { "...bedreigd of geïntimideerd",																	"studentenBedreigdGeintimideerd"	},
-    { "...geduwd, geschopt of geslagen",														    	"studentenGeduwdGeschoptGeslagen"	},
-    { "...uitgedaagd om te vechten",															    	"studentenVechten"	},
-    { "...aangesproken met seksueel getinte opmerkingen",												"studentenSeksueelGetinteOpmerkingenMaken"	},
-    { "...aangesproken op vervelend gedrag",												    		"ikAangesprokenOpVervelendGedrag"	},
-    { "...spullen met opzet vernield, verstopt of kwijtgemaakt",							    		"studentenSpullenSlopenJatten"	},
-    { "...privéfoto’s verspreid",                                                                   	"studentenSeksueleAfbeeldingenVerspreiden"	},
 
 	{ " [In de klas voel ik me onveilig]",																									"klasVoeltOnveilig"	},
 	{ " [Op school voel ik me onveilig]",																									"schoolVoeltOnveilig"	},
@@ -840,3 +822,54 @@ const std::map<QString, QString> SchoolScannerDefinities::_mapCsvToDb =
 { " [Positief gedrag van leerlingen wordt door docenten beloond]",                                                 "docentenBelonenPositiefGedrag" },
 };
 
+const std::map<QString, QString> SchoolScannerDefinities::_mapCsvToDbDocent = 
+{
+    { "...buitengesloten",																				"studentenBuitenGesloten"	},
+    { "...uitgescholden",																				"studentenUitgescholden"	},
+    { "...expres gestoord",																				"studentenExpresLesVerstoren"	},
+    { "...gepest",																						"studentenGepest"	},
+    { "...gepest via internet, smartphone, social media",												"studentenDigitaalGepest"	},
+    {"... gecyberpest",                                                                                 "studentenDigitaalGepest" },
+    { "...gediscrimineerd (ongelijk behandeld) door medestudent",										"studentenGediscrimineerdDoorLeerlingen"	},
+    { "...gediscrimineerd (ongelijk behandeld) door docenten",											"studentenGediscrimineerdDoorLeraren"	},
+    { "...discriminatie door medeleerlingen",                                                      		"studentenGediscrimineerdDoorLeerlingen"	},
+    { "...discriminatie door docenten",                                                             	"studentenGediscrimineerdDoorLeraren"	},
+    { "...bedreigd of geïntimideerd",																	"studentenBedreigdGeintimideerd"	},
+    { "...geduwd, geschopt of geslagen",														    	"studentenGeduwdGeschoptGeslagen"	},
+    { "...uitgedaagd om te vechten",															    	"studentenVechten"	},
+    { "...aangesproken met seksueel getinte opmerkingen",												"studentenSeksueelGetinteOpmerkingenMaken"	},
+    { "...aangesproken op vervelend gedrag",												    		"studentenAangesprokenOpVervelendGedrag"	},
+    { "...spullen met opzet vernield, verstopt of kwijtgemaakt",							    		"studentenSpullenSlopenJatten"	},
+    { "...privéfoto’s verspreid",                                                                   	"studentenSeksueleAfbeeldingenVerspreiden"	}
+};
+
+const std::map<QString, QString> SchoolScannerDefinities::_mapCsvToDbStudent = 
+{
+    { "...buitengesloten",																				"ikBuitengesloten"	},
+    { "...uitgescholden",																				"ikUitgescholden"	},
+    { "...expres gestoord",																				"ikExpresGestoord"	},
+    { "...gepest",																						"ikGepest"	},
+    { "...gepest via internet, smartphone, social media",												"ikDigitaalGepest"	},
+    {"... gecyberpest",                                                                                 "ikDigitaalGepest" },
+    { "...gediscrimineerd (ongelijk behandeld) door medestudent",										"ikGediscrimineerdDoorLeerlingen"	},
+    { "...gediscrimineerd (ongelijk behandeld) door docenten",											"ikGediscrimineerdDoorLeraren"	},
+    { "...discriminatie door medeleerlingen",                                                      		"ikGediscrimineerdDoorLeerlingen"	},
+    { "...discriminatie door docenten",                                                             	"ikGediscrimineerdDoorLeraren"	},
+    { "...bedreigd of geïntimideerd",																	"ikBedreigdGeintimideerd"	},
+    { "...geduwd, geschopt of geslagen",														    	"ikGeduwdGeschoptGeslagen"	},
+    { "...uitgedaagd om te vechten",															    	"ikUitgedaagdOmTeVechten"	},
+	{ "...aangesproken met seksueel getinte opmerkingen",												"ikAangesprokenMetSeksueelGetinteOpmerkingen"	},
+    { "...aangesproken op vervelend gedrag",												    		"ikAangesprokenOpVervelendGedrag"	},
+    { "...spullen met opzet vernield, verstopt of kwijtgemaakt",							    		"mijnSpullenGeslooptGejat"	},
+    { "...privéfoto’s verspreid",                                                                   	"mijnPriveFotosVerspreid"	},
+
+};
+
+bool SchoolScannerDefinities::isColumnForCsvColumn(const QString & csvName, const QString & dbName, bool docent)
+{
+	if(_mapCsvToDb.contains(csvName) && _mapCsvToDb.at(csvName) == dbName)
+		return true;
+
+	return docent	?	_mapCsvToDbDocent.contains(csvName)		&& _mapCsvToDbDocent.at(csvName) 	== dbName
+					:	_mapCsvToDbStudent.contains(csvName) 	&& _mapCsvToDbStudent.at(csvName) 	== dbName;
+}

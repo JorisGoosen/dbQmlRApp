@@ -31,9 +31,6 @@ public:
 	void setDbName(			const QString & newDbName);
 	void setColumnType(		const ColumnType & newColumnType);
 
-	bool csvColumnIsForMe(const QString & csvColName) const;
-
-
 
 signals:
 	void friendlyNameChanged();

@@ -128,9 +128,3 @@ void ColumnDefinition::setColumnType(const ColumnType & newColumnType)
 	_columnType = newColumnType;
 	emit columnTypeChanged();
 }
-
-bool ColumnDefinition::csvColumnIsForMe(const QString & csvColName) const
-{
-	return SchoolScannerDefinities::mapCsvToDb().contains(csvColName) && SchoolScannerDefinities::mapCsvToDb().at(csvColName) == _dbName;
-}
-
