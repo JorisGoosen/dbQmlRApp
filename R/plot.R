@@ -10,8 +10,14 @@ laadKolommen <- function(kolomnamen, studenten)
     names(kolomnamen) <- kolomnamen
   
   # alle kolommen hier?
-  if(length(intersect(kolomnamen, names(SchoolScannerTextOnlysql))) != length(kolomnamen))
+    if(length(intersect(kolomnamen, names(SchoolScannerTextOnlysql))) != length(kolomnamen))
+  {
+    for(k in kolomnamen)
+      if(length(intersect(k, names(SchoolScannerTextOnlysql))) == 0)
+        print(paste0("Missing col: ", k))
+
     return(data.frame())
+  }
   
   kolommen <-
     if(is.null(studenten) | length(intersect(kolomnamen, 'type')) > 0) {
