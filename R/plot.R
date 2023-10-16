@@ -183,38 +183,6 @@ HoriHoogteBepaler <- function(width, column1ValCount, column2ValCount=1, extraHe
 }
 
 
-HoriStaafPerLabelFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
-{
-  if(!isFilterSensible(filter, studenten))
-    return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
-  
-  kolommen        <- laadKolommen(c(kolom=kolom, filter=filter), studenten)
-  
-  if(nrow(kolommen) == 0)
-    return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
-  
-  tafelPerGender  <- table(kolommen)
-  dfPer		        <- as.data.frame(tafelPerGender)
-
-  hoeVaaks        <- levels(as.factor(kolommen$kolom))
-	genders         <- levels(as.factor(kolommen$filter))
-	dfGender	      <- table(kolommen$filter)
-
-	dfPer			      <- dfPer %>% rowwise() %>% select(filter, kolom, Freq) %>%  mutate(`Hoe vaak` = Freq / dfGender[[filter]])
-	dfPer			      <- dplyr::filter(dfPer, filter != "")
-  dfPer           <- arrange(dfPer, desc(kolom))
-  dfPer$kolom    	<- factor(as.character(dfPer$kolom), levels=rev(c("Nooit", "Soms", "Vaak", "Altijd")))
-  uniekeFilters   <- unique(dfPer$filter)
-
-  height <- HoriHoogteBepaler(width, length(uniekeFilters) + sum(str_count(pattern="\n", string=uniekeFilters)), 4)
-
-    afronder(
-	    plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel,
-		  plot=ggplot(dfPer, aes(x=filter, y=`Hoe vaak`, fill=kolom)) + geom_bar(position=position_stack(reverse = TRUE), stat="identity") + coord_flip() +
-		  procentAsY() + xlab("") + ylab("") + theme(aspect.ratio=0.3) +
-		  scale_fill_manual(paste0("N: ", nrow(kolommen)), values=c(Altijd=kleuren$rozig, Vaak=kleuren$lichtblauwig, Soms=kleuren$lichtrozig, Nooit=kleuren$blauwig))
-	)
-}
 
 
 HoriHernoemerEen <- function(naam)
@@ -243,6 +211,49 @@ HoriHernoemerEen <- function(naam)
 HoriHernoemer <- function(naam)
 {
   sapply(naam, function(x) { HoriHernoemerEen(x)})
+}
+
+
+HoriStaafPerLabelFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
+{
+  if(!isFilterSensible(filter, studenten))
+    return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
+  
+  kolommen        <- laadKolommen(c(kolom=kolom, filter=filter), studenten)
+  
+  if(nrow(kolommen) == 0)
+    return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
+  
+  tafelPerGender  <- table(kolommen)
+  dfPer		        <- as.data.frame(tafelPerGender)
+
+  hoeVaaks        <- levels(as.factor(kolommen$kolom))
+	genders         <- levels(as.factor(kolommen$filter))
+	dfGender	      <- table(kolommen$filter)
+
+	dfPer			      <- dfPer %>% rowwise() %>% select(filter, kolom, Freq) %>%  rowwise() %>% mutate(`Hoe vaak` = Freq / dfGender[[filter]])
+	dfPer			      <- dplyr::filter(dfPer, filter != "")
+  dfPer           <- arrange(dfPer, desc(kolom))
+  dfPer$kolom    	<- factor(as.character(dfPer$kolom), levels=rev(c("Nooit", "Soms", "Vaak", "Altijd")))
+  uniekeFilters   <- unique(dfPer$filter)
+
+  height <- HoriHoogteBepaler(width, length(uniekeFilters) + sum(str_count(pattern="\n", string=uniekeFilters)), 4)
+
+  print(dfGender,n=1000)
+  
+  print(dfPer,n=1000)
+  
+  dfPer <- dfPer %>% group_by(filter) %>% arrange(kolom) %>% mutate(labelHoogte=(cumsum(Freq) - Freq*0.5)) %>% rowwise() %>% mutate(labelHoogte=labelHoogte/dfGender[[filter]]) %>% ungroup()
+
+  print(dfPer,n=1000)
+
+    afronder(
+	    plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel,
+		  plot=ggplot(dfPer, aes(x=filter, y=`Hoe vaak`, fill=kolom)) + geom_bar(position=position_stack(reverse = TRUE), stat="identity") + coord_flip() +
+		  procentAsY() + xlab("") + ylab("")  +
+      geom_text(size=basisGrootteText, aes(y=labelHoogte, label = ifelse(Freq > 0, Freq, ""))) +
+		  scale_fill_manual(paste0("N: ", nrow(kolommen)), values=c(Altijd=kleuren$rozig, Vaak=kleuren$lichtblauwig, Soms=kleuren$lichtrozig, Nooit=kleuren$blauwig))
+	)
 }
 
 HoriStaafMeerdereKolommenFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
@@ -300,7 +311,7 @@ HoriStaafMeerdereKolommenFunc <- function(plotFolder, plotFile, width, height, t
   df$`Hoe vaak` <- herordenVaak(df$`Hoe vaak`, FALSE)
   df <- df %>% group_by(Kolom) %>% arrange(`Hoe vaak`) %>% mutate(labelHoogte=(cumsum(Freq) - Freq*0.5) / rijen) %>% arrange(`Hoe vaak`) %>% ungroup()
 #
-  print(df %>% arrange(Kolom, `Hoe vaak`), n=1000)
+ # print(df %>% arrange(Kolom, `Hoe vaak`), n=1000)
   
  # df <- arrange(df, (`Hoe vaak`)) %>% mutate(labelHoogte=cumsum(Procent) + Procent * 0.5) %>%  arrange(desc(`Hoe vaak`)) 
 
@@ -310,9 +321,9 @@ HoriStaafMeerdereKolommenFunc <- function(plotFolder, plotFile, width, height, t
   
   afronder(
     plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel,
-    plot=ggplot(df, aes(x=Kolom, y=Procent, fill=`Hoe vaak`)) + theme(aspect.ratio=0.3) +
+    plot=ggplot(df, aes(x=Kolom, y=Procent, fill=`Hoe vaak`)) +
       geom_bar( stat="identity", na.rm=TRUE, position = position_stack(reverse = TRUE)) +
-      geom_text(size=basisGrootteText-1, aes(y=labelHoogte, label = ifelse(Freq > 0, Freq, ""))) +
+      geom_text(size=basisGrootteText, aes(y=labelHoogte, label = ifelse(Freq > 0, Freq, ""))) +
       procentAsY() + xlab("") + ylab("") +
       scale_x_discrete(labels = label_wrap(maxBreedteLabel)) + 
       coord_flip() +
@@ -385,9 +396,8 @@ HoriStaafGroepPerFilterFunc <- function(plotFolder, plotFile, width, height, tit
   hetPlot <- ggplot(dfPer, aes(x=kolom, y=Procent, fill=filter)) +
     geom_bar(position=position_dodge2(reverse=TRUE),stat="identity", width=1) +
     
-    geom_text(size=basisGrootteText, aes(group=filter, label = ifelse(Freq > 0, paste0(round(Procent * 100, 1), "%"), ""), hjust=ifelse(Procent > 0.1, 1.1, -0.1)), vjust=0.4, position = position_dodge2(reverse=TRUE, width=1)) +
-    geom_text(size=basisGrootteText-1,aes(group=filter, label = ifelse(Freq > 0, Freq, "")),
-              hjust=1.1, vjust=0.4, y=0.0, position = position_dodge2(reverse=TRUE, width=1)) +
+    geom_text(size=basisGrootteText, aes(group=filter, label = ifelse(Freq > 0, paste0(round(Procent * 100, 1), "%"), ""), hjust=-0.1), vjust=0.4, position = position_dodge2(reverse=TRUE, width=1)) +
+    geom_text(size=basisGrootteText-1,aes(group=filter, label = ifelse(Freq > 0, Freq, "")),                               hjust=1.1, vjust=0.4, position = position_dodge2(reverse=TRUE, width=1)) +
     
     coord_flip() +
     procentAsY() + xlab("") + ylab("") + theme(aspect.ratio=2.0) + 
