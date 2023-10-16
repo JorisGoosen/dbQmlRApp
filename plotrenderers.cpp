@@ -93,13 +93,13 @@ PlotRenderers::PlotRenderers( QObject *parent)
 		{ new PlotRenderer(this,	"6 In de klas",						PlotType::HoriStaafGroepPerFilter,				PlotFilter::Type,	true,	"waaromVervelendeDingenInDeKlas",				"Waarom vervelende dingen in de klas",				BB,		BB			)},
 
 		//7.1 + 7.2 + 7.3 In de klas op school			
-        { new PlotRenderer(this,	"7.1,2, In de klas/op school",		PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	studentKolommen,								"In de klas/op school zie ik",						BBB,		BB			)},
-        { new PlotRenderer(this,	"7.1,2, In de klas/op school",		PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	ikWordKolommen,									"In de klas/op school word ik",						BBB,		BB			)},
+		{ new PlotRenderer(this,	"7.1,2, In de klas/op school",		PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	studentKolommen,								"In de klas/op school zie ik anderen",						BBB,		BB			)},
+		{ new PlotRenderer(this,	"7.1,2, In de klas/op school",		PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	ikWordKolommen,									"In de klas/op school word ik door anderen",						BBB,		BB			)},
         { new PlotRenderer(this,	"7.1,2, In de klas/op school",		PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	mijnWordkolommen,								"In de klas/op school worden mijn",					BBB,		BB			)},
 		{ new PlotRenderer(this,	"7.1,2, In de klas/op school",		PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	"klasVoeltOnveilig,schoolVoeltOnveilig",		"Onveilig voelen",									BB,		BB+BB			)},
 
-        { GENEREERHET(				"7.1,2, In de klas/op school",		PlotType::HoriStaafGroepPerFilter,									true,	studentKolommen,								"In de klas/op school zie ik",						BB,		BB			)},
-        { GENEREERHET(				"7.1,2, In de klas/op school",		PlotType::HoriStaafGroepPerFilter,									true,	ikWordKolommen,									"In de klas/op school word ik",						BB,		BB			)},
+		{ GENEREERHET(				"7.1,2, In de klas/op school",		PlotType::HoriStaafGroepPerFilter,									true,	studentKolommen,								"In de klas/op school zie ikanderen",						BB,		BB			)},
+		{ GENEREERHET(				"7.1,2, In de klas/op school",		PlotType::HoriStaafGroepPerFilter,									true,	ikWordKolommen,									"In de klas/op school word ik door anderen",						BB,		BB			)},
 		{ new PlotRenderer(this,	"7.1,2, In de klas/op school",		PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	mijnWordkolommen,								"In de klas/op school worden mijn",					BBB,	BBB			)},
 		//{ new PlotRenderer(this,	"7.1,2, In de klas/op school",		PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	"klasOnveilig,schoolOnveilig",					"Onveilig voelen (altijd + vaak)",					BB,		BB			)},
 

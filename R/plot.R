@@ -239,18 +239,21 @@ HoriStaafPerLabelFunc <- function(plotFolder, plotFile, width, height, titel, ko
 
   height <- HoriHoogteBepaler(width, length(uniekeFilters) + sum(str_count(pattern="\n", string=uniekeFilters)), 4)
 
-  print(dfGender,n=1000)
+  #print(dfGender,n=1000)
   
-  print(dfPer,n=1000)
+  #print(dfPer,n=1000)
   
-  dfPer <- dfPer %>% group_by(filter) %>% arrange(kolom) %>% mutate(labelHoogte=(cumsum(Freq) - Freq*0.5)) %>% rowwise() %>% mutate(labelHoogte=labelHoogte/dfGender[[filter]]) %>% ungroup()
+  dfPer <- dfPer %>% group_by(filter) %>% arrange(kolom) %>% mutate(labelHoogte=(cumsum(Freq) - Freq*0.5)) %>% rowwise() %>% mutate(labelHoogte=labelHoogte/dfGender[[filter]]) %>% ungroup()  %>% arrange(filter)
 
-  print(dfPer,n=1000)
+  #print(dfPer,n=1000)
 
     afronder(
 	    plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel,
-		  plot=ggplot(dfPer, aes(x=filter, y=`Hoe vaak`, fill=kolom)) + geom_bar(position=position_stack(reverse = TRUE), stat="identity") + coord_flip() +
+		  plot=ggplot(dfPer, aes(x=filter, y=`Hoe vaak`, fill=kolom)) + 
+      geom_bar(position=position_stack(reverse = TRUE), stat="identity") + 
+      coord_flip() +
 		  procentAsY() + xlab("") + ylab("")  +
+      scale_x_discrete(limits=rev) +
       geom_text(size=basisGrootteText, aes(y=labelHoogte, label = ifelse(Freq > 0, Freq, ""))) +
 		  scale_fill_manual(paste0("N: ", nrow(kolommen)), values=c(Altijd=kleuren$rozig, Vaak=kleuren$lichtblauwig, Soms=kleuren$lichtrozig, Nooit=kleuren$blauwig))
 	)
@@ -309,7 +312,7 @@ HoriStaafMeerdereKolommenFunc <- function(plotFolder, plotFile, width, height, t
   }
   
   df$`Hoe vaak` <- herordenVaak(df$`Hoe vaak`, FALSE)
-  df <- df %>% group_by(Kolom) %>% arrange(`Hoe vaak`) %>% mutate(labelHoogte=(cumsum(Freq) - Freq*0.5) / rijen) %>% arrange(`Hoe vaak`) %>% ungroup()
+  df <- df %>% group_by(Kolom) %>% arrange(`Hoe vaak`) %>% mutate(labelHoogte=(cumsum(Freq) - Freq*0.5) / rijen) %>% arrange(`Hoe vaak`) %>% ungroup() %>% arrange(Kolom) 
 #
  # print(df %>% arrange(Kolom, `Hoe vaak`), n=1000)
   
@@ -325,7 +328,7 @@ HoriStaafMeerdereKolommenFunc <- function(plotFolder, plotFile, width, height, t
       geom_bar( stat="identity", na.rm=TRUE, position = position_stack(reverse = TRUE)) +
       geom_text(size=basisGrootteText, aes(y=labelHoogte, label = ifelse(Freq > 0, Freq, ""))) +
       procentAsY() + xlab("") + ylab("") +
-      scale_x_discrete(labels = label_wrap(maxBreedteLabel)) + 
+      scale_x_discrete(labels = label_wrap(maxBreedteLabel), limits=rev) +  
       coord_flip() +
       scale_fill_manual(paste0("N: ", nrow(kolommen)), values=c(Ja=kleuren$rozig, Nee=kleuren$blauwig, Altijd=kleuren$rozig, Dagelijks=kleuren$rozig, Vaak=kleuren$lichtblauwig, Wekelijks=kleuren$lichtblauwig, Soms=kleuren$lichtrozig, Maandelijks=kleuren$lichtrozig, `Af & toe`=kleuren$lichtgeel, Nooit=kleuren$blauwig))
   )
@@ -400,13 +403,13 @@ HoriStaafGroepPerFilterFunc <- function(plotFolder, plotFile, width, height, tit
     geom_text(size=basisGrootteText-1,aes(group=filter, label = ifelse(Freq > 0, Freq, "")),                               hjust=1.1, vjust=0.4, position = position_dodge2(reverse=TRUE, width=1)) +
     
     coord_flip() +
-    procentAsY() + xlab("") + ylab("") + theme(aspect.ratio=2.0) + 
+    procentAsY() + xlab("") + ylab("") + 
     scale_x_discrete(labels = label_wrap(maxBreedteLabel))
     
   
   hetPlot <- doeCMPalet(hetPlot, length(filters), paste0("N: ", nrow(allesPerCulturen)))
 
-  height <- HoriHoogteBepaler(width, length(unique(hoeVaaks)) + sum(str_count(pattern="\n", string=unique(hoeVaaks))), 0.5 * length(unique(filters)))
+  height <- HoriHoogteBepaler(width, length(unique(dfPer$kolom)) + sum(str_count(pattern="\n", string=unique(dfPer$kolom))), 2.0 * length(unique(dfPer$filter)))
   
   afronder(
     plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel, bottomLegendaAantal=length(hoeVaaks), plot=hetPlot
@@ -498,9 +501,9 @@ HoriStaafPerTypeRespondentFunc <- function(plotFolder, plotFile, width, height, 
 		  geom_bar(position=position_dodge2(reverse=TRUE),stat="identity", width=1) +
       geom_text(size=basisGrootteText,aes(group=type, label = paste0(round(Procent * 100), "%")), hjust=-0.1, vjust=0.4, position = position_dodge2(reverse=TRUE, width=1)) +
 		  geom_text(size=basisGrootteText,aes(group=type, label = ifelse(Freq > 0, Freq,	"")),
-									   hjust=1.1, vjust=0.4, y=0.0, position = position_dodge2(reverse=TRUE, width=1)) +
+									   hjust=1.1, vjust=0.4, position = position_dodge2(reverse=TRUE, width=1)) +
       coord_flip() +
-		  procentAsY() + xlab("") + ylab("") + theme(aspect.ratio=2.0) +
+		  procentAsY() + xlab("") + ylab("") +
 		  scale_x_discrete(labels = label_wrap(maxBreedteLabel)) +
       scale_fill_manual(paste0("N: ", nrow(allesPerType)),
 	             values=c(
