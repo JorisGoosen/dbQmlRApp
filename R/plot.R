@@ -406,8 +406,7 @@ HoriStaafGroepPerFilterFunc <- function(plotFolder, plotFile, width, height, tit
   
   hetPlot <- doeCMPalet(hetPlot, length(filters), paste0("N: ", nrow(allesPerCulturen)))
 
-  height <- HoriHoogteBepaler(width, length(unique(hoeVaaks)) + sum(str_count(pattern="\n", string=unique(hoeVaaks))))
-    #, length(unique(filters)))
+  height <- HoriHoogteBepaler(width, length(unique(hoeVaaks)) + sum(str_count(pattern="\n", string=unique(hoeVaaks))), 0.5 * length(unique(filters)))
   
   afronder(
     plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel, bottomLegendaAantal=length(hoeVaaks), plot=hetPlot
@@ -484,7 +483,7 @@ HoriStaafPerTypeRespondentFunc <- function(plotFolder, plotFile, width, height, 
   
   #dfPer$onveiligHier <- factor(as.character(dfPer$onveiligHier), rev(c("Nooit", "Soms", "Vaak", "Altijd")))
   dfPer           <- dfPer %>% rowwise() %>% select(type, name, Freq) %>%
-  mutate(Freq = Freq / tafelTotaal[[type]], type=type, totaalType = tafelTotaal[[type]])
+  mutate(Procent = Freq / tafelTotaal[[type]], type=type, totaalType = tafelTotaal[[type]])
   dfPer <- dplyr::filter(dfPer, type != "")
 
   # dfPer <- arrange(dfPer, desc(name))
@@ -495,14 +494,11 @@ HoriStaafPerTypeRespondentFunc <- function(plotFolder, plotFile, width, height, 
 
   afronder(
     plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel,
-		plot=ggplot(dfPer, aes(x=name, y=Freq, fill=type)) +
+		plot=ggplot(dfPer, aes(x=name, y=Procent, fill=type)) +
 		  geom_bar(position=position_dodge2(reverse=TRUE),stat="identity", width=1) +
-      geom_text(size=basisGrootteText,aes(group=type, label = paste0(round(Freq * 100), "%")), hjust=ifelse(dfPer$Freq < 0.9, 1.1, -0.1), vjust=0.4, position = position_dodge2(reverse=TRUE, width=1)) +
-		  geom_text(size=basisGrootteText,aes(group=type, label =
-		                         ifelse(Freq > 0.01,
-								        paste0("N: ", totaalType),
-										"")),
-									   hjust=-0.1, vjust=0.4, y=0.0, position = position_dodge2(reverse=TRUE, width=1)) +
+      geom_text(size=basisGrootteText,aes(group=type, label = paste0(round(Procent * 100), "%")), hjust=-0.1, vjust=0.4, position = position_dodge2(reverse=TRUE, width=1)) +
+		  geom_text(size=basisGrootteText,aes(group=type, label = ifelse(Freq > 0, Freq,	"")),
+									   hjust=1.1, vjust=0.4, y=0.0, position = position_dodge2(reverse=TRUE, width=1)) +
       coord_flip() +
 		  procentAsY() + xlab("") + ylab("") + theme(aspect.ratio=2.0) +
 		  scale_x_discrete(labels = label_wrap(maxBreedteLabel)) +
