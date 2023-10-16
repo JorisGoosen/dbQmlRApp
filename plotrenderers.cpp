@@ -264,13 +264,17 @@ bool PlotRenderers::renderMaar() const
 	return _renderMaar;
 }
 
+void PlotRenderers::renderMaarIets()
+{
+	setRenderMaar(true);
+
+	renderPlots();
+}
+
 void PlotRenderers::setRenderMaar(bool newRenderMaar)
 {
 	if (_renderMaar == newRenderMaar)
 		return;
 	_renderMaar = newRenderMaar;
-	emit renderMaarChanged();
-
-
-	renderPlots();
+	emit renderMaarChanged();	
 }

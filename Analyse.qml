@@ -30,7 +30,7 @@ SplitView
 		RectButton
 		{
 			text:					"Maak & toon grafieken"
-			onClicked:				plotList.renderMaar = true
+			onClicked:				plotList.renderMaarIets()
 			anchors.centerIn:		parent
 			margins:				parent.width / 8
 		}

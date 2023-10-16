@@ -11,8 +11,15 @@ Rectangle
 		id:				lijstje
 		model:			plotList
 		spacing:		generalMargin
-		anchors.fill:	parent
 		clip:			true
+
+		anchors
+		{
+			top:		parent.top
+			left:		parent.left
+			right:		parent.right
+			bottom:		verseGrafieken.top
+		}
 
 		delegate: PlotsHori
 		{
@@ -28,5 +35,20 @@ Rectangle
 
 
 
+	}
+
+	RectButton
+	{
+		id:						verseGrafieken
+		text:					"Maak verse grafieken"
+		toolTip:				"Kan even duren..."
+		onClicked:				plotList.renderPlots()
+
+		anchors
+		{
+			left:		parent.left
+			right:		parent.right
+			bottom:		parent.bottom
+		}
 	}
 }

@@ -28,6 +28,8 @@ public:
 	bool		showMe() const;
 	bool		renderMaar() const;
 
+
+
 	void		setPlotFolder(	const QDir			& newPlotFolder);
 	void		setShowMe(bool newShowMe);
 	void		setRenderMaar(bool newRenderMaar);
@@ -44,6 +46,7 @@ signals:
 public slots:
 	void		renderPlots();
 	void		plotRenderUpdated(PlotRenderer * plot);
+	void		renderMaarIets();
 
 private:
 	std::vector<std::vector<PlotRenderer*>>	_plots;

@@ -34,6 +34,8 @@ find_package(SQLite3 3.39.5 REQUIRED)
 message(STATUS "Collecting R info")
 execute_process(COMMAND R RHOME OUTPUT_VARIABLE R_HOME)
 
+message(STATUS "R Home is: ${R_HOME}")
+
 set(NUM_TRUNC_CHARS 2)
 
 execute_process(COMMAND R CMD config --cppflags OUTPUT_VARIABLE RCPPFLAGS)

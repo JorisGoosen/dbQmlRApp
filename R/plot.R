@@ -165,13 +165,13 @@ procentAsY <- function()
 }
 
 
-HoriHoogteBepaler <- function(width, column1ValCount, column2ValCount, extraHeight=0)
+HoriHoogteBepaler <- function(width, column1ValCount, column2ValCount=1, extraHeight=0)
 {
   return(
     max(width / 4, 
         min(width * 6, 
             floor(
-              (50) 
+              (30) 
               * column1ValCount
               * column2ValCount  
             )
@@ -206,7 +206,7 @@ HoriStaafPerLabelFunc <- function(plotFolder, plotFile, width, height, titel, ko
   dfPer$kolom    	<- factor(as.character(dfPer$kolom), levels=rev(c("Nooit", "Soms", "Vaak", "Altijd")))
   uniekeFilters   <- unique(dfPer$filter)
 
-  height <- HoriHoogteBepaler(width, length(uniekeFilters) + sum(str_count(pattern="\n", string=uniekeFilters)), 1)
+  height <- HoriHoogteBepaler(width, length(uniekeFilters) + sum(str_count(pattern="\n", string=uniekeFilters)), 4)
 
     afronder(
 	    plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel,
@@ -223,11 +223,11 @@ HoriHernoemerEen <- function(naam)
     naam,
     graagNaarSchool="Graag naar school",
     bangOpSchool="Bang op school",
-    werkMetPlezier="Werk met plezier op school",
-    klasJezelf="kun je jezelf zijn",  klasSfeerGoed="is de sfeer goed",  klasSchoolGemopper="wordt gemopperd over school",  klasOpschietenMet="kan ik goed opschieten met klasgenoten",  klasGoedSamenWerken="kunnen we goed samenwerken",  klasAfkomstKlit="ga ik het liefst om met degene met dezelfde afkomst",  klasOnaardigGepraat="hoor ik onaardig gepraat over elkaar",  klasVeelRuzie="is veel ruzie",  klasKunJeZeggenVervelend="kun je er wat van zeggen als iemand vervelend tegen je doet",  klasDurfUitDeKast="zou ik uit de kast durven komen",  klasKwetstMetMijnIdentiteit="worden kwetsende opmerkingen gemaakt over mijn identiteit",  klasWeetHoeHetMetMijGaat="weet men hoe het met mij gaat",  klasVoeltOnveilig="voelt het onveilig",
+    werkMetPlezier="Werk met plezier op school", afgelopenWeekVervelendeSituatiesGezien="Heb je de afgelopen week vervelende situaties gezien?",
+    klasJezelf="kun je jezelf zijn",  klasSfeerGoed="is de sfeer goed",  klasSchoolGemopper="wordt gemopperd over school",  klasOpschietenMet="kan ik goed opschieten met klasgenoten",  klasGoedSamenWerken="kunnen we goed samenwerken",  klasAfkomstKlit="ga ik het liefst om met degene met dezelfde afkomst",  klasOnaardigGepraat="hoor ik onaardig gepraat over elkaar",  klasVeelRuzie="is veel ruzie",  klasKunJeZeggenVervelend="kun je er wat van zeggen als iemand vervelend tegen je doet",  klasDurfUitDeKast="zou ik uit de kast durven komen",  klasKwetstMetMijnIdentiteit="worden kwetsende opmerkingen gemaakt over mijn identiteit",  klasWeetHoeHetMetMijGaat="weet men hoe het met mij gaat",  klasVoeltOnveilig="Onveilig gevoel in de klas",
     studentenBuitenGesloten="worden buitengesloten",  studentenUitgescholden="worden uitgescholden",  studentenExpresLesVerstoren="met opzet de les verstoren",  studentenSpullenSlopenJatten="spullen slopen of jatten",  studentenGepest="worden gepest",  studentenDigitaalGepest="digitaal worden gepest",  studentenGediscrimineerdDoorLeerlingen="worden gediscrimineerd door leerlingen",  studentenGediscrimineerdDoorLeraren="worden gediscrimineerd door leraren",  studentenBedreigdGeintimideerd="worden bedreigd of geintimideerd",  studentenGeduwdGeschoptGeslagen="worden geschopt of geslagen",  studentenVechten="vechten",  studentenSeksueelGetinteOpmerkingenMaken="seksueel getinte opmerkingen maken",  studentenSeksueleAfbeeldingenVerspreiden="seksuele afbeeldingen verspreiden",  studentenOnveiligVoelenInKlas="onveilig voelen in de klas",
     ikBuitengesloten="buitengesloten",  ikUitgescholden="uitgescholden",  ikExpresGestoord="met opzet gestoord",  ikGepest="gepest",  ikDigitaalGepest="digitaal gepest",  ikGediscrimineerdDoorLeerlingen="gediscrimineerd door leerlingen",  ikGediscrimineerdDoorLeraren="gediscrimineerd door leraren",  ikBedreigdGeintimideerd="bedreigd of geintimideerd",  ikGeduwdGeschoptGeslagen="geduwd, geschopt of geslagen",  ikUitgedaagdOmTeVechten="uitgedaagd om te vechten",  ikAangesprokenMetSeksueelGetinteOpmerkingen="aangesproken met seksueel getinte opmerkingen",  ikAangesprokenOpVervelendGedrag="aangesproken op vervelend gedrag",  mijnSpullenGeslooptGejat="spullen gesloopt of gejat",  mijnPriveFotosVerspreid="prive fotos verspreid",
-    schoolVoeltOnveilig="voelt het onveilig",  schoolJezelfZijn="kun je jezelf zijn",  schoolSfeerIsGoed="is de sfeer goed",  schoolRaadIkAan="zou ik aanraden",  schoolStudentenGediscrimineerd="leerlingen gediscrimineerd",  schoolDiversVoeltThuis="voelen mensen van verschillende afkomsten zich thuis",  schoolGoedOpschietenElkaar="kunnen leerlingen goed opschieten met elkaar",  schoolLiefstMetGelijkeAfkomstOm="gaan leerlingen het liefst om met anderen van dezelfde afkomst",  schoolAnderenVoorgetrokkenAfkomstCultuurGeloof="worden anderen voorgetrokken op basis afkomst, cultuur of geloof",  schoolActueleGebeurtenissenMijAangaanBehandeldOpSchool="komen actuele gebeurtenissen die mij aangaan aan bod",  schoolStudentenZittenOngewildAlleen="zitten leerlingen ongewild alleen",
+    schoolVoeltOnveilig="Onveilig gevoel op school",  schoolJezelfZijn="kun je jezelf zijn",  schoolSfeerIsGoed="is de sfeer goed",  schoolRaadIkAan="zou ik aanraden",  schoolStudentenGediscrimineerd="leerlingen gediscrimineerd",  schoolDiversVoeltThuis="voelen mensen van verschillende afkomsten zich thuis",  schoolGoedOpschietenElkaar="kunnen leerlingen goed opschieten met elkaar",  schoolLiefstMetGelijkeAfkomstOm="gaan leerlingen het liefst om met anderen van dezelfde afkomst",  schoolAnderenVoorgetrokkenAfkomstCultuurGeloof="worden anderen voorgetrokken op basis afkomst, cultuur of geloof",  schoolActueleGebeurtenissenMijAangaanBehandeldOpSchool="komen actuele gebeurtenissen die mij aangaan aan bod",  schoolStudentenZittenOngewildAlleen="zitten leerlingen ongewild alleen",
     vervelendDanGaIkHelpen="ga ik helpen",  vervelendDanKijkIkWeg="kijk ik weg",  vervelendDanLoopIkWeg="loop ik weg",  vervelendDanDoeIkMee="doe ik mee",  vervelendDanZegIkErWatVan="zeg ik er wat van",  vervelendDanWaarschuwIkSchoolMedewerker="waarschuw ik een schoolmedewerker",  vervelendDanLaatIkMedelevenWeten="laat ik medeleven weten",  vervelendDanZieIkDatAndereStudentIngrijpt="zie ik dat andere leerling ingrijpt",  vervelendDanZieIkDatDocentIngrijpt="zie ik dat docent ingrijpt",  vervelendDanZieIkDatAfdelingsleiderIngrijpt="zie ik dat afdelingsleider ingrijpt", alsIkVervelendeSituatieZieDanVindIkDatIkWatMoetDoen="vind ik dat ik wat moet doen",  alsIkVervelendeSituatieZieDanWeetIkWatIkKanDoen="weet ik wat ik moet doen",
     alsEenStudentWordtBuitengeslotenDanIsDatEigenKeuze="is dat de eigen keuze",  alsEenStudentWordtBuitengeslotenDanIsDatEigenSchuld="is dat de eigen schuld",  voelMeVerantwoordelijkOmBuitensluitenTegenTeGaan="voel ik me verantwoordelijk dat tegen te gaan",  voelMeVerantwoordelijkOmInTeGrijpenAlsIemandWordtGediscrimineerd="door discriminatie voel ik me verantwoordelijk om in te grijpen",  voelMeVerantwoordelijkOmInTeGrijpenAlsIemandWordtGepest="door pesten voel ik me verantwoordelijk om in te grijpen",  ikStuurWelEensPrivefotosAnderenDoorOfIkGrijpIn=".. stuur ik wel eens prive fotos van anderen door",
 	mentorIkHebGoedContact="Ik heb goed contact met mijn mentor",  docentIkHebGoedContact="Ik heb goed contact met mijn docent",  docentenKunnenGoedOrdeHouden="Docenten kunnen goed orde houden",  docentenGevenStudentenComplimenten="Docenten geven mij complimenten",  docentenHebbenLageVerwachtingVanMij="Docenten hebben lage verwachting van mij",  docentenLettenOpTaalgebruikStudenten="Docenten letten op taalgebruik van de leerlingen",  docentenlettenOpEigenTaalgebruik="Docenten letten op eigen taalgebruik",  docentenBelonenPositiefGedrag="Docenten belonen positief gedrag",  docentenGrijpenInWanneerDatNodigIs="Docenten grijpen in wanneer dat nodig is",  mentorenWetenWatErInDeKlasSpeelt="Mentoren weten wat er in de klas speelt",  mentorenBespreektWatErInDeKlasSpeelt="Mentoren bespreekt wat er in de klas speelt",  actueleGebeurtenissenSamenlevingWordenInKlasBesproken="Actuele gebeurtenissen samenleving worden in klas besproken",
@@ -250,6 +250,7 @@ HoriStaafMeerdereKolommenFunc <- function(plotFolder, plotFile, width, height, t
   if(!isFilterSensible(filter, studenten))
     return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
   
+  nietSplitsenAUB <- kolom == "afgelopenWeekVervelendeSituatiesGezien"
   kolomnamen <- str_split_1(kolom, ',')
   
   kolommen   <- c()
@@ -267,7 +268,7 @@ HoriStaafMeerdereKolommenFunc <- function(plotFolder, plotFile, width, height, t
   
   df <- NULL
   
-  if(length(kolomnamen) > 1)
+  if(length(kolomnamen) > 1 | nietSplitsenAUB)
   {
     for(kolomnaam in kolomnamen)
     {
@@ -286,53 +287,38 @@ HoriStaafMeerdereKolommenFunc <- function(plotFolder, plotFile, width, height, t
     df <- df %>% rowwise() %>% select(Var1, Freq, Kolom) %>% mutate(`Procent`= Freq / rijen, `Hoe vaak`=Var1)
     
   }else{ #if length kolomnamen == 1
+
+      kolommen <- kolommen %>% mutate(kolom=strsplit(kolom, ", ")) %>% unnest_longer(kolom)       
     
-    kolommen <- kolommen                              %>%
-      mutate(rij=row_number())              %>% 
-      mutate(kolom=strsplit(kolom, ", "))   %>% 
-      unnest_longer(kolom)       
-    
-    #length(intersect(nieuweKolomNaam, kolommen[kolommen$rij==rij,][['kolom']])) > 0
-    nieuweKolomNamen <- unique(kolommen$kolom)
-    
-    df <- tibble(Kolom=nieuweKolomNamen) %>% rowwise() %>% mutate(Freq=sum(kolommen$kolom==Kolom)) %>%
-      mutate(Procent=Freq/rijen, `Hoe vaak`=Kolom)
+      nieuweKolomNamen <- unique(kolommen$kolom)
+
+      print(paste0("nieuweKolomNamen is ", nieuweKolomNamen))
+      
+      df <- tibble(Kolom=nieuweKolomNamen) %>% rowwise() %>% mutate(Freq=sum(kolommen$kolom==Kolom)) %>% mutate(Procent=Freq/rijen, `Hoe vaak`=Kolom)
   }
   
   df$`Hoe vaak` <- herordenVaak(df$`Hoe vaak`, FALSE)
+  df <- df %>% group_by(Kolom) %>% arrange(`Hoe vaak`) %>% mutate(labelHoogte=(cumsum(Freq) - Freq*0.5) / rijen) %>% arrange(`Hoe vaak`) %>% ungroup()
+#
+  print(df %>% arrange(Kolom, `Hoe vaak`), n=1000)
   
-  df <- arrange(df, desc(`Hoe vaak`))
+ # df <- arrange(df, (`Hoe vaak`)) %>% mutate(labelHoogte=cumsum(Procent) + Procent * 0.5) %>%  arrange(desc(`Hoe vaak`)) 
 
   uniekeShit <- unique(df$Kolom)
   
-  height <- HoriHoogteBepaler(width, 0.5 * length(uniekeShit) + sum(str_count(pattern="\n", string=uniekeShit)), length(unique(df$`Hoe vaak`)))
+  height <- HoriHoogteBepaler(width, length(uniekeShit) + sum(str_count(pattern="\n", string=uniekeShit)), length(unique(df$`Hoe vaak`)))
   
   afronder(
     plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel,
-    plot=ggplot(df, aes(x=Kolom, y=`Procent`, fill=`Hoe vaak`)) + theme(aspect.ratio=0.3) +
+    plot=ggplot(df, aes(x=Kolom, y=Procent, fill=`Hoe vaak`)) + theme(aspect.ratio=0.3) +
       geom_bar( stat="identity", na.rm=TRUE, position = position_stack(reverse = TRUE)) +
+      geom_text(size=basisGrootteText-1, aes(y=labelHoogte, label = ifelse(Freq > 0, Freq, ""))) +
       procentAsY() + xlab("") + ylab("") +
       scale_x_discrete(labels = label_wrap(maxBreedteLabel)) + 
       coord_flip() +
       scale_fill_manual(paste0("N: ", nrow(kolommen)), values=c(Ja=kleuren$rozig, Nee=kleuren$blauwig, Altijd=kleuren$rozig, Dagelijks=kleuren$rozig, Vaak=kleuren$lichtblauwig, Wekelijks=kleuren$lichtblauwig, Soms=kleuren$lichtrozig, Maandelijks=kleuren$lichtrozig, `Af & toe`=kleuren$lichtgeel, Nooit=kleuren$blauwig))
   )
 }
-
-
-
-#HoriStaafGroepPerFilterHernoemer <- function(naam)
-#{
-#  switch(naam,
-#    naam,
-#    werkenSchoolDuidelijkeRegelsOmgang,werkenSchoolRegelsIedereenGelijk,werkenSchoolStudentenDieRegelsBrekenAangesproken,werkenSchoolDocentenDieRegelsBrekenAangesproken,werkenSchoolRegelsIedereDocentGelijk,werkenSchoolOmbudBekend,werkenSchoolMeningStudentenTelt,werkenSchoolStudentenHebbenRespectVoorDocenten,werkenSchoolDocentenHebbenRespectVoorStudenten,werkenSchoolDocentenGevenGoedeVoorbeeld
-#
-#schoolKolommen
-#studentKolommen
-#ikWordKolommen
-#
-#    )
-#    
-#}
 
 HoriStaafGroepPerFilterFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter, studenten, mbo=FALSE)
 {
@@ -409,6 +395,9 @@ HoriStaafGroepPerFilterFunc <- function(plotFolder, plotFile, width, height, tit
     
   
   hetPlot <- doeCMPalet(hetPlot, length(filters), paste0("N: ", nrow(allesPerCulturen)))
+
+  height <- HoriHoogteBepaler(width, length(unique(hoeVaaks)) + sum(str_count(pattern="\n", string=unique(hoeVaaks))))
+    #, length(unique(filters)))
   
   afronder(
     plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel, bottomLegendaAantal=length(hoeVaaks), plot=hetPlot
@@ -523,33 +512,33 @@ VerticaalStaafFunc <- function(plotFolder, plotFile, width, height, titel, kolom
   if(filter == 'geen')
     return(dummyPlot(titel="Kan niet zonder filter", plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
   
-  kolommen   <- laadKolommen(c(kolom, filter), studenten)
-  deKolommen <- dplyr::filter(kolommen, .data[[filter]] != "" & .data[[kolom]] != "")
+  deKolommen   <- laadKolommen(c(kolom=kolom, filter=filter), studenten)
+  #deKolommen <- dplyr::filter(kolommen, .data[[filter]] != "" & .data[[kolom]] != "")
   
   if(nrow(deKolommen) == 0)
     return(dummyPlot(plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter))
   
   df              <- as.data.frame(table(deKolommen))
-  tafelPerFilter  <- table(deKolommen[[filter]])
+  tafelPerFilter  <- table(deKolommen$filter)
   perFilter       <- as.data.frame(tafelPerFilter)
-  df$totaal       <- tafelPerFilter[df[[filter]]]
+  df$totaal       <- tafelPerFilter[df$filter]
   df$`Procent`    <- df$Freq / df$totaal
   
   # df <- df %>% rowwise() %>% select({{kolom}}, Freq, {{filter}}) %>% mutate(`Procent`= Freq / tafelPerFilter[[filter]])
 
-  df[[kolom]] <- factor(as.character(df[[kolom]]), (c('1', '2', '3', '4', '5', '6', '7', '8', '9', '10')))
+  df$kolom <- factor(as.character(df$kolom), levels=c('1', '2', '3', '4', '5', '6', '7', '8', '9', '10'))
   
   # df <- arrange(df, desc(filter))
   # print(deKolommen[[kolom]])
 
-  hetPlot <-       ggplot(df, aes(x=.data[[kolom]], y=`Procent`, fill=.data[[filter]])) +
+  hetPlot <-       ggplot(df, aes(x=kolom, y=`Procent`, fill=filter)) +
   	geom_bar( stat="identity", na.rm=TRUE, position = position_dodge2(reverse=FALSE, width=1)) +
   	# coord_flip() +
     procentAsY() + xlab(str_to_title(filter)) + #ylab("") +
   	geom_text(size=basisGrootteText, aes(y = `Procent`, label=ifelse(Freq>0, Freq, '')), vjust=-0.5, position=position_dodge2(reverse=FALSE, width=1))# +
     ##  geom_text(size=4, aes(y = 0, label={{kolom}}), vjust=-0.5,  position=position_dodge2(reverse=TRUE, width=1))
   
-  hetPlot <- doeCMPalet(hetPlot, length(unique(df[[filter]])), paste0("N: ", length(deKolommen[[kolom]])))
+  hetPlot <- doeCMPalet(hetPlot, length(unique(df$filter)), paste0("N: ", length(deKolommen$kolom)))
 
   afronder(
     plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel,
@@ -591,7 +580,8 @@ TaartFunc <- function(plotFolder, plotFile, width, height, titel, kolom, filter,
       geom_bar( stat="identity", position = position_stack(reverse = TRUE)) +
       # coord_flip() +
       scale_y_continuous(breaks=NULL, labels=NULL) + 
-      xlab("") + ylab("") +
+     # scale_x_discrete(breaks=' ', '', labels=NULL) +
+      xlab("") + ylab("") + # xlim(-0.3, 1.0) +
       scale_fill_manual(paste0("N: ", totaal), values=
                           c(`1`=kleuren$zwartig, `2`=kleuren$lichtgeel, `3`=kleuren$blauwig, `4`=kleuren$lichtrozig, `5`=kleuren$donkergroen, 
                             `6`=kleuren$lichtgeel, `7`=kleuren$blauwig, `8`=kleuren$lichtrozig, `9`=kleuren$lichtgroen, `10`=kleuren$rozig )) +

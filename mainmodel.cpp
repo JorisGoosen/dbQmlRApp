@@ -53,7 +53,7 @@ void MainModel::showData()
 		emit qmlsShownChanged();
 	}
 
-	_schoolTable->renderPlots();
+	//_schoolTable->renderPlots();
 }
 
 void MainModel::setQmlsShown(const QStringList & newQmlsShown)

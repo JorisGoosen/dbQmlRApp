@@ -45,6 +45,7 @@ public:
 public slots:
 	void loadFilters();
 	void initRStuff();
+	void updateFilter();
 
 
 signals:

@@ -36,15 +36,15 @@ SchoolScannerTable::SchoolScannerTable(Database * db)
 
 	connect(this,		&QAbstractTableModel::modelReset,	this, &SchoolScannerTable::loadFilters);
 
-	connect(&_school,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuffDelay);
-	connect(&_locatie,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuffDelay);
-	connect(&_sector,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuffDelay);
-	connect(&_niveau,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuffDelay);
-	connect(&_leerjaar, &FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuffDelay);
-	connect(&_klas,		&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuffDelay);
-	connect(&_gender,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuffDelay);
-	connect(&_cultuur,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuffDelay);
-	connect(&_type,		&FilterListModel::filterChanged,	this, &SchoolScannerTable::initRStuffDelay);
+	connect(&_school,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::updateFilter);
+	connect(&_locatie,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::updateFilter);
+	connect(&_sector,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::updateFilter);
+	connect(&_niveau,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::updateFilter);
+	connect(&_leerjaar, &FilterListModel::filterChanged,	this, &SchoolScannerTable::updateFilter);
+	connect(&_klas,		&FilterListModel::filterChanged,	this, &SchoolScannerTable::updateFilter);
+	connect(&_gender,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::updateFilter);
+	connect(&_cultuur,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::updateFilter);
+	connect(&_type,		&FilterListModel::filterChanged,	this, &SchoolScannerTable::updateFilter);
 
 	connect(&_school,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::loadFilters);
 	connect(&_locatie,	&FilterListModel::filterChanged,	this, &SchoolScannerTable::loadFilters);
@@ -148,5 +148,14 @@ void SchoolScannerTable::initRStuff()
 		emit runRCommand(_textOnly->tableName() + "sql <- filter(" + _textOnly->tableName() + "sql, " + dbFilter + ");");
 
 	emit renderPlots();
+}
 
+void SchoolScannerTable::updateFilter()
+{
+	emit runRCommand(_textOnly->dbplyrCode(false));
+
+	QString dbFilter = dbplyerFilter();
+
+	if(dbFilter != "")
+		emit runRCommand(_textOnly->tableName() + "sql <- filter(" + _textOnly->tableName() + "sql, " + dbFilter + ");");
 }
