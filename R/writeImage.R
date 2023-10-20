@@ -1,4 +1,5 @@
-library(jaspGraphs)
+print("Running writeImage.R")
+#library(jaspGraphs)
 library(ggplot2)
 library(tidyr)
 library(ggplot2)

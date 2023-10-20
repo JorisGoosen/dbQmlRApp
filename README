@@ -2,4 +2,13 @@ A simple QML app with support for sqlite and R(Inside) integrated.
 
 Based vaguely on the qt example from RInside
 
-Needs packages: RSQLite, dbplyr, jaspGraphs, showtext, ggplot2, stringr
+Install R (tested with 4.3.1)
+Needs packages: Rcpp, RInside, RSQLite, dbplyr, showtext, ggplot2, stringr
+
+Make sure to install those packages to R_LIBS_USER (local site-library)
+Also set in environment
+R_HOME=C:\Program Files\R\R-4.3.1
+R_LIBS=C:\Users\Joris\AppData\Local\R\win-library\4.3;C:\Program Files\R\R-4.3.1\library
+Maar ipv Joris username
+
+PATH=C:\Program Files\R\R-4.3.1\bin\x64 + PATH

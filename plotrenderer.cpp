@@ -11,7 +11,11 @@ PlotRenderer::PlotRenderer(QFile rFile, QString fileName, QDir outputFolder, QOb
 {
 	rFile.open(			QIODeviceBase::ReadOnly);
 
-	setRCode(rFile.readAll());
+	setRCode(rFile.readAll()
+#ifdef WIN32
+						  .replace("\r", "")
+#endif
+);
 	rFile.close();
 
 	init();

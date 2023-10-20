@@ -26,7 +26,7 @@ public:
 	QString		dbPathKort()		const;
 
 	void		setPlotFilterNames(	const QStringList & newPlotFilterNames);
-	void		setDbPath(			const QString & newDbPath);
+	void		setDbPath(			QString newDbPath);
 
 
 public slots:

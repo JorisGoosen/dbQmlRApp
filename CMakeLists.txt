@@ -30,6 +30,9 @@ link_directories(${QT_LIBRARY_DIR})
 
 find_package(SQLite3 3.39.5 REQUIRED)
 
+if (WIN32)
+    set(ENV{PATH} "C:\\Program Files\\R\\R-4.3.1\\bin\\x64;$ENV{PATH}")
+endif()
 
 message(STATUS "Collecting R info")
 execute_process(COMMAND R RHOME OUTPUT_VARIABLE R_HOME)
@@ -38,28 +41,43 @@ message(STATUS "R Home is: ${R_HOME}")
 
 set(NUM_TRUNC_CHARS 2)
 
+execute_process(COMMAND Rscript CMAKE_SOURCE_DIR/R/main.R)
+
 execute_process(COMMAND R CMD config --cppflags OUTPUT_VARIABLE RCPPFLAGS)
-string(SUBSTRING ${RCPPFLAGS} ${NUM_TRUNC_CHARS} -1 RCPPFLAGS)
-include_directories(${RCPPFLAGS})
+separate_arguments(RCPPFLAGS UNIX_COMMAND ${RCPPFLAGS})
+
+message(STATUS "RCPPFLAGS=${RCPPFLAGS}")
+foreach(RCPPFLAG IN LISTS RCPPFLAGS)
+    message(STATUS "RCPPFLAG=${RCPPFLAG}")
+    string(SUBSTRING ${RCPPFLAG} ${NUM_TRUNC_CHARS} -1 RCPPFLAG)
+    list(APPEND RCPP_INCLUDE_DIRS ${RCPPFLAG})
+endforeach()
+message(STATUS "RCPP_INCLUDE_DIRS=${RCPP_INCLUDE_DIRS}")
+include_directories(${RCPP_INCLUDE_DIRS})
 
 execute_process(COMMAND R CMD config --ldflags OUTPUT_VARIABLE RLDFLAGS)
 string(LENGTH ${RLDFLAGS} RLDFLAGS_LEN)
 string(STRIP ${RLDFLAGS} RLDFLAGS)
+message(STATUS "RLDFLAGS=${RLDFLAGS}")
 
 execute_process(COMMAND Rscript -e "Rcpp:::CxxFlags()" OUTPUT_VARIABLE RCPPINCL)
 string(SUBSTRING ${RCPPINCL} ${NUM_TRUNC_CHARS} -1 RCPPINCL)
 string(REPLACE "\"" "" RCPPINCL ${RCPPINCL}) #Rcpp::CxxFlags() adds quotes around the include directory, which is friendly and all but breaks include_directories
 include_directories(${RCPPINCL})
+message(STATUS "RCPPINCL=${RCPPINCL}")
 
 execute_process(COMMAND Rscript -e "Rcpp:::LdFlags()" OUTPUT_VARIABLE RCPPLIBS)
 if (${RCPPLIBS} MATCHES "[-][L]([^ ;])+")
     string(SUBSTRING ${CMAKE_MATCH_0} ${NUM_TRUNC_CHARS} -1 RCPPLIBS_L)
     link_directories(${RCPPLIBS_L} )
+    message(STATUS "RCPPLIBS_L=${RCPPLIBS_L}")
 endif()
 
 if (${RCPPLIBS} MATCHES "[-][l][R]([^;])+")
     string(SUBSTRING ${CMAKE_MATCH_0} ${NUM_TRUNC_CHARS} -1 RCPPLIBS_l)
 endif()
+
+message(STATUS "RCPPLIBS_l=${RCPPLIBS_l}")
 
 execute_process(COMMAND Rscript -e "RInside:::CxxFlags()"
                 OUTPUT_VARIABLE RINSIDEINCL)
@@ -129,33 +147,40 @@ set(headers
 	enumutilities.h
 	filterlistmodel.h
 	columndefinition.h
-  tablemodelfiltered.h
+        tablemodelfiltered.h
 	schoolscannertable.h
 	schoolscannerdefinities.h
 	abstractsizeprovidertable.h
 )
 
-qt_add_executable(qmlR ${sources} ${headers})
+qt_add_executable(
+    qmlR
+    ${sources}
+    ${headers}
+    $<$<PLATFORM_ID:Windows>:${CMAKE_SOURCE_DIR}/qmlR.exe.manifest>
+)
+
+
 
 qt_add_qml_module(qmlR
 	URI qmlRModule
 	QML_FILES
-    main.qml
-		Data.qml
-		Plots.qml
-		Tafel.qml
-    Welkom.qml
-		Filter.qml
-		Import.qml
-		Analyse.qml
-    PlotsHori.qml
-		RectButton.qml
-    MyCheckBox.qml
-		FilterList.qml
-		PlotFilters.qml
-    MyTabButton.qml
-		FileBrowser.qml
-    FilteredData.qml
+            main.qml
+            Data.qml
+            Plots.qml
+            Tafel.qml
+            Welkom.qml
+            Filter.qml
+            Import.qml
+            Analyse.qml
+            PlotsHori.qml
+            RectButton.qml
+            MyCheckBox.qml
+            FilterList.qml
+            PlotFilters.qml
+            MyTabButton.qml
+            FileBrowser.qml
+            FilteredData.qml
 	NO_RESOURCE_TARGET_PATH
 #    RESOURCES
 #        img/world.png
@@ -166,8 +191,6 @@ qt_add_resources(qmlR "R"
 	FILES
 	   R/writeImage.R
 	   R/main.R
-	   R/pie.R
-	   R/lines.R
 	   R/plot.R
 )
 

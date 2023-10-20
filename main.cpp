@@ -22,8 +22,10 @@
 #include "schoolscannertable.h"
 #include <QTimer>
 #include <QQuickStyle>
-
-
+#ifdef WIN32
+#include <QStandardPaths>
+#include <QProcessEnvironment>
+#endif
 
 
 int main(int argc, char *argv[])
@@ -33,7 +35,24 @@ int main(int argc, char *argv[])
 	QCoreApplication::setOrganizationName(	"JorisGoosen");
 	QCoreApplication::setOrganizationDomain("jorisgoosen.nl");
 	QCoreApplication::setApplicationName(	"School Scanner");
+#ifdef WIN32
+	{
+		QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+		if(!env.contains("R_HOME"))
+			env.insert("R_HOME", "C:\\Program Files\\R\\R-4.3.1");
 
+		env.insert("PATH", env.value("R_HOME") + "\\bin\\x64;" + env.value("PATH"));
+
+
+		if(!env.contains("R_LIBS_USER"))
+			env.insert("R_LIBS_USER", QDir::toNativeSeparators(QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation)) + "\\..\\R\\win-library\\4.3");
+		env.insert("R_LIBS",  env.value("R_LIBS_USER") + ";" + env.value("R_HOME") + "\\library");
+
+		std::cerr << "R_HOME=" << env.value("R_HOME").toStdString() <<
+			"\nR_LIBS=" << env.value("R_LIBS").toStdString() <<
+			"\nPATH=" << env.value("PATH").toStdString() <<std::endl;
+	}
+#endif
 	QQmlApplicationEngine		mainEng;
 
 	QQuickStyle::setStyle("Basic");
@@ -44,7 +63,20 @@ int main(int argc, char *argv[])
 	RWrapper					rWrapper;
 	PlotRenderers				plots;
 
-	//plots.setPlotFolder()
+	rWrapper.runRCommand("print(paste0('Sys.getenv(R_LIBS_USER)', Sys.getenv('R_LIBS_USER'))); print(paste0('.libPaths()=', .libPaths())); ");
+
+	{
+		QFile	mainRFile(":/R/main.R");
+		mainRFile.open(QIODeviceBase::ReadOnly);
+		QString str = mainRFile.readAll()
+#ifdef WIN32
+						  .replace("\r", "")
+#endif
+			;
+		mainRFile.close();
+
+		rWrapper.runRCommand(str);
+	}
 
 	QObject::connect(&plots,	&PlotRenderers::runRCommand,	&rWrapper,		&RWrapper::runRCommand);
 

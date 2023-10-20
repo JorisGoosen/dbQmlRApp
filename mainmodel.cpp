@@ -4,6 +4,8 @@
 #include <QUrl>
 #include <QProcess>
 #include <QDesktopServices>
+#include <iostream>
+#include <QDir>
 
 MainModel::MainModel(Database * db, QObject *parent)
 	: QObject{parent}, _db(db), _settings("GoosenAutomatisering", "School Scanner")
@@ -41,7 +43,7 @@ bool MainModel::loadDatabase(QString path)
 
 bool MainModel::selectDatabase(const QString & path)
 {
-	setDbPath(path);
+	setDbPath(QUrl::fromLocalFile(path).toLocalFile());
 	return loadDatabase();
 }
 
@@ -93,8 +95,14 @@ QString MainModel::dbPathKort() const
 	return "..." + _dbPath.right(maxL);
 }
 
-void MainModel::setDbPath(const QString & newDbPath)
+void MainModel::setDbPath(QString newDbPath)
 {
+#ifdef WIN32
+	newDbPath = QDir::toNativeSeparators(newDbPath.right(newDbPath.size()-1));
+#endif
+
+	std::cerr << "MainModel::setDbPath('" << newDbPath.toStdString() << "'" << std::endl;
+
 	if (_dbPath == newDbPath)
 		return;
 	_dbPath = newDbPath;

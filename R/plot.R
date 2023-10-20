@@ -1,3 +1,4 @@
+print("Running plot.R")
 library(scales)
 
 basisGrootteText <- 5
