@@ -342,6 +342,12 @@ std::string Database::dbFile()
 	return _dbFile.generic_string();
 }
 
+QFileInfo Database::dbQFile()
+{
+	return QFileInfo(_dbFile);
+}
+
+
 bool Database::tableExists(const QString & tableName)
 {
 	return runStatementsId("SELECT count(name) FROM sqlite_master WHERE type='table' AND name='" + tableName.toStdString() + "';");

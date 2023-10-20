@@ -16,6 +16,8 @@ Rectangle
 							clip:			true
 							implicitHeight:	aspecten.length > tabBar.currentIndex ? tabBar.y + tabBar.height + bodemVak.height + aspecten[tabBar.currentIndex] * width : implicitHeight
 							color:			controlBackgroundPlots
+
+							onModelChanged: console.log(model)
 	Rectangle
 	{
 		id:					lijntje
@@ -111,6 +113,7 @@ Rectangle
 				width:				stackView.width
 				cache:				false
 				fillMode:			Image.PreserveAspectFit
+				onVisibleChanged:	console.log(modelData)
 			}
 		}
 

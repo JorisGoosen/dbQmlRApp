@@ -185,10 +185,11 @@ QString TableModel::dbplyrCode(bool collect) const
 {
 	QStringList code =
 	{
-							"library(dplyr);",
-							"con <- DBI::dbConnect(RSQLite::SQLite(), dbname = '" + QString::fromStdString(_db->dbFile()) + "');",
-							_tableName + "sql <- tbl(con, '"+_tableName+"');",
-							"'sql table is called: " + _tableName + "sql'",
+		"library(dplyr);",
+		"setwd('"+_db->dbQFile().dir().absolutePath().trimmed()+"');",
+		"con <- DBI::dbConnect(RSQLite::SQLite(), dbname = '" + _db->dbQFile().fileName() + "');",
+		_tableName + "sql <- tbl(con, '"+_tableName+"');",
+		"'sql table is called: " + _tableName + "sql'",
 	};
 
 	if(collect)

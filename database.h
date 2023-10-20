@@ -5,6 +5,8 @@
 #include <filesystem>
 #include <sqlite3.h>
 #include "columndefinition.h"
+#include <QFileInfo>
+#include <QDir>
 
 //#define SIR_LOG_A_LOT
 
@@ -35,6 +37,7 @@ public:
 	void			transactionReadEnd();							///< runs COMMIT and ends the transaction. Tracks whether nested and only does BEGIN+COMMIT at lowest depth
 
 	std::string		dbFile();
+	QFileInfo		dbQFile();
 
 	bool			tableExists(	const QString & tableName);
 	void			tableDrop(		const QString & tableName);

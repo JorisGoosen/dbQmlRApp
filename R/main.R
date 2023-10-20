@@ -1,4 +1,6 @@
 print("Running main.R!")
+options(warn=-1)
+
 
 #list.of.packages <- c("Rcpp", "RInside", "RSQLite", "dbplyr", "showtext", "ggplot2", "stringr")
 #new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]

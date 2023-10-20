@@ -49,10 +49,14 @@ QString PlotRenderer::plotUrl() const
 {
 	if(_running)
 		return "";
-
+#ifdef WIN32
+	QString out = plotFolder().relativeFilePath(_fileName);
+#else
 	QString folder=plotFolder().absolutePath(),
 			absFolder = plotFolder().absoluteFilePath(_fileName);
 	QString out = QUrl::fromLocalFile(absFolder).toString() + "?" + QString::number(revision());
+#endif
+	std::cerr << "PlotRenderer::plotUrl(): " << out.toStdString() << std::endl;
 
 	return out;
 }
@@ -95,7 +99,7 @@ void PlotRenderer::runRCode()
 						"FILTER      <- '" + PlotFilterToQString(_welkFilter).toLower()	+ "';\n" +
 						"KOLOM       <- '" + _kolom										+ "';\n" +
 						 _rCode															+ ";\n" +
-						"HEIGHT");
+						"HEIGHT\n})");
 
 	bool ok = false;
 	int h = hoogte.toInt(&ok);
@@ -206,6 +210,9 @@ void PlotRenderer::setRunning(bool newRunning)
 	if (_running == newRunning)
 		return;
 	_running = newRunning;
+
+	std::cerr<< "Plot " << _fileName.toStdString() << " is now " << (newRunning ? "RUNNING": "NOT RUNNING") << std::endl;
+
 	emit runningChanged();
 	emit plotUrlChanged();
 }

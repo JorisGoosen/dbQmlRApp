@@ -181,6 +181,8 @@ QHash<int, QByteArray> PlotRenderers::roleNames() const
 		namen[Qt::UserRole+3] = "titelData";
 		namen[Qt::UserRole+4] = "bestandData";
 		namen[Qt::UserRole+5] = "bestandAbsData";
+		namen[Qt::UserRole+6] = "toonMeData";
+
 		return namen;
 	}();
 
@@ -191,7 +193,19 @@ QVariant PlotRenderers::data(const QModelIndex & index, int role) const
 {
 	if(index.row() < 0 || index.row() >= int(_plots.size()))
 		return QVariant();
+	
+	if(role == Qt::UserRole + 6)
+	{
+		bool eentjeNotRunning = false;
 
+		for(PlotRenderer * plot : _plots[index.row()])
+			if(!plot->running())
+				eentjeNotRunning = true;
+
+		std::cerr << "PlotRenderers::data(" << index.row() << "): " << ( eentjeNotRunning ? "toon me": "verberg me")  << std::endl;
+
+		return eentjeNotRunning;
+	}
 
 	QVariantList lijst;
 	for(PlotRenderer * plot : _plots[index.row()])
@@ -209,6 +223,10 @@ QVariant PlotRenderers::data(const QModelIndex & index, int role) const
 			lijst.append(plot->height() > 0 ? float(plot->height()) / float(plot->width()) : 0);
 		else
 			lijst.append(PlotFilterToQString(plot->welkFilter()));
+
+	QStringList lijstAlsStrings;
+	for(const QVariant & v : lijst) lijstAlsStrings.append(v.toString());
+	std::cerr << "PlotRenderers::data(" << index.row() << "): " << lijstAlsStrings.join(",").toStdString() << std::endl;
 
 	return lijst;
 }
