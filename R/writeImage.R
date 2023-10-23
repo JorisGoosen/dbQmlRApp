@@ -53,9 +53,8 @@ openGrDevice <- function(...) {
 
 writeImage <- function(plot, plotFolder=".", plotFile = "plot.png", width = 500, height = 500, schaling = 1.0, backgroundColor = "transparent")
 {
-
   oldWd <- getwd();
-  print(paste0("writeImage oldWd is '", oldWd, "' new is '", plotFolder, "'"))
+ # print(paste0("writeImage oldWd is '", oldWd, "' new is '", plotFolder, "'"))
 	setwd(plotFolder);
 
   openGrDevice(file = plotFile, width = width, height = height, res = 288, scaling = schaling, background = backgroundColor)

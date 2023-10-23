@@ -102,8 +102,8 @@ afronder <- function(plot, plotFolder, plotFile, width, height, titel, filter, b
       theme(text=element_text(          size=18,  family="karla", color="black")) +
       theme(legend.text=element_text(   size=18,  family="karla", color="black")) +
       theme(text=element_text(          size=18,  family="karla", color="black")) +
-      theme(axis.text.x = element_text( size=18,  family="karla", color="black", lineheight=.25)) +
-      theme(axis.text.y = element_text( size=18,  family="karla", color="black", lineheight=.25)) +
+      theme(axis.text.x = element_text( size=18,  family="karla", color="black", lineheight=.35)) +
+      theme(axis.text.y = element_text( size=18,  family="karla", color="black", lineheight=.35)) +
   	  theme(axis.ticks.x=element_blank(), axis.ticks.y=element_blank(), axis.line=element_blank()) +
 
       theme(

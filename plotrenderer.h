@@ -96,7 +96,8 @@ private:
 									_running = true;
 				int					_width,
 									_height,
-									_revision	= 0;
+									_revision	= 0,
+									_rCodeCalled = 0;
 				QTimer				_timer;
 				PlotType			_welkPlot	= PlotType::HoriStaafPerTypeRespondent;
 				PlotFilter			_welkFilter = PlotFilter::Geen;

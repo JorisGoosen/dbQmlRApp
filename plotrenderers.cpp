@@ -67,7 +67,7 @@ PlotRenderers::PlotRenderers( QObject *parent)
 		{ new PlotRenderer(this,	"2 veiligheid leerlingen", 			PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	"bangOpSchool,graagNaarSchool",					"Hoe graag naar school en hoe bang",				BB,		BB / 3		)},
 		{ GENEREERHET(				"2 veiligheid leerlingen", 			PlotType::HoriStaafPerLabel,										true,	"bangOpSchool",									"Bang op school",									BB,		BB + BB		)},
 		{ GENEREERHET(				"2 veiligheid leerlingen", 			PlotType::HoriStaafPerLabel,										true,	"graagNaarSchool",								"Graag naar school",								BB,		BB + BB		)},
-/*
+
 		// 3 veiligheid docenten			
 		{ new PlotRenderer(this,	"3 veiligheid docenten", 			PlotType::Taart,								PlotFilter::Geen,	false,	"veiligSchool",									"Veilig op school",									BB,		BB			)},
 		{ new PlotRenderer(this,	"3 veiligheid docenten", 			PlotType::Taart,								PlotFilter::Geen,	false,	"veiligKlas",									"Veilig in de klas",								BB,		BB			)},
@@ -105,11 +105,11 @@ PlotRenderers::PlotRenderers( QObject *parent)
 
 		// 8 In de klas zie ik (dagelijks + wekelijks), leerlingen en docenten			
 		{ new PlotRenderer(this,	"8 In de klas zie ik",				PlotType::HoriStaafGroepPerFilter,				PlotFilter::Type,	true,	studentKolommen,								"In de klas/op school zie ik",	BB,		BB			)},
-*/
+
 		// 10 Op school			
         { new PlotRenderer(this,	"10 Op school",						PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	schoolKolommen,									"Op school - ...",										BBB,		BB			)},
 		{ GENEREERHET(				"10 Op school",						PlotType::HoriStaafGroepPerFilter,									true,	schoolKolommen,									"Op school (altijd + vaak) - ...",						BB,		BB			)},
-/*
+
 		// 11 Op school en werkwijze II/doc			
 		{ GENEREERHETDOC(			"11 Op school en werkwijze",		PlotType::HoriStaafGroepPerFilter,									false,	schoolKolommen,									"Op school (altijd + vaak) - ...",				BB,		BB			)},
 		{ GENEREERHETDOC(			"11 Op school en werkwijze",		PlotType::HoriStaafGroepPerFilter,									false,	afsprakenKolommen,								"Afspraken en regels (ja)",						BB,		BB			)},
@@ -150,7 +150,7 @@ PlotRenderers::PlotRenderers( QObject *parent)
         // 18
         { new PlotRenderer(this,	"18 Beleid",                            PlotType::HoriStaafMeerdereKolommen,		PlotFilter::Geen,	false, beleidKolommen,									"Beleid",				BBB,		BB			)},
 		{ GENEREERHETSL(			"18 Beleid",                            PlotType::HoriStaafGroepPerFilter,                              false, beleidKolommen,									"Beleid",			BB,		BB			)},
-*/
+
 	};
 
 
@@ -236,9 +236,12 @@ void PlotRenderers::renderPlots()
 	if(!_renderMaar)
 		return;
 
-	for(auto & plotL : _plots)
-		for(PlotRenderer * plot : plotL)
-			plot->runRCodeDelayed();
+	for(size_t p=0; p<_plots.size(); p++)
+		for(size_t pp=0; pp<_plots[p].size(); pp++)
+		{
+			//std::cerr << "PlotRenderers::renderPlots at plot [" << p << "\t/" << _plots.size() << "][" << pp << "\t" << _plots[p].size() << "]" << std::endl;
+			_plots[p][pp]->runRCode();
+		}
 
 	setShowMe(true);
 }

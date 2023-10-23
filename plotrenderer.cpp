@@ -63,19 +63,17 @@ QString PlotRenderer::plotUrl() const
 
 void PlotRenderer::init()
 {
-	_timer.setInterval(200);
-	_timer.setSingleShot(true);
 
 	connect(&_timer, &QTimer::timeout, this, &PlotRenderer::runRCode);
 
 	connect(this, &PlotRenderer::rCodeChanged,			this,	&PlotRenderer::runRCodeDelayed		);
-	connect(this, &PlotRenderer::widthChanged,			this,	&PlotRenderer::runRCodeDelayed		);
-	connect(this, &PlotRenderer::heightChanged,			this,	&PlotRenderer::runRCodeDelayed		);
+	//connect(this, &PlotRenderer::widthChanged,			this,	&PlotRenderer::runRCodeDelayed		);
+	//connect(this, &PlotRenderer::heightChanged,			this,	&PlotRenderer::runRCodeDelayed		);
 	connect(this, &PlotRenderer::plotFolderChanged,		this,	&PlotRenderer::runRCodeDelayed		);
 	connect(this, &PlotRenderer::revisionChanged,		this,	&PlotRenderer::plotUrlChanged		);
 	connect(this, &PlotRenderer::iUpdated,				_ouder,	&PlotRenderers::plotRenderUpdated	);
 	connect(this, &PlotRenderer::runRCommand,			_ouder,	&PlotRenderers::runRCommand			);
-	connect(this, &PlotRenderer::runRCommands,			_ouder,	&PlotRenderers::runRCommands			);
+	connect(this, &PlotRenderer::runRCommands,			_ouder,	&PlotRenderers::runRCommands		);
 
 
 	//runRCode();
@@ -84,12 +82,16 @@ void PlotRenderer::init()
 void PlotRenderer::runRCodeDelayed()
 {
 	setRunning(true);
+
+	_timer.setInterval(50);
+	_timer.setSingleShot(true);
 	_timer.start();
 }
 
+
 void PlotRenderer::runRCode()
 {
-//	std::cout << "RUNNING RCODE!" << std::endl;
+	std::cout << "PlotRenderer::runRCode " << _rCodeCalled++ << "!" << std::endl;
 	QString hoogte = emit runRCommand(
 						"TITEL       <- '" + _title														+ "';\n"+
 						"WIDTH       <- "  + QString::number(width())									+  ";\n"+
@@ -101,7 +103,9 @@ void PlotRenderer::runRCode()
 						"HEIGHT      <- "  + QString::number(height())									+  ";\n"+
 						"FILTER      <- '" + PlotFilterToQString(_welkFilter).toLower()					+ "';\n"+
 						"KOLOM       <- '" + _kolom														+ "';\n"+
+						"# " + QString::number(_rCodeCalled) + "\n" +
 						 _rCode																			+ "\n" +
+						//"warnings();\n"
 						"HEIGHT\n");
 
 	bool ok = false;
