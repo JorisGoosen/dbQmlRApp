@@ -137,18 +137,8 @@ void SchoolScannerTable::initRStuff()
 	rWriteImage.open(	QIODeviceBase::ReadOnly);
 	rPlots.open(		QIODeviceBase::ReadOnly);
 
-	emit runRCommand(rWriteImage.readAll()
-#ifdef WIN32
-											.replace("\r", "")
-#endif
-	);
-
-	emit runRCommand(rPlots.readAll()
-#ifdef WIN32
-										 .replace("\r", "")
-#endif
-	);
-
+	emit runRCommand(rWriteImage.readAll());
+	emit runRCommand(rPlots.readAll());
 	emit runRCommand(_textOnly->dbplyrCode(false));
 
 	QString dbFilter = dbplyerFilter();

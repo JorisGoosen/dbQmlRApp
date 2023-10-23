@@ -26,7 +26,9 @@ bool MainModel::loadDatabase(QString path)
 	if(path == "")
 		return false;
 
-	_db->setDbFile(std::filesystem::path(QUrl(path).toString(QUrl::RemoveScheme).toStdString()));
+	std::cerr<< "MainModel::loadDatabase krijgt " << path.toStdString() << std::endl;
+
+	_db->setDbFile(std::filesystem::path(path.toStdString()));
 
 	_labels			= new Labels(_db);
 	_schoolTable	= new SchoolScannerTable(_db);
@@ -98,7 +100,11 @@ QString MainModel::dbPathKort() const
 void MainModel::setDbPath(QString newDbPath)
 {
 #ifdef WIN32
-	newDbPath = QDir::toNativeSeparators(newDbPath.right(newDbPath.size()-1));
+	const QStringList removeTheseUpFront = {"/", "file:///"};
+	for(const QString & thisOne : removeTheseUpFront)
+		if(newDbPath.startsWith(thisOne))
+			newDbPath = newDbPath.right(newDbPath.size()-thisOne.size());
+	newDbPath = QDir::toNativeSeparators(newDbPath);
 #endif
 
 	std::cerr << "MainModel::setDbPath('" << newDbPath.toStdString() << "'" << std::endl;

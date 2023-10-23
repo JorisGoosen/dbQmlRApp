@@ -344,7 +344,8 @@ std::string Database::dbFile()
 
 QFileInfo Database::dbQFile()
 {
-	return QFileInfo(_dbFile);
+	std::cerr << "dbQFile() "<< dbFile() << std::endl;
+	return QFileInfo(QString::fromUtf8(dbFile()));
 }
 
 

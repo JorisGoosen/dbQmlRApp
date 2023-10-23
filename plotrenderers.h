@@ -38,6 +38,7 @@ public:
 
 signals:
 	QString		runRCommand(QString rCode);
+	QString		runRCommands(QStringList rCode);
 	void		initRCodeChanged();
 	void		plotFolderChanged();
 	void		showMeChanged();

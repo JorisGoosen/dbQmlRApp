@@ -16,8 +16,6 @@ class RWrapper : public QObject
 public:
     explicit RWrapper(QObject *parent = nullptr);
 
-	Q_INVOKABLE QString runRCommand(QString command);
-
 	QStringList prevOutput()		const;
 	QString		prevOutputConcat()	const { return prevOutput().join("\n"); }
 	void		setPrevOutput(const QStringList & newPrevOutput);
@@ -27,6 +25,10 @@ public:
 
 	void setPlotWidth(int newPlotWidth);
 	void setPlotHeight(int newPlotHeight);
+
+public slots:
+	QString runRCommand(	QString		command);
+	QString runRCommands(	QStringList	commands);
 
 signals:
 	void prevOutputChanged();

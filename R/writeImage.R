@@ -53,6 +53,7 @@ writeImage <- function(plot, plotFolder=".", plotFile = "plot.png", width = 500,
 {
 
   oldWd <- getwd();
+  print(paste0("writeImage oldWd is '", oldWd, "' new is '", plotFolder, "'"))
 	setwd(plotFolder);
 
   openGrDevice(file = plotFile, width = width, height = height, res = 288, scaling = schaling, background = backgroundColor)

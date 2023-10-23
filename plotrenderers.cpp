@@ -226,7 +226,7 @@ QVariant PlotRenderers::data(const QModelIndex & index, int role) const
 
 	QStringList lijstAlsStrings;
 	for(const QVariant & v : lijst) lijstAlsStrings.append(v.toString());
-	std::cerr << "PlotRenderers::data(" << index.row() << "): " << lijstAlsStrings.join(",").toStdString() << std::endl;
+	std::cerr << "PlotRenderers::data(" << index.row() << ", role=" << role - Qt::UserRole << "): " << lijstAlsStrings.join(",").toStdString() << std::endl;
 
 	return lijst;
 }

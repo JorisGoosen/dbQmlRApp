@@ -37,7 +37,7 @@ PlotRenderer::PlotRenderer(PlotRenderers * renderers, QString sectie, PlotType p
 		_title = baseName;
 
 	_fileName =  baseName + ".png";
-	_rCode = PlotTypeToQString(_welkPlot) + "Func(plotFolder=PLOTFOLDER, plotFile=PLOTFILE, width=WIDTH, height=HEIGHT, titel=TITEL, kolom=KOLOM, filter=FILTER, studenten=STUDENTEN)";
+	_rCode = " dontShowPlot <- " + PlotTypeToQString(_welkPlot) + "Func(plotFolder=PLOTFOLDER, plotFile=PLOTFILE, width=WIDTH, height=HEIGHT, titel=TITEL, kolom=KOLOM, filter=FILTER, studenten=STUDENTEN);";
 }
 
 QDir PlotRenderer::plotFolder() const
@@ -49,13 +49,13 @@ QString PlotRenderer::plotUrl() const
 {
 	if(_running)
 		return "";
-#ifdef WIN32
-	QString out = plotFolder().relativeFilePath(_fileName);
-#else
-	QString folder=plotFolder().absolutePath(),
+//#ifdef WIN32
+//	QString out = plotFolder().absoluteFilePath(_fileName);
+//#else
+	QString //folder=plotFolder().absolutePath(),
 			absFolder = plotFolder().absoluteFilePath(_fileName);
 	QString out = QUrl::fromLocalFile(absFolder).toString() + "?" + QString::number(revision());
-#endif
+//#endif
 	std::cerr << "PlotRenderer::plotUrl(): " << out.toStdString() << std::endl;
 
 	return out;
@@ -63,7 +63,7 @@ QString PlotRenderer::plotUrl() const
 
 void PlotRenderer::init()
 {
-	_timer.setInterval(50);
+	_timer.setInterval(200);
 	_timer.setSingleShot(true);
 
 	connect(&_timer, &QTimer::timeout, this, &PlotRenderer::runRCode);
@@ -75,6 +75,8 @@ void PlotRenderer::init()
 	connect(this, &PlotRenderer::revisionChanged,		this,	&PlotRenderer::plotUrlChanged		);
 	connect(this, &PlotRenderer::iUpdated,				_ouder,	&PlotRenderers::plotRenderUpdated	);
 	connect(this, &PlotRenderer::runRCommand,			_ouder,	&PlotRenderers::runRCommand			);
+	connect(this, &PlotRenderer::runRCommands,			_ouder,	&PlotRenderers::runRCommands			);
+
 
 	//runRCode();
 }
@@ -89,17 +91,18 @@ void PlotRenderer::runRCode()
 {
 //	std::cout << "RUNNING RCODE!" << std::endl;
 	QString hoogte = emit runRCommand(
-						"TITEL       <- '" + _title										+ "';\n" +
-						"WIDTH       <- "  + QString::number(width())					+  ";\n"
-						"PLOTFILE    <- '" + _fileName									+ "';\n"
-						"PLOTFOLDER  <- '" + plotFolder().absolutePath()				+ "';\n" +
-						"STUDENTEN   <- "  + (_studenten ? "TRUE" : "FALSE")			+ "; \n" +
-						"WELKPLOT    <- '" + PlotTypeToQString(_welkPlot)				+ "';\n" +
-						"HEIGHT      <- "  + QString::number(height())					+  ";\n"
-						"FILTER      <- '" + PlotFilterToQString(_welkFilter).toLower()	+ "';\n" +
-						"KOLOM       <- '" + _kolom										+ "';\n" +
-						 _rCode															+ ";\n" +
-						"HEIGHT\n})");
+						"TITEL       <- '" + _title														+ "';\n"+
+						"WIDTH       <- "  + QString::number(width())									+  ";\n"+
+						"PLOTFILE    <- '" + _fileName													+ "';\n"+
+						"PLOTFOLDER  <- '" +
+							QDir::toNativeSeparators(plotFolder().absolutePath()).replace("\\", "\\\\")	+ "';\n"+
+						"STUDENTEN   <- "  + QString(_studenten ? "TRUE" : "FALSE")						+ "; \n"+
+						"WELKPLOT    <- '" + PlotTypeToQString(_welkPlot)								+ "';\n"+
+						"HEIGHT      <- "  + QString::number(height())									+  ";\n"+
+						"FILTER      <- '" + PlotFilterToQString(_welkFilter).toLower()					+ "';\n"+
+						"KOLOM       <- '" + _kolom														+ "';\n"+
+						 _rCode																			+ "\n" +
+						"HEIGHT\n");
 
 	bool ok = false;
 	int h = hoogte.toInt(&ok);

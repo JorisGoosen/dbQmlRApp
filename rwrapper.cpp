@@ -1,9 +1,19 @@
 #include "rwrapper.h"
 
 RWrapper::RWrapper(QObject *parent)
-	: QObject{parent}, R(new RInside(0, nullptr, true, false, false))
+	: QObject{parent}, R(new RInside(0, nullptr, true, true, false))
 {
 
+}
+
+QString RWrapper::runRCommands(QStringList commands)
+{
+	QStringList out;
+
+	for(const QString & command : commands)
+		out.append(runRCommand(command));
+
+	return out.join("\n");
 }
 
 QString RWrapper::runRCommand(QString command)
@@ -13,7 +23,7 @@ QString RWrapper::runRCommand(QString command)
 
 	try
 	{
-		RInside::Proxy res = R->parseEval(command.toStdString());
+		RInside::Proxy res = R->parseEval(command.replace("\r","").toStdString().data());
 
 		std::function<QString(SEXP sexp)> f;
 
@@ -24,7 +34,7 @@ QString RWrapper::runRCommand(QString command)
 			if(!res)
 				out.append("NULL");
 			else if(Rf_isNull(res))
-				out.append("NULL");
+				out.append("Rf_isNULL");
 			else if(Rf_isString(res))
 				for(Rcpp::String str : Rcpp::StringVector(res))
 					out.append(QString::fromStdString(str));

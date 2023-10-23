@@ -105,7 +105,7 @@ execute_process(COMMAND R CMD config CXXFLAGS    OUTPUT_VARIABLE RCXXFLAGS)
 execute_process(COMMAND R CMD config BLAS_LIBS   OUTPUT_VARIABLE RBLAS)
 execute_process(COMMAND R CMD config LAPACK_LIBS OUTPUT_VARIABLE RLAPACK)
 
-set(CMAKE_CXX_FLAGS "-W -Wall -pedantic -Wextra ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "-W -Wall -pedantic -Wextra ${CMAKE_CXX_FLAGS}") # -static-libgcc -static-libstdc++
 
 if (CMAKE_BUILD_TYPE STREQUAL "DEBUG" OR
     CMAKE_BUILD_TYPE STREQUAL "RelWithDebugInfo" )
@@ -157,10 +157,8 @@ qt_add_executable(
     qmlR
     ${sources}
     ${headers}
-    $<$<PLATFORM_ID:Windows>:${CMAKE_SOURCE_DIR}/qmlR.exe.manifest>
+	qmlR.exe.manifest
 )
-
-
 
 qt_add_qml_module(qmlR
 	URI qmlRModule

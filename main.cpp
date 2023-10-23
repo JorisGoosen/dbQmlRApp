@@ -30,6 +30,7 @@
 
 int main(int argc, char *argv[])
 {
+	setlocale(LC_ALL, ".UTF8");
 	QGuiApplication				app(argc, argv);
 
 	QCoreApplication::setOrganizationName(	"JorisGoosen");
@@ -48,9 +49,9 @@ int main(int argc, char *argv[])
 			env.insert("R_LIBS_USER", QDir::toNativeSeparators(QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation)) + "\\..\\R\\win-library\\4.3");
 		env.insert("R_LIBS",  env.value("R_LIBS_USER") + ";" + env.value("R_HOME") + "\\library");
 
-		std::cerr << "R_HOME=" << env.value("R_HOME").toStdString() <<
+/*		std::cerr << "R_HOME=" << env.value("R_HOME").toStdString() <<
 			"\nR_LIBS=" << env.value("R_LIBS").toStdString() <<
-			"\nPATH=" << env.value("PATH").toStdString() <<std::endl;
+			"\nPATH=" << env.value("PATH").toStdString() <<std::endl;*/
 	}
 #endif
 	QQmlApplicationEngine		mainEng;
@@ -68,17 +69,14 @@ int main(int argc, char *argv[])
 	{
 		QFile	mainRFile(":/R/main.R");
 		mainRFile.open(QIODeviceBase::ReadOnly);
-		QString str = mainRFile.readAll()
-#ifdef WIN32
-						  .replace("\r", "")
-#endif
-			;
+		QString str = mainRFile.readAll();
 		mainRFile.close();
 
 		rWrapper.runRCommand(str);
 	}
 
 	QObject::connect(&plots,	&PlotRenderers::runRCommand,	&rWrapper,		&RWrapper::runRCommand);
+	QObject::connect(&plots,	&PlotRenderers::runRCommands,	&rWrapper,		&RWrapper::runRCommands);
 
 	QObject::connect(&mainModel, &MainModel::loadInQml, &mainEng, [&](Labels * labels, SchoolScannerTable * table)
 	{

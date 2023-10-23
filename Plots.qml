@@ -31,7 +31,7 @@ Rectangle
 			titels:				titelData
 			bestanden:			bestandData
 			bestandenAbs:		bestandAbsData
-			visible:			toonMeData
+			//visible:			toonMeData
 		}
 
 
