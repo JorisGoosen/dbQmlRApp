@@ -47,14 +47,14 @@ QDir PlotRenderer::plotFolder() const
 
 QString PlotRenderer::plotUrl() const
 {
-	if(_running)
-		return "";
+	//if(_running)
+	//	return "";
 //#ifdef WIN32
 //	QString out = plotFolder().absoluteFilePath(_fileName);
 //#else
-	QString //folder=plotFolder().absolutePath(),
-			absFolder = plotFolder().absoluteFilePath(_fileName);
-	QString out = QUrl::fromLocalFile(absFolder).toString() + "?" + QString::number(revision());
+	QString folder=plotFolder().dirName();
+
+	QString out = "file:///"+ QUrl(plotFolder().absoluteFilePath(_fileName)).toString().replace(":", "%3A") + "?" + QString::number(revision());
 //#endif
 	std::cerr << "PlotRenderer::plotUrl(): " << out.toStdString() << std::endl;
 

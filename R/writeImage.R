@@ -5,6 +5,8 @@ library(tidyr)
 library(ggplot2)
 library(stringr)
 
+#options(device=NULL)
+
 kleuren <- list(
   rozig=			  "#EF2560"	,
   lichtgroen=		"#BCE2D7"	,
