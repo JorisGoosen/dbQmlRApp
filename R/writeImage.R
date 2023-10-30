@@ -89,8 +89,8 @@ writeImage <- function(plot, plotFolder=".", plotFile = "plot.png", width = 500,
 		    plot(plot)
 		}
 
-    }
-
+	}
+	
     return(plotFile)
 }
 

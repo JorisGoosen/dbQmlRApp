@@ -99,13 +99,16 @@ QString MainModel::dbPathKort() const
 
 void MainModel::setDbPath(QString newDbPath)
 {
+	const QStringList removeTheseUpFront = {"/",
+											"file://"
 #ifdef WIN32
-	const QStringList removeTheseUpFront = {"/", "file:///"};
+											"/" //windows doesnt have a root
+#endif
+	};
 	for(const QString & thisOne : removeTheseUpFront)
 		if(newDbPath.startsWith(thisOne))
 			newDbPath = newDbPath.right(newDbPath.size()-thisOne.size());
 	newDbPath = QDir::toNativeSeparators(newDbPath);
-#endif
 
 	std::cerr << "MainModel::setDbPath('" << newDbPath.toStdString() << "'" << std::endl;
 

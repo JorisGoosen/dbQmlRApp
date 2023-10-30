@@ -17,6 +17,8 @@ void Database::setDbFile(const std::filesystem::path & file)
 	assert(_dbFile == "");
 	_dbFile = file;
 
+	std::cerr << "Database::_dbFile is now '" << _dbFile.string() << "'" << std::endl;
+
 	if(!std::filesystem::exists(dbFile()))
 		create();
 	 else

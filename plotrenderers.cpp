@@ -120,7 +120,7 @@ PlotRenderers::PlotRenderers( QObject *parent)
 
 		//13
         { new PlotRenderer(this,	"13 Ingrijpen",						PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	ingrijpenVervelend,								"Ingrijpen vervelend gedrag",                           BBB,		BB			)},
-        { new PlotRenderer(this,	"13 Ingrijpen",						PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	"afgelopenWeekVervelendeSituatiesGezien",		"Afgelopen week iets vervelends gezien",		BBB,		BB			)},
+		{ new PlotRenderer(this,	"13 Ingrijpen",						PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	"afgelopenWeekVervelendeSituatiesGezien",		"Afgelopen week iets vervelends gezien",		BBB,		BB			)},
         { new PlotRenderer(this,	"13 Ingrijpen",						PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	ingrijpenBuitenSl,								"Ingrijpen buitensluiten",                   	BBB,		BB			)},
 
 		{ new PlotRenderer(this,	"13 Ingrijpen",						PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	false,	ingrijpenPesten,								"Ingegrepen bij pesten",								BBB,		BB			)},
@@ -133,7 +133,7 @@ PlotRenderers::PlotRenderers( QObject *parent)
 
 		// 14			
 		{ new PlotRenderer(this,	"14 Ingrijpen II - doc",			PlotType::HoriStaafPerTypeRespondent,			PlotFilter::Type,	false,	"ingrijpenVervelend",								"Ingrijpen vervelend",							BB,		BB			)},
-		{ new PlotRenderer(this,	"14 Ingrijpen II - doc",			PlotType::HoriStaafGroepPerFilter,				PlotFilter::Type,	false,	"afgelopenWeekVervelendeSituatiesGezien",			"Afgelopen week iets vervelends gezien?",		BBB,		BB			)},
+		{ new PlotRenderer(this,	"14 Ingrijpen II - doc",			PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	false,	"afgelopenWeekVervelendeSituatiesGezien",			"Afgelopen week iets vervelends gezien?",		BBB,		BB			)},
 		{ new PlotRenderer(this,	"14 Ingrijpen II - doc",			PlotType::HoriStaafPerTypeRespondent,			PlotFilter::Type,	false,	"ingrijpenBuitenSl",								"Ingrijpen pesten en buitensluiten",			BB,		BB			)},
 
 		//15			

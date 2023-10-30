@@ -270,7 +270,7 @@ HoriStaafMeerdereKolommenFunc <- function(plotFolder, plotFile, width, height, t
   
   kolommen   <- c()
   
-  if(length(kolomnamen) > 1) {
+  if(length(kolomnamen) > 1 | nietSplitsenAUB) {
     kolommen <- laadKolommen(kolomnamen, studenten)
   } else {
     kolommen <- laadKolommen(c(kolom=kolom), studenten)
@@ -410,7 +410,7 @@ HoriStaafGroepPerFilterFunc <- function(plotFolder, plotFile, width, height, tit
   
   hetPlot <- doeCMPalet(hetPlot, length(filters), paste0("N: ", nrow(allesPerCulturen)))
 
-  extraExtra <- if(length(unique(dfPer$filter)) == 1) { 2 } else { 1 }
+  extraExtra <- if(length(unique(dfPer$filter)) <= 2) { 1.5 } else { 1 }
 
   height <- HoriHoogteBepaler(width, length(unique(dfPer$kolom)) + sum(str_count(pattern="\n", string=unique(dfPer$kolom))), extraExtra * 2.0 * length(unique(dfPer$filter)))
   

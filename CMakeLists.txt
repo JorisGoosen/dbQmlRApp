@@ -209,17 +209,20 @@ target_link_libraries(
 	SQLite::SQLite3
 )
 
-install(
-	TARGETS qmlR
-	BUNDLE DESTINATION .
-	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
+if(WIN32)
 
-qt_generate_deploy_qml_app_script(
-	TARGET qmlR
-	OUTPUT_SCRIPT deploy_script
-	NO_UNSUPPORTED_PLATFORM_ERROR
-)
-install(SCRIPT ${deploy_script})
+	install(
+		TARGETS qmlR
+		BUNDLE DESTINATION .
+		RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+	)
+
+    qt_generate_deploy_qml_app_script(
+		TARGET qmlR
+		OUTPUT_SCRIPT deploy_script
+		NO_UNSUPPORTED_PLATFORM_ERROR
+	)
+    install(SCRIPT ${deploy_script})
+endif()
 
 qt_finalize_project()
