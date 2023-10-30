@@ -410,7 +410,9 @@ HoriStaafGroepPerFilterFunc <- function(plotFolder, plotFile, width, height, tit
   
   hetPlot <- doeCMPalet(hetPlot, length(filters), paste0("N: ", nrow(allesPerCulturen)))
 
-  height <- HoriHoogteBepaler(width, length(unique(dfPer$kolom)) + sum(str_count(pattern="\n", string=unique(dfPer$kolom))), 2.0 * length(unique(dfPer$filter)))
+  extraExtra <- if(length(unique(dfPer$filter)) == 1) { 2 } else { 1 }
+
+  height <- HoriHoogteBepaler(width, length(unique(dfPer$kolom)) + sum(str_count(pattern="\n", string=unique(dfPer$kolom))), extraExtra * 2.0 * length(unique(dfPer$filter)))
   
   afronder(
     plotFolder=plotFolder, plotFile=plotFile, width=width, height=height, filter=filter, titel=titel, bottomLegendaAantal=length(hoeVaaks), plot=hetPlot

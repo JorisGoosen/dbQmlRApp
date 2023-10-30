@@ -105,7 +105,7 @@ execute_process(COMMAND R CMD config CXXFLAGS    OUTPUT_VARIABLE RCXXFLAGS)
 execute_process(COMMAND R CMD config BLAS_LIBS   OUTPUT_VARIABLE RBLAS)
 execute_process(COMMAND R CMD config LAPACK_LIBS OUTPUT_VARIABLE RLAPACK)
 
-set(CMAKE_CXX_FLAGS "-W -Wall -pedantic -Wextra ${CMAKE_CXX_FLAGS}") # -static-libgcc -static-libstdc++
+set(CMAKE_CXX_FLAGS "-W -Wall -pedantic -Wextra ${CMAKE_CXX_FLAGS}")# -static-libgcc -static-libstdc++") #
 
 if (CMAKE_BUILD_TYPE STREQUAL "DEBUG" OR
     CMAKE_BUILD_TYPE STREQUAL "RelWithDebugInfo" )
@@ -157,7 +157,6 @@ qt_add_executable(
     qmlR
     ${sources}
     ${headers}
-	qmlR.exe.manifest
 )
 
 qt_add_qml_module(qmlR
@@ -172,6 +171,7 @@ qt_add_qml_module(qmlR
             Import.qml
             Analyse.qml
             PlotsHori.qml
+			Scrollbalk.qml
             RectButton.qml
             MyCheckBox.qml
             FilterList.qml
@@ -180,6 +180,7 @@ qt_add_qml_module(qmlR
             FileBrowser.qml
             FilteredData.qml
 	NO_RESOURCE_TARGET_PATH
+	QML_FILES
 #    RESOURCES
 #        img/world.png
 )
@@ -207,3 +208,18 @@ target_link_libraries(
 	${RLDFLAGS}
 	SQLite::SQLite3
 )
+
+install(
+	TARGETS qmlR
+	BUNDLE DESTINATION .
+	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
+qt_generate_deploy_qml_app_script(
+	TARGET qmlR
+	OUTPUT_SCRIPT deploy_script
+	NO_UNSUPPORTED_PLATFORM_ERROR
+)
+install(SCRIPT ${deploy_script})
+
+qt_finalize_project()

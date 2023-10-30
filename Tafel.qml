@@ -144,6 +144,9 @@ Item
 					verticalAlignment:		Text.AlignVCenter
 				}
 			}
+
+			ScrollBar.vertical:		Scrollbalk { visible: mainTableView.rows > 0}
+			ScrollBar.horizontal:	Scrollbalk { visible: mainTableView.rows > 0}
 		}
 	}
 }

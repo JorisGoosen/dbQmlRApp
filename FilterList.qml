@@ -52,5 +52,7 @@ Item
 				onCheckedChanged:	model.checkState = checked
 				width:				ListView.view.width
 			}
+
+		ScrollBar.vertical: Scrollbalk {}
 	}
 }

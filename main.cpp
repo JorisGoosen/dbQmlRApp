@@ -113,6 +113,7 @@ int main(int argc, char *argv[])
 	QMap<QString, QString> kleurenCM =
 	{
 		{	"rozig",		"#EF2560"	},
+		{	"lichtrozig",	"#f6b6cc"	},
 		{	"lichtblauwig",	"#9CCDD1"	},
 		{	"blauwig",		"#038794"	},
 		{	"zwartig",		"#1D1D1B"	},
@@ -137,7 +138,7 @@ int main(int argc, char *argv[])
 	mainEng.rootContext()->setContextProperty("controlForegroundDisabled",	kleurenCM["zwartig"]);
 	mainEng.rootContext()->setContextProperty("controlForegroundNeutral",	kleurenCM["lichtgeel"]);
 	mainEng.rootContext()->setContextProperty("controlForegroundFocus",		kleurenCM["rozig"]);
-	mainEng.rootContext()->setContextProperty("controlForegroundPressed",	kleurenCM["rozig"]);
+	mainEng.rootContext()->setContextProperty("controlForegroundPressed",	kleurenCM["zwartig"]);
 
 	mainEng.rootContext()->setContextProperty("generalMargin",		20);
 

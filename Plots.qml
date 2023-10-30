@@ -13,6 +13,7 @@ Rectangle
 		spacing:		generalMargin
 		clip:			true
 
+
 		anchors
 		{
 			top:		parent.top
@@ -34,9 +35,10 @@ Rectangle
 			//visible:			toonMeData
 		}
 
-
-
+		ScrollBar.vertical: Scrollbalk {}
 	}
+
+
 
 	RectButton
 	{

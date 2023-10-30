@@ -2,13 +2,33 @@ A simple QML app with support for sqlite and R(Inside) integrated.
 
 Based vaguely on the qt example from RInside
 
-Install R (tested with 4.3.1)
+Install R (tested with 4.3.1) ( https://cran.r-project.org/bin/windows/base/ )
 Needs packages: Rcpp, RInside, RSQLite, dbplyr, showtext, ggplot2, stringr
 
-Make sure to install those packages to R_LIBS_USER (local site-library)
-Also set in environment
-R_HOME=C:\Program Files\R\R-4.3.1
-R_LIBS=C:\Users\Joris\AppData\Local\R\win-library\4.3;C:\Program Files\R\R-4.3.1\library
-Maar ipv Joris username
+To do so run the following in R (paste it in the "R Console"):
+```
+list.of.packages <- c("Rcpp", "RInside", "RSQLite", "dbplyr", "showtext", "ggplot2", "stringr")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 
-PATH=C:\Program Files\R\R-4.3.1\bin\x64 + PATH
+if(length(new.packages)) {
+        install.packages(new.packages, type="binary", repos="https://cloud.r-project.org", dependencies=TRUE)
+} else
+{
+        print("Alle pakketten zijn al geinstalleerd!")
+}
+```
+
+Also you should enable UTF-8 for windows
+Under "Region" -> "Administrative" -> "Language for non-unicode programs"
+There choose the button "Change system locale" and enable "Beta: Use Unicode UTF-8 for worldwide language support" 
+You'll then have to restart
+
+If it asks whether you "want to install to a personal library instead?" choose "Yes"
+Then it will suggest a folder like `C:\Users\Joris\AppData\Local\R\win-library\4.3`, choose "Yes" again.
+
+Then in system environment variables:
+add R_HOME with value C:\Program Files\R\R-4.3.1
+
+and add to the top of the list in PATH (choose edit):
+C:\Program Files\R\R-4.3.1\bin\x64 
+
