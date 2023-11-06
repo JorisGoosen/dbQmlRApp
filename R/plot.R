@@ -70,18 +70,22 @@ laadKolommen <- function(kolomnamen, studenten)
   #  keepThese <- str_trim(kolommen[[naam]]) != ''
   #  kolommen <- kolommen[keepThese,]
   #}
+
+  for(naam in names(kolomnamen))
+    kolommen[[naam]] <- str_trim(kolommen[[naam]])
   
   return(kolommen)
 }
 
 herordenVaak <- function(kolom, heen=TRUE)
 {
-  vaak <- c( 'Altijd', 'Dagelijks', 'Wekelijks', 'Vaak', 'Maandelijks', 'Soms', 'Af & toe', 'Nooit', 'Nvt')
+  letHierOp <- c('Altijd', 'Dagelijks', 'Wekelijks', 'Vaak', 'Maandelijks', 'Soms', 'Af & toe', 'Nooit')
+  vaak     <-  append(letHierOp, c('Nvt', 'Weet ik niet'))
   
   if(heen)
     vaak <- rev(vaak)
   
-  if(length(intersect(vaak, unique(kolom))) == 0)
+  if(length(intersect(letHierOp, unique(kolom))) == 0)
     return(kolom)
   
   return(factor(as.character(kolom), levels=vaak))
@@ -235,7 +239,7 @@ HoriStaafPerLabelFunc <- function(plotFolder, plotFile, width, height, titel, ko
 	dfPer			      <- dfPer %>% rowwise() %>% select(filter, kolom, Freq) %>%  rowwise() %>% mutate(`Hoe vaak` = Freq / dfGender[[filter]])
 	dfPer			      <- dplyr::filter(dfPer, filter != "")
   dfPer           <- arrange(dfPer, desc(kolom))
-  dfPer$kolom    	<- factor(as.character(dfPer$kolom), levels=rev(c("Nooit", "Soms", "Vaak", "Altijd")))
+  dfPer$kolom    	<- factor(as.character(dfPer$kolom), levels=rev(c("Nvt", "Nooit", "Soms", "Vaak", "Altijd")))
   uniekeFilters   <- unique(dfPer$filter)
 
   height <- HoriHoogteBepaler(width, length(uniekeFilters) + sum(str_count(pattern="\n", string=uniekeFilters)), 4)
@@ -256,7 +260,7 @@ HoriStaafPerLabelFunc <- function(plotFolder, plotFile, width, height, titel, ko
 		  procentAsY() + xlab("") + ylab("")  +
       scale_x_discrete(limits=rev) +
       geom_text(size=basisGrootteText, aes(y=labelHoogte, label = ifelse(Freq > 0, Freq, ""))) +
-		  scale_fill_manual(paste0("N: ", nrow(kolommen)), values=c(Altijd=kleuren$rozig, Vaak=kleuren$lichtblauwig, Soms=kleuren$lichtrozig, Nooit=kleuren$blauwig))
+		  scale_fill_manual(paste0("N: ", nrow(kolommen)), values=c(Altijd=kleuren$rozig, Vaak=kleuren$lichtblauwig, Soms=kleuren$lichtrozig, Nooit=kleuren$blauwig, Nvt=kleuren$donkergroen))
 	)
 }
 
@@ -331,7 +335,7 @@ HoriStaafMeerdereKolommenFunc <- function(plotFolder, plotFile, width, height, t
       procentAsY() + xlab("") + ylab("") +
       scale_x_discrete(labels = label_wrap(maxBreedteLabel), limits=rev) +  
       coord_flip() +
-      scale_fill_manual(paste0("N: ", nrow(kolommen)), values=c(Ja=kleuren$rozig, Nee=kleuren$blauwig, Altijd=kleuren$rozig, Dagelijks=kleuren$rozig, Vaak=kleuren$lichtblauwig, Wekelijks=kleuren$lichtblauwig, Soms=kleuren$lichtrozig, Maandelijks=kleuren$lichtrozig, `Af & toe`=kleuren$lichtgeel, Nooit=kleuren$blauwig))
+      scale_fill_manual(paste0("N: ", nrow(kolommen)), values=c(Ja=kleuren$rozig, Nee=kleuren$blauwig, Altijd=kleuren$rozig, Dagelijks=kleuren$rozig, Vaak=kleuren$lichtblauwig, Wekelijks=kleuren$lichtblauwig, Soms=kleuren$lichtrozig, Maandelijks=kleuren$lichtrozig, `Af & toe`=kleuren$lichtgeel, Nooit=kleuren$blauwig, `Weet ik niet`=kleuren$lichtgroen, Nvt=kleuren$donkergroen))
   )
 }
 
