@@ -132,8 +132,8 @@ void Importer::processValues()
 			case ColumnType::Label:
 				for(QString & val : column->values)
 				{
-					if(val == "Ze hebben een bepaalde afkomst,cultuur of geloof")
-						val = "Ze hebben een bepaalde afkomst，cultuur of geloof";
+					if(val.contains("een bepaalde afkomst") || val.contains("cultuur of geloof"))
+						val = "Ze hebben een bepaalde afkomst cultuur of geloof";
 
 					int id = _labels->addLabel(/*column->nameDB,*/ val);
 					val = QString::number(id); //Replace label by id in importcolumn
@@ -163,13 +163,13 @@ void Importer::processValues()
 						newVal.append(QString::number(_labels->addLabel("Ze maken deel uit van de LHBTQI+ gemeenschap")));
 
 					if(voegAfkomstToe)
-						newVal.append(QString::number(_labels->addLabel("Ze hebben een bepaalde afkomst, cultuur of geloof")));
+						newVal.append(QString::number(_labels->addLabel("Ze hebben een bepaalde afkomst cultuur of geloof")));
 
 					if(divers)
-						newVal.append(QString::number(_labels->addLabel("Meer aandacht voor verschillende culturen, afkomst en geloof")));
+						newVal.append(QString::number(_labels->addLabel("Meer aandacht voor verschillende culturen afkomst en geloof")));
 
 					if(slaan)
-						newVal.append(QString::number(_labels->addLabel("Omgaan met slaan, duwen, schoppen en/of bedreiging")));
+						newVal.append(QString::number(_labels->addLabel("Omgaan met slaan duwen schoppen en/of bedreiging")));
 
 
 
