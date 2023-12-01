@@ -15,6 +15,8 @@ Flickable
 		visible:				schoolScannerTable
 		height:					Math.max(800, flickDieSplit.height)
 		width:					flickDieSplit.width
+		enabled:				!plotList.renderMaar
+		opacity:				enabled ? 1.0 : 0.5
 
 		property var fillThisOne:	schoolScannerTable.school
 

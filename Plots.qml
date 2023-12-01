@@ -45,7 +45,8 @@ Rectangle
 		id:						verseGrafieken
 		text:					"Maak verse grafieken"
 		toolTip:				"Kan even duren..."
-		onClicked:				plotList.renderPlots()
+		onClicked:				plotList.renderMaarIets()
+		visible:				!plotList.renderMaar
 
 		anchors
 		{

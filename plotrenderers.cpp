@@ -244,6 +244,7 @@ void PlotRenderers::renderPlots()
 		}
 
 	setShowMe(true);
+	setRenderMaar(false);
 }
 
 void PlotRenderers::plotRenderUpdated(PlotRenderer * plot)

@@ -63,31 +63,11 @@ QString PlotRenderer::plotUrl() const
 
 void PlotRenderer::init()
 {
-
-	connect(&_timer, &QTimer::timeout, this, &PlotRenderer::runRCode);
-
-	connect(this, &PlotRenderer::rCodeChanged,			this,	&PlotRenderer::runRCodeDelayed		);
-	//connect(this, &PlotRenderer::widthChanged,			this,	&PlotRenderer::runRCodeDelayed		);
-	//connect(this, &PlotRenderer::heightChanged,			this,	&PlotRenderer::runRCodeDelayed		);
-	connect(this, &PlotRenderer::plotFolderChanged,		this,	&PlotRenderer::runRCodeDelayed		);
 	connect(this, &PlotRenderer::revisionChanged,		this,	&PlotRenderer::plotUrlChanged		);
 	connect(this, &PlotRenderer::iUpdated,				_ouder,	&PlotRenderers::plotRenderUpdated	);
 	connect(this, &PlotRenderer::runRCommand,			_ouder,	&PlotRenderers::runRCommand			);
 	connect(this, &PlotRenderer::runRCommands,			_ouder,	&PlotRenderers::runRCommands		);
-
-
-	//runRCode();
 }
-
-void PlotRenderer::runRCodeDelayed()
-{
-	setRunning(true);
-
-	_timer.setInterval(50);
-	_timer.setSingleShot(true);
-	_timer.start();
-}
-
 
 void PlotRenderer::runRCode()
 {

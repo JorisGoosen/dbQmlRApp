@@ -26,7 +26,7 @@ SplitView
 
 	Item
 	{
-		visible:					!plotList.renderMaar
+		visible:					!plotList.renderMaar && !plotList.showMe
 		RectButton
 		{
 			text:					"Maak & toon grafieken"

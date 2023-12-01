@@ -49,7 +49,6 @@ public:
 				QString		kolom()			const;
 				bool		running()		const;
 
-
 				void		setWidth(		int					  newWidth		);
 				void		setHeight(		int					  newHeight		);
 				void		setRCode(		const QString		& newRCode		);
@@ -64,7 +63,6 @@ public:
 
 public slots:
 				void		runRCode();
-				void		runRCodeDelayed();
 
 signals:
 				void		rCodeChanged();
@@ -73,7 +71,6 @@ signals:
 				void		widthChanged();
 				void		heightChanged();
 				void		revisionChanged();
-				void		plotFolderChanged();
 				void		fileNameChanged();
 				void		plotUrlChanged();
 				void		welkPlotChanged();
@@ -98,7 +95,6 @@ private:
 									_height,
 									_revision	= 0,
 									_rCodeCalled = 0;
-				QTimer				_timer;
 				PlotType			_welkPlot	= PlotType::HoriStaafPerTypeRespondent;
 				PlotFilter			_welkFilter = PlotFilter::Geen;
 };
