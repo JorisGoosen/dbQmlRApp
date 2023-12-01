@@ -126,6 +126,18 @@ void SchoolScannerTable::loadFilters()
 
 	//filtered()->invalidate();
 	textOnly()->filtered()->invalidate();
+
+	_school		.setAllowClicks(true);
+	_locatie	.setAllowClicks(true);
+	_sector		.setAllowClicks(true);
+	_niveau		.setAllowClicks(true);
+	_leerjaar	.setAllowClicks(true);
+	_klas		.setAllowClicks(true);
+	_gender		.setAllowClicks(true);
+	_cultuur	.setAllowClicks(true);
+	_type		.setAllowClicks(true);
+
+
 }
 
 void SchoolScannerTable::initRStuff()

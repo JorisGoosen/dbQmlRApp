@@ -12,6 +12,7 @@ class FilterListModel : public QAbstractListModel
 	Q_PROPERTY(QString				colName		READ colName	WRITE setColName	NOTIFY colNameChanged)
 	Q_PROPERTY(ColumnDefinition *	cd			READ cd			WRITE setCd			NOTIFY cdChanged)
 	Q_PROPERTY(bool					hasFilter	READ hasFilter						NOTIFY filterChanged)
+	Q_PROPERTY(bool allowClicks READ allowClicks WRITE setAllowClicks NOTIFY allowClicksChanged)
 
 public:
 	explicit FilterListModel(QString title, QString colName, QObject *parent = nullptr);
@@ -37,18 +38,24 @@ public:
 	void				setLabels(QStringList allLabels);
 	void				setCd(ColumnDefinition * newCd);
 
+	bool allowClicks() const;
+	void setAllowClicks(bool newAllowClicks);
+
 signals:
 	void titleChanged();
 	void filterChanged();
 	void colNameChanged();
 	void cdChanged();
 
+	void allowClicksChanged();
+
 private:
 	QStringList					_orderedLabels;
 	std::set<QString>			_selectedLabels;
 	QString						_title,
 								_colName;
-	ColumnDefinition	*		_cd = nullptr;
+	ColumnDefinition	*		_cd					= nullptr;
+	bool						_allowClicks		= true;
 };
 
 typedef std::vector<FilterListModel*> FilterListModels;

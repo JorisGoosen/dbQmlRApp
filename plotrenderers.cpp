@@ -50,7 +50,7 @@ PlotRenderers::PlotRenderers( QObject *parent)
 					ingrijpenPesten		= "ingrijpenPestenKlas,ingrijpenPestenGang,ingrijpenPestenAula,ingrijpenPestenSchoolPlein,ingrijpenPestenFietsenStalling,ingrijpenPestenOmgevingSchool",
 					ingrijpenSchelden	= "ingrijpenScheldenKlas,ingrijpenScheldenGang,ingrijpenScheldenAula,ingrijpenScheldenSchoolPlein,ingrijpenScheldenFietsenStalling,ingrijpenScheldenOmgevingSchool",
 					ingrijpenDivers		= "medewerkerTreedOpDiscriminatie,medewerkerAnderenTredenOpDiscriminatie,medewerkerSchoolActiefContactAndereCulturen,medewerkerBewustEigenCulturelePercepties,medewerkerKentDeThuisCultuurLeerlingen,medewerkerKanOmgaanCultureVerschillenLeerlingen",
-					docentenMentoren	= "mentorIkHebGoedContact,docentIkHebGoedContact,docentenKunnenGoedOrdeHouden,docentenGevenStudentenComplimenten,docentenHebbenLageVerwachtingVanMij,docentenLettenOpTaalgebruikStudenten,docentenlettenOpEigenTaalgebruik,docentenBelonenPositiefGedrag,docentenGrijpenInWanneerDatNodigIs,mentorenWetenWatErInDeKlasSpeelt,mentorenBespreektWatErInDeKlasSpeelt,actueleGebeurtenissenSamenlevingWordenInKlasBesproken",
+					docentenMentoren	= "mentorIkHebGoedContact,docentIkHebGoedContact,docentenGevenStudentenComplimenten,docentenLettenOpTaalgebruikStudenten,docentenlettenOpEigenTaalgebruik,docentenBelonenPositiefGedrag,docentenGrijpenInWanneerDatNodigIs,mentorenWetenWatErInDeKlasSpeelt,mentorenBespreektWatErInDeKlasSpeelt,actueleGebeurtenissenSamenlevingWordenInKlasBesproken", //docentenHebbenLageVerwachtingVanMij,docentenKunnenGoedOrdeHouden weggehaald omdat er data mist...
 					beleidKolommen		= "werkenSchoolDuidelijkeRegelsOmgang,werkenSchoolRegelsIedereenGelijk,werkenSchoolStudentenDieRegelsBrekenAangesproken,werkenSchoolDocentenDieRegelsBrekenAangesproken,werkenSchoolRegelsIedereDocentGelijk,werkenSchoolOmbudBekend,werkenSchoolMeningStudentenTelt,werkenSchoolStudentenHebbenRespectVoorDocenten,werkenSchoolDocentenHebbenRespectVoorStudenten,werkenSchoolDocentenGevenGoedeVoorbeeld";
 
     const int BB = 1280, BBB = BB * 1.5; //basisbreedte
@@ -71,8 +71,8 @@ PlotRenderers::PlotRenderers( QObject *parent)
 		// 3 veiligheid docenten			
 		{ new PlotRenderer(this,	"3 veiligheid docenten", 			PlotType::Taart,								PlotFilter::Geen,	false,	"veiligSchool",									"Veilig op school",									BB,		BB			)},
 		{ new PlotRenderer(this,	"3 veiligheid docenten", 			PlotType::Taart,								PlotFilter::Geen,	false,	"veiligKlas",									"Veilig in de klas",								BB,		BB			)},
-		{ GENEREERHETDOC(			"3 veiligheid docenten", 			PlotType::VerticaalStaaf,											false,	"veiligSchool",									"Veilig op school",									BB,		BB * 0.75	)},
-		{ GENEREERHETDOC(			"3 veiligheid docenten", 			PlotType::VerticaalStaaf,											false,	"veiligKlas",									"Veilig in de klas",								BB,		BB * 0.75	)},
+		{ GENEREERHETDOC(			"3 veiligheid docenten", 			PlotType::VerticaalStaaf,											false,	"veiligSchool",									"Veilig op school",									BB,		BB * 1.0	)},
+		{ GENEREERHETDOC(			"3 veiligheid docenten", 			PlotType::VerticaalStaaf,											false,	"veiligKlas",									"Veilig in de klas",								BB,		BB * 1.0	)},
 		//{ GENEREERHETDOC(			"3 veiligheid docenten", 			PlotType::HoriStaafGroepPerFilter,									false,	"onveiligHier",									"Voel me (on?)veilig in bij",						BB,		BB + BB		)},
 		{ new PlotRenderer(this,	"3 veiligheid docenten", 			PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	false,	"bangOpSchool,werkMetPlezier",					"Bang op school en werkplezier",					BB,		BB / 3		)},
 		{ GENEREERHETDOC(			"3 veiligheid docenten", 			PlotType::HoriStaafPerLabel,										false,	"bangOpSchool",									"Bang op school",									BB,		BB + BB		)},

@@ -57,7 +57,7 @@ const ColumnDefinitions SchoolScannerDefinities::_columnDefs =
 	new CD("In de klas hoor ik dat studenten onaardig over elkaar spreken",																		"klasOnaardigGepraat",													ColumnType::Label		),
 	new CD("In de klas wordt veel ruzie gemaakt",																								"klasVeelRuzie",														ColumnType::Label		),
 	new CD("Als iemand vervelend tegen je doet, kun je er wat van zeggen",																		"klasKunJeZeggenVervelend",												ColumnType::Label		),
-	new CD("Als ik homo of lesbisch zou zijn, dan mogen klasgenoten dat weten",																	"klasDurfUitDeKast",													ColumnType::Label		),
+	new CD("Als ik deel zou uitmaken van de LHBTQI+ gemeenschap dan mogen mijn klasgenoten/leerlingen dat weten",								"klasDurfUitDeKast",													ColumnType::Label		),
 	new CD("In de klas worden kwetsende opmerkingen gemaakt over mijn/elkaars identiteit",														"klasKwetstMetMijnIdentiteit",											ColumnType::Label		),
 	new CD("Doc: Kwetsende opmerkingen over mijn identiteit",																					"docentKwetsendeOpmerkingen",											ColumnType::Label		),
 	new CD("Mijn klasgenoten weten hoe het met mij gaat",																						"klasWeetHoeHetMetMijGaat",												ColumnType::Label		),
@@ -358,9 +358,6 @@ const std::map<QString, QString> SchoolScannerDefinities::_mapCsvToDb =
 
     { "...gediscrimineerd door medeleerlingen", 	"studentenGediscrimineerdDoorLeerlingen"	},
     { "...gediscrimineerd door docenten",			"studentenGediscrimineerdDoorLeraren"	},
-
-
-
 
 	{ "Bij mij in de klas/op school zie ik dat andere studenten... [...worden bedreigd of geïntimideerd]",									"studentenBedreigdGeintimideerd"	},
 	{ "Bij mij in de klas/op school zie ik dat andere studenten... [...worden geduwd, geschopt of geslagen]",							    	"studentenGeduwdGeschoptGeslagen"	},

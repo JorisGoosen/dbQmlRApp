@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
 		QObject::connect(&rWrapper, &RWrapper::plotWidthChanged,		table,			&SchoolScannerTable::plotWidthChanged);
 		QObject::connect(&rWrapper, &RWrapper::plotHeightChanged,		table,			&SchoolScannerTable::plotHeightChanged);
 		QObject::connect(table,		&SchoolScannerTable::runRCommand,	&rWrapper,		&RWrapper::runRCommand);
-		QObject::connect(table,		&SchoolScannerTable::renderPlots,	&plots,			&PlotRenderers::renderPlots,	Qt::QueuedConnection);
+		QObject::connect(table,		&SchoolScannerTable::renderPlots,	&plots,			&PlotRenderers::renderPlots);
 
 		table->initRStuff();
 

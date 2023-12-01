@@ -132,6 +132,9 @@ void Importer::processValues()
 			case ColumnType::Label:
 				for(QString & val : column->values)
 				{
+					if(val == "Ze hebben een bepaalde afkomst,cultuur of geloof")
+						val = "Ze hebben een bepaalde afkomst，cultuur of geloof";
+
 					int id = _labels->addLabel(/*column->nameDB,*/ val);
 					val = QString::number(id); //Replace label by id in importcolumn
 				}
@@ -140,9 +143,35 @@ void Importer::processValues()
 			case ColumnType::Labels:
 				for(QString & val : column->values)
 				{
-					QStringList newVal;
+					QStringList		newVal;
+
+					bool voegLhbtqiToe = false, voegAfkomstToe = false, divers=false, slaan=false;
+
 					for(const QString & choice : val.split(","))
-						newVal.append(QString::number(_labels->addLabel(/*column->nameDB,*/ choice.trimmed())));
+						if(choice.contains("homo", Qt::CaseInsensitive) || choice.contains("lesbisch", Qt::CaseInsensitive) || choice.contains("biseksueel", Qt::CaseInsensitive) || choice.contains("transseksueel", Qt::CaseInsensitive) || choice.contains("lhbti", Qt::CaseInsensitive) || choice.contains("lhbtqi", Qt::CaseInsensitive))
+							voegLhbtqiToe = true;
+						else if(choice.contains("bepaalde afkomst", Qt::CaseInsensitive) || choice.contains("cultuur of geloof", Qt::CaseInsensitive))
+							voegAfkomstToe = true;
+						else if(choice.contains("verschillende culturen", Qt::CaseInsensitive) || choice.contains("afkomst en geloof", Qt::CaseInsensitive))
+							divers = true;
+						else if(choice.contains("met slaan", Qt::CaseInsensitive) || choice.contains("duwen", Qt::CaseInsensitive) || choice.contains("schoppen", Qt::CaseInsensitive))
+							slaan = true;
+						else if(choice.trimmed().length() > 0)
+							newVal.append(QString::number(_labels->addLabel(choice.trimmed())));
+
+					if(voegLhbtqiToe)
+						newVal.append(QString::number(_labels->addLabel("Ze maken deel uit van de LHBTQI+ gemeenschap")));
+
+					if(voegAfkomstToe)
+						newVal.append(QString::number(_labels->addLabel("Ze hebben een bepaalde afkomst, cultuur of geloof")));
+
+					if(divers)
+						newVal.append(QString::number(_labels->addLabel("Meer aandacht voor verschillende culturen, afkomst en geloof")));
+
+					if(slaan)
+						newVal.append(QString::number(_labels->addLabel("Omgaan met slaan, duwen, schoppen en/of bedreiging")));
+
+
 
 					val = newVal.join(" ");
 				}

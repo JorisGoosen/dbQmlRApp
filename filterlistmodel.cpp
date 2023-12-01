@@ -48,6 +48,8 @@ bool FilterListModel::setData(const QModelIndex &index, const QVariant &value, i
 
 	if (_selectedLabels.count(label) != setEnabled)
 	{
+		setAllowClicks(false);
+
 		if(setEnabled)	_selectedLabels.insert(label);
 		else			_selectedLabels.erase(label);
 
@@ -129,4 +131,17 @@ void FilterListModel::setCd(ColumnDefinition * newCd)
 		return;
 	_cd = newCd;
 	emit cdChanged();
+}
+
+bool FilterListModel::allowClicks() const
+{
+	return _allowClicks;
+}
+
+void FilterListModel::setAllowClicks(bool newAllowClicks)
+{
+	if (_allowClicks == newAllowClicks)
+		return;
+	_allowClicks = newAllowClicks;
+	emit allowClicksChanged();
 }

@@ -58,7 +58,7 @@ writeImage <- function(plot, plotFolder=".", plotFile = "plot.png", width = 500,
 	setwd(plotFolder);
 
   openGrDevice(file = plotFile, width = width, height = height, res = 288, scaling = schaling, background = backgroundColor)
-	on.exit({dev.off(); setwd(oldWd)}, add = TRUE)
+
 
     if (ggplot2::is.ggplot(plot) || inherits(plot, c("gtable", "gTree")))
 	{
@@ -71,7 +71,7 @@ writeImage <- function(plot, plotFolder=".", plotFile = "plot.png", width = 500,
 	{
 	    isRecordedPlot <- inherits(plot, "recordedplot")
 
-        if (is.function(plot) && !isRecordedPlot)
+    if (is.function(plot) && !isRecordedPlot)
 		{
 		    if (obj) dev.control('enable')
 			    eval(plot()) # enable plot recording
@@ -90,6 +90,9 @@ writeImage <- function(plot, plotFolder=".", plotFile = "plot.png", width = 500,
 		}
 
 	}
+
+  dev.off(); 
+  setwd(oldWd)
 	
     return(plotFile)
 }

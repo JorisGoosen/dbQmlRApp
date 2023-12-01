@@ -34,6 +34,7 @@ Item
 		clip:					true
 		model:					column.model ? column.model : null
 
+
 		anchors
 		{
 			top:				titleText.bottom
@@ -51,6 +52,8 @@ Item
 				text:				model.display
 				onCheckedChanged:	model.checkState = checked
 				width:				ListView.view.width
+				enabled:			column.model ? column.model.allowClicks : false
+				opacity:			enabled ? 1.0 : 0.5
 			}
 
 		ScrollBar.vertical: Scrollbalk {}
