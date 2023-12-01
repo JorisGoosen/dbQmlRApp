@@ -98,7 +98,7 @@ PlotRenderers::PlotRenderers( QObject *parent)
         { new PlotRenderer(this,	"7.1,2, In de klas/op school",		PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	mijnWordkolommen,								"In de klas/op school worden mijn",					BBB,		BB			)},
 		{ new PlotRenderer(this,	"7.1,2, In de klas/op school",		PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	"klasVoeltOnveilig,schoolVoeltOnveilig",		"Onveilig voelen",									BB,		BB+BB			)},
 
-		{ GENEREERHET(				"7.1,2, In de klas/op school",		PlotType::HoriStaafGroepPerFilter,									true,	studentKolommen,								"In de klas/op school zie ikanderen",						BB,		BB			)},
+		{ GENEREERHET(				"7.1,2, In de klas/op school",		PlotType::HoriStaafGroepPerFilter,									true,	studentKolommen,								"In de klas/op school zie ik anderen",						BB,		BB			)},
 		{ GENEREERHET(				"7.1,2, In de klas/op school",		PlotType::HoriStaafGroepPerFilter,									true,	ikWordKolommen,									"In de klas/op school word ik door anderen",						BB,		BB			)},
 		{ new PlotRenderer(this,	"7.1,2, In de klas/op school",		PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	mijnWordkolommen,								"In de klas/op school worden mijn",					BBB,	BBB			)},
 		//{ new PlotRenderer(this,	"7.1,2, In de klas/op school",		PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	true,	"klasOnveilig,schoolOnveilig",					"Onveilig voelen (altijd + vaak)",					BB,		BB			)},
@@ -128,13 +128,13 @@ PlotRenderers::PlotRenderers( QObject *parent)
         { new PlotRenderer(this,	"13 Ingrijpen",						PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	false,	ingrijpenDivers,								"Ingrijpen diversiteit",						BBB,		BB			)},
 
 
-		{ GENEREERHET(				"13 Ingrijpen",						PlotType::HoriStaafGroepPerFilter,									false,	ingrijpenBuitenSl,								"Ingrijpen pesten en buitensluiten",			BB,		BB			)},
-		{ GENEREERHET(				"13 Ingrijpen",						PlotType::HoriStaafGroepPerFilter,									false,	ingrijpenVervelend,								"Ingrijpen vervelend gedrag",					BB,		BB			)},
+		{ GENEREERHET(				"13 Ingrijpen",						PlotType::HoriStaafGroepPerFilter,									false,	ingrijpenBuitenSl,								"Ingrijpen - Bij pesten en buitensluiten...",			BB,		BB			)},
+		{ GENEREERHET(				"13 Ingrijpen",						PlotType::HoriStaafGroepPerFilter,									false,	ingrijpenVervelend,								"Ingrijpen - Bij vervelend gedrag...",					BB,		BB			)},
 
 		// 14			
-		{ new PlotRenderer(this,	"14 Ingrijpen II - doc",			PlotType::HoriStaafPerTypeRespondent,			PlotFilter::Type,	false,	"ingrijpenVervelend",								"Ingrijpen vervelend",							BB,		BB			)},
+		{ new PlotRenderer(this,	"14 Ingrijpen II - doc",			PlotType::HoriStaafPerTypeRespondent,			PlotFilter::Type,	false,	"ingrijpenVervelend",								"Ingrijpen - Bij vervelend gedrag...",							BB,		BB			)},
 		{ new PlotRenderer(this,	"14 Ingrijpen II - doc",			PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Geen,	false,	"afgelopenWeekVervelendeSituatiesGezien",			"Afgelopen week iets vervelends gezien?",		BBB,		BB			)},
-		{ new PlotRenderer(this,	"14 Ingrijpen II - doc",			PlotType::HoriStaafPerTypeRespondent,			PlotFilter::Type,	false,	"ingrijpenBuitenSl",								"Ingrijpen pesten en buitensluiten",			BB,		BB			)},
+		{ new PlotRenderer(this,	"14 Ingrijpen II - doc",			PlotType::HoriStaafPerTypeRespondent,			PlotFilter::Type,	false,	"ingrijpenBuitenSl",								"Ingrijpen - Bij pesten en buitensluiten...",			BB,		BB			)},
 
 		//15			
 		{ new PlotRenderer(this,	"15 Docenten en Mentoren",			PlotType::HoriStaafMeerdereKolommen,			PlotFilter::Type,	false,	docentenMentoren,								"Docenten en mentoren",							BB,		BB			)},
