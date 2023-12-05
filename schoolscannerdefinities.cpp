@@ -817,6 +817,13 @@ const std::map<QString, QString> SchoolScannerDefinities::_mapCsvToDb =
 { " [Ik heb hoge verwachtingen van mijn leerlingen]",                                                              "docentenHogeVerwachtingLeerlingen" },
 { " [Docenten letten op het taalgebruik van de leerlingen]",                                                       "docentenLettenOpTaalgebruikStudenten" },
 { " [Positief gedrag van leerlingen wordt door docenten beloond]",                                                 "docentenBelonenPositiefGedrag" },
+
+//Post V1:  :s
+{ "Gender",																														"gender"},
+{"2. In de klas [In de klas ga ik het liefst om met leerlingen die dezelfde (bi-) culturele achtergronden hebben als ik]",		"klasAfkomstKlit"},
+{"2. In de klas [Als ik LHBTQI+ zou zijn, dan mogen klasgenoten dat weten]",													"klasDurfUitDeKast"},
+{"4. Op school [Op school leerlingen van verschillende (bi-) culturele achtergronden voelen zich thuis bij ons op school]",		"schoolDiversVoeltThuis"},
+{"4. Op school [Op school ga ik het liefst om met leerlingen met dezelfde (bi)culturele achtergrond als ik]",					"schoolLiefstMetGelijkeAfkomstOm"},
 };
 
 const std::map<QString, QString> SchoolScannerDefinities::_mapCsvToDbDocent = 
