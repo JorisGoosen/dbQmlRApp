@@ -16,6 +16,7 @@ class MainModel : public QObject
 	Q_PROPERTY(QString		dbPathKort		READ dbPathKort										NOTIFY dbPathChanged			)
 	Q_PROPERTY(QString		settingsCode	READ settingsCode		WRITE setSettingsCode		NOTIFY settingsChanged			)
 	Q_PROPERTY(QString		envPicSource	READ envPicSource		WRITE setEnvPicSource		NOTIFY envPicSourceChanged		)
+	Q_PROPERTY(QString		envPicError		READ envPicError		WRITE setEnvPicError		NOTIFY envPicErrorChanged		)
 	
 
 public:
@@ -28,17 +29,20 @@ public:
 	void		setDbPath(			QString newDbPath);
 
 	
-	QString settingsCode() const;
-	void setSettingsCode(const QString &newSettingsCode);
+	QString		settingsCode() const;
+	QString		envPicSource() const;
+	QString		envPicError() const;
 	
-	QString envPicSource() const;
-	void setEnvPicSource(const QString &newEnvPicSource);
+	void		setSettingsCode(const QString &newSettingsCode);
+	void		setEnvPicSource(const QString &newEnvPicSource);
+	void		setEnvPicError(const QString &newEnvPicError);
 	
 public slots:
 	bool		selectDatabase(		const QString & path);
 	bool		loadDatabase(		      QString   path = "");
 	void		showData();
 	void		showInFolder(		const QString & path);
+	void		applySettings();
 
 
 signals:
@@ -47,10 +51,13 @@ signals:
 	void		showStackIndex(int idx);
 	void		plotFilterNamesChanged();
 	void		dbPathChanged();
+	QString		rError();
 	
-	void settingsChanged();
-	
-	void envPicSourceChanged();
+	void		settingsChanged();
+	void		envPicSourceChanged();
+	void		envPicErrorChanged();
+	QString		runRCommand(QString rCode);
+	QString		runRCommands(QStringList rCode);
 	
 private:
 	void		setQmlsShown(const QStringList & newQmlsShown);
@@ -60,6 +67,7 @@ private:
 	Labels				*	_labels				= nullptr;
 	QString					_dbPath,
 							_envPicSource,
+							_envPicError,
 							_settingsCode		= R"lovingC++2*(
 background(
 	shape = rectangle(	center = c(4, 4), 	size = c(8, 8)),

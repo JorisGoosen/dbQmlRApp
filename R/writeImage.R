@@ -1,11 +1,10 @@
 print("Running writeImage.R")
-#library(jaspGraphs)
 library(ggplot2)
 library(tidyr)
 library(ggplot2)
 library(stringr)
 
-#options(device=NULL)
+options(device=NULL)
 
 kleuren <- list(
   rozig=			  "#EF2560"	,

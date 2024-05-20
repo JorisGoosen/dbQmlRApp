@@ -152,18 +152,20 @@ qt_add_executable(
 qt_add_qml_module(qmlR
 	URI qmlRModule
 	QML_FILES
-            main.qml
-            Scrollbalk.qml
-            RectButton.qml
-            MyCheckBox.qml
-            MyTabButton.qml
-            FileBrowser.qml
-			Environment.qml
-			Pedestrians.qml
-			Start.qml
-			ShowErrorOr.qml
-			Simulation.qml
-			SplitHandle.qml
+	main.qml
+	Scrollbalk.qml
+	RectButton.qml
+	MyCheckBox.qml
+	MyTabButton.qml
+	FileBrowser.qml
+	Environment.qml
+	Pedestrians.qml
+	ScrollableTextArea.qml
+	ScrollableCodeArea.qml
+	ShowErrorOr.qml
+	SplitHendel.qml
+	Simulation.qml
+	Start.qml
 	NO_RESOURCE_TARGET_PATH
 	
 #    RESOURCES
@@ -174,6 +176,7 @@ qt_add_resources(qmlR "R"
 	PREFIX "/"
 	FILES
 	   R/main.R
+	   R/writeImage.R
 )
 
 

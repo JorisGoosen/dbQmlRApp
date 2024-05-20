@@ -72,9 +72,22 @@ int main(int argc, char *argv[])
 
 		rWrapper.runRCommand(str);
 	}
+	
+	{
+		QFile	imgRFile(":/R/writeImage.R");
+		imgRFile.open(QIODeviceBase::ReadOnly);
+		QString str = imgRFile.readAll();
+		imgRFile.close();
 
-	QObject::connect(&plots,	&PlotRenderers::runRCommand,	&rWrapper,		&RWrapper::runRCommand);
-	QObject::connect(&plots,	&PlotRenderers::runRCommands,	&rWrapper,		&RWrapper::runRCommands);
+		rWrapper.runRCommand(str);
+	}
+	
+	QObject::connect(&mainModel,	&MainModel::runRCommand,	&rWrapper,		&RWrapper::runRCommand);
+	QObject::connect(&mainModel,	&MainModel::runRCommands,	&rWrapper,		&RWrapper::runRCommands);
+	QObject::connect(&mainModel,	&MainModel::rError,			&rWrapper,		&RWrapper::error);
+
+	QObject::connect(&plots,		&PlotRenderers::runRCommand,	&rWrapper,		&RWrapper::runRCommand);
+	QObject::connect(&plots,		&PlotRenderers::runRCommands,	&rWrapper,		&RWrapper::runRCommands);
 
 	QObject::connect(&mainModel, &MainModel::loadInQml, &mainEng, [&](Labels * labels)
 	{

@@ -4,32 +4,60 @@ import QtQuick.Layouts
 
 SplitView
 {
+	id:				splitViewEnv
 	orientation:	Qt.Horizontal
 	
 	
-	handle:	SplitHandle{}
+	handle:	SplitHendel
+	{ 
+		height:		splitViewEnv.height
+		pressed:	SplitHandle.pressed
+	}
 	
-	
-	ScrollableTextArea
+	Item
 	{
-		id:						settingsText
-		text:					mainModel.settingsCode
-		Layout.preferredWidth:	Math.min(mainWindow.width/2,	300)
+		implicitWidth:			500
+		Layout.preferredWidth:	implicitWidth
+		height:					parent.height
 		
-		function onTextChanged(newText)
+		ScrollableTextArea
 		{
-			mainModel.settingsCode = newText	
+			id:					settingsText
+			text:				mainModel.settingsCode
+		
+			onTextChanged: (newText) => { mainModel.settingsCode = newText }
+			
+			anchors
+			{
+				top:			parent.top
+				left:			parent.left
+				right:			parent.right
+				bottom:			applySettings.top
+			}
+		}
+		
+		RectButton
+		{
+			id:		applySettings
+			text:	qsTr("Apply settings")
+			
+			onClicked:	() => { mainModel.applySettings() }
+			
+			anchors
+			{
+				left:			parent.left
+				right:			parent.right
+				bottom:			parent.bottom
+			}
 		}
 	}
 
-	Rectangle
+	ShowErrorOr
 	{
-		id:						picRect
-		
-		color:					textArea.activeFocus ? controlBackgroundFocus : controlBackgroundNeutral
-		border.color:			textArea.activeFocus ? controlForegroundFocus : controlBackgroundNeutral
-		border.width:			1
+		id:						picErrorRect
+		height:					parent.height
 		Layout.fillWidth:		true
+		error:					mainModel.envPicError
 		
 		Image
 		{

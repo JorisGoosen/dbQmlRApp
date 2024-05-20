@@ -13,22 +13,24 @@ Rectangle
 	property alias text:		textArea.text
 	property TextArea textArea:	textArea
 	
-	signal textChanged(string newText)
-	
+
 	ScrollView 
 	{
-		id:					textView
-		anchors.fill:		parent
+		id:						textView
+		anchors.fill:			parent
+		clip:					true
+		
+		FontMetrics
+		{
+			id:					measureMe
+			font:				textArea.font
+		}
    
 		TextArea 
 		{
-			id:				textArea
-			color:			foregroundColor
-			
-			function onTextChanged()
-			{
-				textRect.textChanged(text);	
-			}
+			id:					textArea
+			color:				foregroundColor
+			tabStopDistance:	4 * measureMe.averageCharacterWidth
 		}
 	}
 }

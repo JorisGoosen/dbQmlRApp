@@ -6,29 +6,21 @@ Rectangle
 {
 	id:							textRect
 	
-	color:						textArea.activeFocus ? controlBackgroundFocus : controlBackgroundNeutral
-	border.color:				textArea.activeFocus ? controlForegroundFocus : controlBackgroundNeutral
+	color:						textArea.activeFocus		?  controlBackgroundFocus	: controlBackgroundNeutral
+	border.color:				textArea.visible 
+									? textArea.activeFocus	? "red"						: "darkRed" 
+									: textArea.activeFocus	? controlForegroundFocus	: controlBackgroundNeutral
 	border.width:				1
 	
-	property alias text:		textArea.text
-	property TextArea textArea:	textArea
+	property alias error:		textArea.text
 	
-	signal textChanged(string newText)
-	
-	ScrollView 
+	ScrollableTextArea 
 	{
-		id:					textView
-		anchors.fill:		parent
-   
-		TextArea 
-		{
-			id:				textArea
-			color:			foregroundColor
-			
-			function onTextChanged()
-			{
-				textRect.textChanged(text);	
-			}
-		}
+		id:				textArea
+		color:			textArea.activeFocus ? "red" : "darkRed"
+		visible:		text !== ""
+		anchors.fill:	parent
+		z:				100
 	}
+
 }

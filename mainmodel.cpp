@@ -6,6 +6,7 @@
 #include <QDesktopServices>
 #include <iostream>
 #include <QDir>
+#include "rwrapper.h"
 
 MainModel::MainModel(Database * db, QObject *parent)
 	: QObject{parent}, _db(db), _settings("GoosenAutomatisering", "Minds for Mobile Agents GUI")
@@ -125,6 +126,21 @@ void MainModel::showInFolder(const QString& path)
 	QDesktopServices::openUrl(QUrl::fromLocalFile(info.isDir()? path : info.path()));
 }
 
+void MainModel::applySettings()
+{
+	emit runRCommand(QString(R"GottaLoveThis(
+	settings <- %1
+	envPlot <- predped::plot(setting, fill = "grey", color = "black", linewidth = 1.5)
+	writeImage(plot=envPlot, plotFolder=".", plotFile = "envPlot.png", width = %2, height = %3, schaling = 1.0, backgroundColor = "transparent")
+	
+)GottaLoveThis").arg(_settingsCode.trimmed()).arg(1000).arg(1000));
+	
+	setEnvPicError(rError());
+	static int localCounter = 0;
+	if(envPicError().isEmpty())
+		setEnvPicSource(QString("envPlot.png?%1").arg(localCounter++));
+}
+
 QString MainModel::settingsCode() const
 {
 	return _settingsCode;
@@ -149,4 +165,17 @@ void MainModel::setEnvPicSource(const QString &newEnvPicSource)
 		return;
 	_envPicSource = newEnvPicSource;
 	emit envPicSourceChanged();
+}
+
+QString MainModel::envPicError() const
+{
+	return _envPicError;
+}
+
+void MainModel::setEnvPicError(const QString &newEnvPicError)
+{
+	if (_envPicError == newEnvPicError)
+		return;
+	_envPicError = newEnvPicError;
+	emit envPicErrorChanged();
 }

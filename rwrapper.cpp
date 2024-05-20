@@ -49,6 +49,8 @@ QString RWrapper::runRCommand(QString command)
 					out.append(f(s));
 			else
 				out.append("???");
+			
+			setError("");
 
 
 			return out.join("\n");
@@ -62,19 +64,21 @@ QString RWrapper::runRCommand(QString command)
 	catch(Rcpp::exception & e)
 	{
 		outQ = "Rcpp::exception caught: " + QString::fromStdString(e.what());
+		setError(outQ);
 		std::cerr << outQ.toStdString() << std::endl;
 	}
 	catch(std::runtime_error & e)
 	{
 		outQ = "std::runtime_error caught: " + QString::fromStdString(e.what());
+		setError(outQ);
 		std::cerr << outQ.toStdString() << std::endl;
 	}
 	catch(std::exception & e)
 	{
 		outQ = "std::exception caught: " + QString::fromStdString(e.what());
+		setError(outQ);
 		std::cerr << outQ.toStdString() << std::endl;
 	}
-
 	_prevOutput.append(outQ);
 	emit prevOutputChanged();
 
@@ -121,4 +125,17 @@ void RWrapper::setPlotHeight(int newPlotHeight)
 
 	_plotHeight = newPlotHeight;
 	emit plotHeightChanged(_plotHeight);
+}
+
+QString RWrapper::error() const
+{
+	return _error;
+}
+
+void RWrapper::setError(const QString &newError)
+{
+	if (_error == newError)
+		return;
+	_error = newError;
+	emit errorChanged();
 }
