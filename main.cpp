@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 	{
 		QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
 		if(!env.contains("R_HOME"))
-			env.insert("R_HOME", "C:\\Program Files\\R\\R-4.3.1");
+			env.insert("R_HOME", "C:\\Program Files\\R\\R-4.4.0");
 
 		env.insert("PATH", env.value("R_HOME") + "\\bin\\x64;" + env.value("PATH"));
 

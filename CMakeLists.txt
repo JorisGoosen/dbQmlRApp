@@ -158,8 +158,12 @@ qt_add_qml_module(qmlR
             MyCheckBox.qml
             MyTabButton.qml
             FileBrowser.qml
+			Environment.qml
+			Pedestrians.qml
+			StartSimulation.qml
+			Running.qml
 	NO_RESOURCE_TARGET_PATH
-	QML_FILES
+	
 #    RESOURCES
 #        img/world.png
 )

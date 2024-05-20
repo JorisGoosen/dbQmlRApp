@@ -16,12 +16,7 @@ Window
 	{
 		id:		tabBar
 
-		property bool importerExists:		importer
-		property bool schoolScannerExists:	schoolScannerTable
-
-		onImporterExistsChanged:			if(importer)			importer.cellMargin				= Qt.binding(function(){return generalMargin;});
-		onSchoolScannerExistsChanged:		if(schoolScannerTable)	schoolScannerTable.cellMargin	= Qt.binding(function(){return generalMargin;});
-
+		
 		Connections
 		{
 			target:		mainModel

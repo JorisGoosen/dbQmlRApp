@@ -43,7 +43,7 @@ private:
 	void		setQmlsShown(const QStringList & newQmlsShown);
 
 	Database			*	_db					= nullptr;
-	QStringList				_qmlsShown			= { "Welkom" };
+	QStringList				_qmlsShown			= { "Environment", "Pedestrians", "StartSimulation" };
 	Labels				*	_labels				= nullptr;
 	QString					_dbPath;
 	QSettings				_settings;
