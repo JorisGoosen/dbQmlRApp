@@ -8,7 +8,7 @@
 #include <QDir>
 
 MainModel::MainModel(Database * db, QObject *parent)
-	: QObject{parent}, _db(db), _settings("GoosenAutomatisering", "School Scanner")
+	: QObject{parent}, _db(db), _settings("GoosenAutomatisering", "Minds for Mobile Agents GUI")
 {
 	_dbPath = _settings.value("dbPath").toString();
 }
@@ -34,8 +34,6 @@ bool MainModel::loadDatabase(QString path)
 
 	emit loadInQml(_labels);
 
-	setQmlsShown({"WUT?"});
-
 	return true;
 }
 
@@ -49,7 +47,7 @@ void MainModel::showData()
 {
 	if(!_qmlsShown.contains("Data"))
 	{
-		setQmlsShown({"Analyse", "FilteredData", "Data", "Import"});
+		//setQmlsShown({"Analyse", "FilteredData", "Data", "Import"});
 		emit qmlsShownChanged();
 	}
 
@@ -125,4 +123,30 @@ void MainModel::showInFolder(const QString& path)
 		return;
 #endif
 	QDesktopServices::openUrl(QUrl::fromLocalFile(info.isDir()? path : info.path()));
+}
+
+QString MainModel::settingsCode() const
+{
+	return _settingsCode;
+}
+
+void MainModel::setSettingsCode(const QString &newSettingsCode)
+{
+	if (_settingsCode == newSettingsCode)
+		return;
+	_settingsCode = newSettingsCode;
+	emit settingsChanged();
+}
+
+QString MainModel::envPicSource() const
+{
+	return _envPicSource;
+}
+
+void MainModel::setEnvPicSource(const QString &newEnvPicSource)
+{
+	if (_envPicSource == newEnvPicSource)
+		return;
+	_envPicSource = newEnvPicSource;
+	emit envPicSourceChanged();
 }

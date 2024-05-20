@@ -4,7 +4,7 @@ import QtQuick.Layouts
 
 Window
 {
-
+	id:			mainWindow
 	width:		1280
 	height:		720
 	visible:	true

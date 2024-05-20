@@ -160,8 +160,10 @@ qt_add_qml_module(qmlR
             FileBrowser.qml
 			Environment.qml
 			Pedestrians.qml
-			StartSimulation.qml
-			Running.qml
+			Start.qml
+			ShowErrorOr.qml
+			Simulation.qml
+			SplitHandle.qml
 	NO_RESOURCE_TARGET_PATH
 	
 #    RESOURCES

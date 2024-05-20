@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
 
 	QCoreApplication::setOrganizationName(	"JorisGoosen");
 	QCoreApplication::setOrganizationDomain("jorisgoosen.nl");
-	QCoreApplication::setApplicationName(	"School Scanner");
+	QCoreApplication::setApplicationName(	"Minds for Mobile Agents GUI");
 #ifdef WIN32
 	{
 		QProcessEnvironment env = QProcessEnvironment::systemEnvironment();

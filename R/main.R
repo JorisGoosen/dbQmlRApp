@@ -11,3 +11,6 @@ if(length(new.packages)) {
 {
         print("Alle pakketten zijn al geinstalleerd!")
 }	
+
+
+library(predped)
