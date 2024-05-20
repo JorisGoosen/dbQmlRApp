@@ -1,7 +1,6 @@
 #define ENUM_DECLARATION_CPP
 #include "columndefinition.h"
 #include <QDateTime>
-#include "schoolscannerdefinities.h"
 
 QString ColumnDefinition::friendlyName() const
 {

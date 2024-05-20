@@ -1,5 +1,4 @@
 #include "tablemodel.h"
-#include "tablemodelfiltered.h"
 #include <QDateTime>
 #include "labels.h"
 
@@ -9,8 +8,6 @@ TableModel::TableModel(Database * db, const QString & tableName, const ColumnDef
 	_db->tableCreate(_tableName, _columnDefinitions);
 
 	_rowCount = _db->tableRowCount(_tableName);
-
-	_filtered = new TableModelFiltered(this);
 }
 
 int TableModel::rowCount(const QModelIndex &) const
@@ -115,7 +112,7 @@ QStringList TableModel::allLabels(const QString & colName)
 	return strs;
 }
 
-QStringList TableModel::allUniqueLabels(const QString & colName, bool filter)
+QStringList TableModel::allUniqueLabels(const QString & colName)
 {
 	ColumnDefinition * cd = nullptr;
 
@@ -132,13 +129,6 @@ QStringList TableModel::allUniqueLabels(const QString & colName, bool filter)
 	QVariantList	list = _db->tableValues(_tableName, cd);
 	QStringList		strs;
 
-	std::map<QString, QVariantList>	filterLists;
-
-	if(filter)
-		for(auto & nameLM : _filters)
-			if(nameLM.first != colName)
-				filterLists[nameLM.first] = _db->tableValues(_tableName, nameLM.second->cd());
-
 	std::set<QString> addedAlready;
 
 	for(size_t r=0; r<list.size(); r++)
@@ -147,14 +137,7 @@ QStringList TableModel::allUniqueLabels(const QString & colName, bool filter)
 
 		QString toText = tableValueVarToString(l, cd->columnType());
 
-		bool filteredOut = false;
-
-		if(filter)
-			for(auto & nameList : filterLists)
-				if(!_filters[nameList.first]->allowedThroughFilter(tableValueVarToString(nameList.second[r], _filters[nameList.first]->cd()->columnType())))
-					filteredOut = true;
-
-		if(!filteredOut && !addedAlready.contains(toText))
+		if(!addedAlready.contains(toText))
 		{
 			addedAlready.insert(toText);
 			strs.append(toText);
@@ -166,9 +149,6 @@ QStringList TableModel::allUniqueLabels(const QString & colName, bool filter)
 
 bool TableModel::rowAccepted(int row) const
 {
-	for(auto & colModel : _filters)
-		if(!colModel.second->allowedThroughFilter(data(index(row, columnIndex(colModel.first))).toString()))
-			return false;
 	return true;
 }
 
@@ -196,14 +176,4 @@ QString TableModel::dbplyrCode(bool collect) const
 		code.append(_tableName + " <- " + _tableName + "sql %>% collect()");
 
 	return code.join("\n");
-}
-
-void TableModel::registerFilter(FilterListModel * lm)
-{
-	_filters[lm->colName()] = lm;
-}
-
-TableModelFiltered * TableModel::filtered()
-{
-	return _filtered;
 }

@@ -31,14 +31,10 @@ bool MainModel::loadDatabase(QString path)
 	_db->setDbFile(std::filesystem::path(path.toStdString()));
 
 	_labels			= new Labels(_db);
-	_schoolTable	= new SchoolScannerTable(_db);
 
-	emit loadInQml(_labels, _schoolTable);
+	emit loadInQml(_labels);
 
-	if(_schoolTable->rowCount() > 0)
-		setQmlsShown({"Analyse", "FilteredData", "Data", "Import"});
-	else
-		setQmlsShown({"Import"});
+	setQmlsShown({"WUT?"});
 
 	return true;
 }
@@ -67,19 +63,6 @@ void MainModel::setQmlsShown(const QStringList & newQmlsShown)
 
 	_qmlsShown = newQmlsShown;
 	emit qmlsShownChanged();
-}
-
-QStringList MainModel::plotFilterNames() const
-{
-	return _plotFilterNames;
-}
-
-void MainModel::setPlotFilterNames(const QStringList & newPlotFilterNames)
-{
-	if (_plotFilterNames == newPlotFilterNames)
-		return;
-	_plotFilterNames = newPlotFilterNames;
-	emit plotFilterNamesChanged();
 }
 
 QString MainModel::dbPath() const

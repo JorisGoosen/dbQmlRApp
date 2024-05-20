@@ -15,11 +15,9 @@
 #include "settings.h"
 #include "plotrenderer.h"
 #include "plotrenderers.h"
-#include "importer.h"
 #include "labels.h"
 #include "mainmodel.h"
 #include <QDir>
-#include "schoolscannertable.h"
 #include <QTimer>
 #include <QQuickStyle>
 #ifdef WIN32
@@ -78,23 +76,15 @@ int main(int argc, char *argv[])
 	QObject::connect(&plots,	&PlotRenderers::runRCommand,	&rWrapper,		&RWrapper::runRCommand);
 	QObject::connect(&plots,	&PlotRenderers::runRCommands,	&rWrapper,		&RWrapper::runRCommands);
 
-	QObject::connect(&mainModel, &MainModel::loadInQml, &mainEng, [&](Labels * labels, SchoolScannerTable * table)
+	QObject::connect(&mainModel, &MainModel::loadInQml, &mainEng, [&](Labels * labels)
 	{
 
-		Importer * importer = new Importer(table, labels);
-		mainEng.rootContext()->setContextProperty("schoolScannerTable",			table);
 		mainEng.rootContext()->setContextProperty("labels",						labels);
-		mainEng.rootContext()->setContextProperty("importer",					importer);
-
-		QObject::connect(table,		&SchoolScannerTable::addContextProperty,	[&](const QString & name, QObject * object){ mainEng.rootContext()->setContextProperty(name, object); });
-
-		QObject::connect(importer,	&Importer::showData,				&mainModel,		&MainModel::showData);
-		QObject::connect(&rWrapper, &RWrapper::plotWidthChanged,		table,			&SchoolScannerTable::plotWidthChanged);
-		QObject::connect(&rWrapper, &RWrapper::plotHeightChanged,		table,			&SchoolScannerTable::plotHeightChanged);
-		QObject::connect(table,		&SchoolScannerTable::runRCommand,	&rWrapper,		&RWrapper::runRCommand);
-		QObject::connect(table,		&SchoolScannerTable::renderPlots,	&plots,			&PlotRenderers::renderPlots);
-
-		table->initRStuff();
+		
+		//QObject::connect(&rWrapper, &RWrapper::plotWidthChanged,		table,			&SchoolScannerTable::plotWidthChanged);
+		//QObject::connect(&rWrapper, &RWrapper::plotHeightChanged,		table,			&SchoolScannerTable::plotHeightChanged);
+		
+		//table->initRStuff();
 
 		plots.init();
 	});
@@ -105,40 +95,24 @@ int main(int argc, char *argv[])
 	mainEng.rootContext()->setContextProperty("database",				&database);
 	mainEng.rootContext()->setContextProperty("mainModel",				&mainModel);
 	mainEng.rootContext()->setContextProperty("plotList",				&plots);
-	mainEng.rootContext()->setContextProperty("schoolScannerTable",		nullptr);
 	mainEng.rootContext()->setContextProperty("labels",					nullptr);
-	mainEng.rootContext()->setContextProperty("importer",				nullptr);
-	mainEng.rootContext()->setContextProperty("plotPie",				nullptr);
-
-	QMap<QString, QString> kleurenCM =
-	{
-		{	"rozig",		"#EF2560"	},
-		{	"lichtrozig",	"#f6b6cc"	},
-		{	"lichtblauwig",	"#9CCDD1"	},
-		{	"blauwig",		"#038794"	},
-		{	"zwartig",		"#1D1D1B"	},
-		{	"lichtgroen",	"#BCE2D7"	},
-		{	"donkergroen",	"#5FA48F"	},
-		{	"lichtgeel",	"#FFF798"	},
-		{	"witgroen",		"#cdf3e8"	},
-	};
-
-	mainEng.rootContext()->setContextProperty("fontFamilie",				"karla");
+	
+	mainEng.rootContext()->setContextProperty("fontFamilie",				"futura");
 	mainEng.rootContext()->setContextProperty("dikkeLijnDikte",				4);
-	mainEng.rootContext()->setContextProperty("backgroundColor",			kleurenCM["lichtblauwig"]);
-	mainEng.rootContext()->setContextProperty("windowBackgroundColor",		kleurenCM["blauwig"]);
-	mainEng.rootContext()->setContextProperty("foregroundColor",			kleurenCM["rozig"]);
+	mainEng.rootContext()->setContextProperty("backgroundColor",			"#000000");
+	mainEng.rootContext()->setContextProperty("windowBackgroundColor",		"#111111");
+	mainEng.rootContext()->setContextProperty("foregroundColor",			"#FFFF00");
 
-	mainEng.rootContext()->setContextProperty("controlBackgroundDisabled",	kleurenCM["lichtblauwig"]);
-	mainEng.rootContext()->setContextProperty("controlBackgroundNeutral",	kleurenCM["blauwig"]);
-	mainEng.rootContext()->setContextProperty("controlBackgroundFocus",		kleurenCM["lichtgroen"]);
-	mainEng.rootContext()->setContextProperty("controlBackgroundPressed",	kleurenCM["donkergroen"]);
-	mainEng.rootContext()->setContextProperty("controlBackgroundPlots",		kleurenCM["witgroen"]);
+	mainEng.rootContext()->setContextProperty("controlBackgroundDisabled",	"#000000");
+	mainEng.rootContext()->setContextProperty("controlBackgroundNeutral",	"#000000");
+	mainEng.rootContext()->setContextProperty("controlBackgroundFocus",		"#000000");
+	mainEng.rootContext()->setContextProperty("controlBackgroundPressed",	"#000000");
+	mainEng.rootContext()->setContextProperty("controlBackgroundPlots",		"#000000");
 
-	mainEng.rootContext()->setContextProperty("controlForegroundDisabled",	kleurenCM["zwartig"]);
-	mainEng.rootContext()->setContextProperty("controlForegroundNeutral",	kleurenCM["lichtgeel"]);
-	mainEng.rootContext()->setContextProperty("controlForegroundFocus",		kleurenCM["rozig"]);
-	mainEng.rootContext()->setContextProperty("controlForegroundPressed",	kleurenCM["zwartig"]);
+	mainEng.rootContext()->setContextProperty("controlForegroundDisabled",	"#666600");
+	mainEng.rootContext()->setContextProperty("controlForegroundNeutral",	"#FFFF00");
+	mainEng.rootContext()->setContextProperty("controlForegroundFocus",		"#FFFF99");
+	mainEng.rootContext()->setContextProperty("controlForegroundPressed",	"#AAAA99");
 
 	mainEng.rootContext()->setContextProperty("generalMargin",		20);
 

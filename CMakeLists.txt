@@ -26,12 +26,12 @@ add_definitions(${QT_DEFINITIONS})
 add_definitions(-DQT_DLL)
 add_definitions(-DRCPP_NO_SUGAR)
 include_directories(${QT_INCLUDE_DIR})
-link_directories(${QT_LIBRARY_DIR})
+link_directories(${QT_LIBRARY_DIR})	
 
 find_package(SQLite3 3.39.5 REQUIRED)
 
 if (WIN32)
-    set(ENV{PATH} "C:\\Program Files\\R\\R-4.3.1\\bin\\x64;$ENV{PATH}")
+    set(ENV{PATH} "C:\\Program Files\\R\\R-4.4.0\\bin\\x64;$ENV{PATH}")
 endif()
 
 message(STATUS "Collecting R info")
@@ -41,7 +41,7 @@ message(STATUS "R Home is: ${R_HOME}")
 
 set(NUM_TRUNC_CHARS 2)
 
-execute_process(COMMAND Rscript CMAKE_SOURCE_DIR/R/main.R)
+execute_process(COMMAND Rscript ${CMAKE_SOURCE_DIR}/R/main.R)
 
 execute_process(COMMAND R CMD config --cppflags OUTPUT_VARIABLE RCPPFLAGS)
 separate_arguments(RCPPFLAGS UNIX_COMMAND ${RCPPFLAGS})
@@ -119,18 +119,13 @@ set(sources
 	labels.cpp
 	rwrapper.cpp
 	database.cpp
-	importer.cpp
 	settings.cpp
 	mainmodel.cpp
 	tablemodel.cpp
 	plotrenderer.cpp
 	plotrenderers.cpp
-	filterlistmodel.cpp
 	columndefinition.cpp
-  	tablemodelfiltered.cpp
-	schoolscannertable.cpp
-	schoolscannerdefinities.cpp
-	abstractsizeprovidertable.cpp
+  	abstractsizeprovidertable.cpp
 )
 
 set(headers
@@ -138,19 +133,14 @@ set(headers
 	settings.h
 	rwrapper.h
 	database.h
-	importer.h
 	mainmodel.h
 	tablemodel.h
 	stringutils.h
 	plotrenderer.h
 	plotrenderers.h
 	enumutilities.h
-	filterlistmodel.h
 	columndefinition.h
-        tablemodelfiltered.h
-	schoolscannertable.h
-	schoolscannerdefinities.h
-	abstractsizeprovidertable.h
+    abstractsizeprovidertable.h
 )
 
 qt_add_executable(
@@ -163,22 +153,11 @@ qt_add_qml_module(qmlR
 	URI qmlRModule
 	QML_FILES
             main.qml
-            Data.qml
-            Plots.qml
-            Tafel.qml
-            Welkom.qml
-            Filter.qml
-            Import.qml
-            Analyse.qml
-            PlotsHori.qml
-			Scrollbalk.qml
+            Scrollbalk.qml
             RectButton.qml
             MyCheckBox.qml
-            FilterList.qml
-            PlotFilters.qml
             MyTabButton.qml
             FileBrowser.qml
-            FilteredData.qml
 	NO_RESOURCE_TARGET_PATH
 	QML_FILES
 #    RESOURCES
@@ -188,9 +167,7 @@ qt_add_qml_module(qmlR
 qt_add_resources(qmlR "R"
 	PREFIX "/"
 	FILES
-	   R/writeImage.R
 	   R/main.R
-	   R/plot.R
 )
 
 

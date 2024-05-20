@@ -4,19 +4,11 @@
 #include "abstractsizeprovidertable.h"
 #include <QObject>
 #include "database.h"
-#include "filterlistmodel.h"
-Q_MOC_INCLUDE("tablemodelfiltered.h")
 
-typedef std::map<QString, FilterListModel *> FilterListModelMap;
 
-class TableModelFiltered;
 class TableModel : public AbstractSizeProviderTable
 {
   Q_OBJECT
-
-	Q_PROPERTY(TableModelFiltered * filtered READ filtered NOTIFY filteredChanged)
-
-	friend TableModelFiltered;
 
 public:
 								TableModel(Database * db, const QString & tableName, const ColumnDefinitions & columnDefinitions);
@@ -31,18 +23,12 @@ public:
 	const QString			&	tableName()			const { return _tableName; }
 	const ColumnDefinitions	&	columnDefinitions()	const { return _columnDefinitions;}
 
-	QStringList					allUniqueLabels(const QString & colName, bool filter=true);
+	QStringList					allUniqueLabels(const QString & colName);
 	QStringList					allLabels(		const QString & colName);
 
 	QString						dbplyrCode(bool collect = true) const;
 	bool						rowAccepted(int row) const;
 	int							columnIndex(const QString & name) const;
-
-	void						registerFilter(FilterListModel * lm);
-	TableModelFiltered		*	filtered();
-
-signals:
-	void						filteredChanged();
 
 protected:
 	QString						tableValueVarToString(QVariant val, ColumnType type, bool addValue = false) const;
@@ -52,9 +38,7 @@ protected:
 
 private:
 	Database				*   _db;
-	TableModelFiltered		*	_filtered;
 	int							_rowCount = -1;
-	FilterListModelMap			_filters;
 };
 
 #endif // TABLEMODEL_H
