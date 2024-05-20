@@ -1,1 +1,4 @@
 
+[submodule "predped"]
+	path = predped
+	url = http://github.com/JorisGoosen/predped
