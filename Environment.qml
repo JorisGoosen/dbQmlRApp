@@ -25,7 +25,7 @@ SplitView
 			id:					settingsText
 			text:				mainModel.settingsCode
 		
-			onTextChanged: (newText) => { mainModel.settingsCode = newText }
+			textArea.onTextChanged:  mainModel.settingsCode = textArea.text;
 			
 			anchors
 			{
@@ -41,7 +41,7 @@ SplitView
 			id:		applySettings
 			text:	qsTr("Apply settings")
 			
-			onClicked:	() => { mainModel.applySettings() }
+			onClicked:	() => { mainModel.applySettings(picErrorRect.width, picErrorRect.height) }
 			
 			anchors
 			{
@@ -63,6 +63,7 @@ SplitView
 		{
 			source:				mainModel.envPicSource
 			anchors.fill:		parent
+			cache:				false
 		}
 	}
 	

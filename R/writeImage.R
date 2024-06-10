@@ -31,7 +31,7 @@ paletKleuren <- list(
 palet <- colorRampPalette(paletKleuren, space='rgb', interpolate='spline')
 
 library(showtext)
-tryCatch(suppressWarnings((font_add_google("Karla", "karla"))))
+tryCatch(suppressWarnings((font_add_google("Futura", "futura"))))
 
 ## Automatically use showtext to render text
 showtext_auto()
@@ -95,17 +95,12 @@ writeImage <- function(plot, plotFolder=".", plotFile = "plot.png", width = 500,
 	
     return(plotFile)
 }
-
-# This ensures that functions can also be found in jasptools (it needs to search in the package namespace)
 .findFun <- function(name) {
   obj <- NULL
   if (exists(name))
     obj <- eval(parse(text = name))
 
   if (!exists(name) || !is.function(obj)) {
-
-    if ("jasptools" %in% loadedNamespaces())
-	  return(getFromNamespace(name, asNamespace("jasptools")))
 	return(get(name, .GlobalEnv)) # works for both JASP and jaspTools
   }
 

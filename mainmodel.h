@@ -1,6 +1,7 @@
 #ifndef MAINMODEL_H
 #define MAINMODEL_H
 
+#include <QUrl>
 #include <QObject>
 #include <QSettings>
 #include "labels.h"
@@ -15,7 +16,7 @@ class MainModel : public QObject
 	Q_PROPERTY(QString		dbPath			READ dbPath				WRITE setDbPath				NOTIFY dbPathChanged			)
 	Q_PROPERTY(QString		dbPathKort		READ dbPathKort										NOTIFY dbPathChanged			)
 	Q_PROPERTY(QString		settingsCode	READ settingsCode		WRITE setSettingsCode		NOTIFY settingsChanged			)
-	Q_PROPERTY(QString		envPicSource	READ envPicSource		WRITE setEnvPicSource		NOTIFY envPicSourceChanged		)
+	Q_PROPERTY(QUrl			envPicSource	READ envPicSource		WRITE setEnvPicSource		NOTIFY envPicSourceChanged		)
 	Q_PROPERTY(QString		envPicError		READ envPicError		WRITE setEnvPicError		NOTIFY envPicErrorChanged		)
 	
 
@@ -30,11 +31,11 @@ public:
 
 	
 	QString		settingsCode() const;
-	QString		envPicSource() const;
+	QUrl		envPicSource() const;
 	QString		envPicError() const;
 	
 	void		setSettingsCode(const QString &newSettingsCode);
-	void		setEnvPicSource(const QString &newEnvPicSource);
+	void		setEnvPicSource(const QUrl &newEnvPicSource);
 	void		setEnvPicError(const QString &newEnvPicError);
 	
 public slots:
@@ -42,7 +43,7 @@ public slots:
 	bool		loadDatabase(		      QString   path = "");
 	void		showData();
 	void		showInFolder(		const QString & path);
-	void		applySettings();
+	void		applySettings(		int width, int height);
 
 
 signals:
@@ -65,11 +66,11 @@ private:
 	Database			*	_db					= nullptr;
 	QStringList				_qmlsShown			= { "Environment", "Pedestrians", "Start"};
 	Labels				*	_labels				= nullptr;
+	QUrl					_envPicSource;
 	QString					_dbPath,
-							_envPicSource,
 							_envPicError,
 							_settingsCode		= R"lovingC++2*(
-background(
+predped::background(
 	shape = rectangle(	center = c(4, 4), 	size = c(8, 8)),
 	objects = 
 		list(

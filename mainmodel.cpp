@@ -126,19 +126,23 @@ void MainModel::showInFolder(const QString& path)
 	QDesktopServices::openUrl(QUrl::fromLocalFile(info.isDir()? path : info.path()));
 }
 
-void MainModel::applySettings()
+void MainModel::applySettings(int width, int height)
 {
+	static int localCounter = 0;
+	const QString name = QString("envPlot%1.png").arg((localCounter++)%2);
 	emit runRCommand(QString(R"GottaLoveThis(
+	print("About to create settings")
 	settings <- %1
-	envPlot <- plot(setting, fill = "grey", color = "black", linewidth = 1.5)
-	writeImage(plot=envPlot, plotFolder=".", plotFile = "envPlot.png", width = %2, height = %3, schaling = 1.0, backgroundColor = "transparent")
-	
-)GottaLoveThis").arg(_settingsCode.trimmed()).arg(1000).arg(1000));
+	print("plot:")
+	png("%4", %2, %3)
+	plot(settings, fill = "grey", color = "black", linewidth = 1.5)
+	dev.off()
+)GottaLoveThis").arg(_settingsCode.trimmed()).arg(width).arg(height).arg(name));
 	
 	setEnvPicError(rError());
-	static int localCounter = 0;
-	if(envPicError().isEmpty())
-		setEnvPicSource(QString("envPlot.png?%1").arg(localCounter++));
+	
+	
+	setEnvPicSource(QUrl::fromLocalFile(QString(name)));
 }
 
 QString MainModel::settingsCode() const
@@ -154,12 +158,12 @@ void MainModel::setSettingsCode(const QString &newSettingsCode)
 	emit settingsChanged();
 }
 
-QString MainModel::envPicSource() const
+QUrl MainModel::envPicSource() const
 {
 	return _envPicSource;
 }
 
-void MainModel::setEnvPicSource(const QString &newEnvPicSource)
+void MainModel::setEnvPicSource(const QUrl &newEnvPicSource)
 {
 	if (_envPicSource == newEnvPicSource)
 		return;
