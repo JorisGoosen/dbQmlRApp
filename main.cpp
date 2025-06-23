@@ -40,8 +40,8 @@ int main(int argc, char *argv[])
 #ifdef WIN32
 	{
 		QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-		//if(!env.contains("R_HOME"))
-		env.insert("R_HOME", QDir::currentPath() + "\\R-4.3.1-schoolscanner");
+		if(!env.contains("R_HOME"))
+			env.insert("R_HOME", QDir::currentPath() + "\\R-4.3.1-schoolscanner");
 		env.insert("PATH", env.value("R_HOME") + "\\bin\\x64;" + env.value("PATH"));
 
 

@@ -248,16 +248,40 @@ bool Importer::importCsv(QTextStream & csvStream, QChar sepa)
 {
 	clearColumns();
 	csvStream.reset();
+	QString all = csvStream.readAll();
+
+	std::stringstream newStrm;
+	bool inQuotes = false;
+	for(char c : all.toStdString())
+		switch(c)
+		{
+		case	'"':
+			inQuotes = !inQuotes;
+			[[fallthrough]];
+		default:
+			newStrm << c;
+			break;
+
+		case '\n':
+			if(!inQuotes)
+				newStrm << c;
+			else
+				newStrm << ' ';
+			break;
+		}
+
+	QString textCsv= QString::fromStdString(newStrm.str());
+	QTextStream newQStrm(&textCsv);
 
 	beginResetModel();
-	QString header = csvStream.readLine();
+	QString header = newQStrm.readLine();
 
 	for(const QString & columnName : header.split(sepa))
 		_columns.push_back(new ImportColumn(columnName));
 
-	for(QStringList line = csvStream.readLine().split(sepa)	;
-		!csvStream.atEnd()									;
-		line = csvStream.readLine().split(sepa)				)
+	for(QStringList line = newQStrm.readLine().split(sepa)	;
+		!newQStrm.atEnd()									;
+		line = newQStrm.readLine().split(sepa)				)
 		for(size_t col=0; col<_columns.size(); col++)
 			_columns[col]->values.push_back(int(col) < line.size() ? line[col] : "");
 
