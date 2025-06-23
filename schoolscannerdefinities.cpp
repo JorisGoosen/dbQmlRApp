@@ -1,4 +1,5 @@
 #include "schoolscannerdefinities.h"
+#include "database.h"
 
 typedef ColumnDefinition	CD;
 
@@ -826,6 +827,7 @@ const std::map<QString, QString> SchoolScannerDefinities::_mapCsvToDb =
 {"4. Op school [Op school ga ik het liefst om met leerlingen met dezelfde (bi)culturele achtergrond als ik]",					"schoolLiefstMetGelijkeAfkomstOm"},
 };
 
+std::map<QString, QString> SchoolScannerDefinities::_mapCsvToDbDocentCustom;
 const std::map<QString, QString> SchoolScannerDefinities::_mapCsvToDbDocent = 
 {
     { "...buitengesloten",																				"studentenBuitenGesloten"	},
@@ -847,6 +849,7 @@ const std::map<QString, QString> SchoolScannerDefinities::_mapCsvToDbDocent =
     { "...privéfoto’s verspreid",                                                                   	"studentenSeksueleAfbeeldingenVerspreiden"	}
 };
 
+std::map<QString, QString> SchoolScannerDefinities::_mapCsvToDbStudentCustom;
 const std::map<QString, QString> SchoolScannerDefinities::_mapCsvToDbStudent = 
 {
     { "...buitengesloten",																				"ikBuitengesloten"	},
@@ -874,6 +877,15 @@ bool SchoolScannerDefinities::isColumnForCsvColumn(const QString & csvName, cons
 	if(_mapCsvToDb.contains(csvName) && _mapCsvToDb.at(csvName) == dbName)
 		return true;
 
-	return docent	?	_mapCsvToDbDocent.contains(csvName)		&& _mapCsvToDbDocent.at(csvName) 	== dbName
-					:	_mapCsvToDbStudent.contains(csvName) 	&& _mapCsvToDbStudent.at(csvName) 	== dbName;
+	if(			docent	? _mapCsvToDbDocentCustom.contains(csvName) :	_mapCsvToDbStudentCustom.contains(csvName))
+		return (docent	? _mapCsvToDbDocentCustom.at(csvName)		:	_mapCsvToDbStudentCustom.at(csvName)) == dbName;
+
+	return		docent	?	_mapCsvToDbDocent.contains(csvName)		&&	_mapCsvToDbDocent.at(csvName) 	== dbName
+						:	_mapCsvToDbStudent.contains(csvName) 	&&	_mapCsvToDbStudent.at(csvName) 	== dbName;
+}
+
+void SchoolScannerDefinities::addCsvToMaps(const QString &csvName, const QString &dbName, bool docent)
+{
+	if(docent)		_mapCsvToDbDocentCustom[csvName]	= dbName;
+	else			_mapCsvToDbStudentCustom[csvName]	= dbName;
 }

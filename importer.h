@@ -5,6 +5,7 @@
 #include "columndefinition.h"
 
 class SchoolScannerTable;
+class CustomCsvDbTable;
 class Labels;
 
 struct ImportColumn
@@ -55,10 +56,13 @@ public:
 	void		collectDbColumns();
 	void		processValues();
 
+	CustomCsvDbTable * customs() { return _customs; }
 
 	Q_INVOKABLE void		importCsv(const QString & csvFile);
 	Q_INVOKABLE bool		importCsv(QTextStream & csvStream, QChar sepa = ';');
 	Q_INVOKABLE void		clearColumns();
+	Q_INVOKABLE void		addCustomCsvToDb(const QString & csvName, const QString & dbTitle);
+	void		loadCustomCsvsFromDb();
 
 	QStringList columnTitles() const;
 
@@ -96,6 +100,7 @@ signals:
 private:
 	ImportColumns			_columns;
 	SchoolScannerTable	*	_table			= nullptr;
+	CustomCsvDbTable	*	_customs		= nullptr;
 	Labels				*	_labels			= nullptr;
 
 	QString					_schoolType		= "VO",

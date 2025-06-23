@@ -4,12 +4,16 @@
 #include <QUrl>
 #include <iostream>
 #include "schoolscannertable.h"
+#include "customcsvdbtable.h"
 #include "labels.h"
 
 Importer::Importer(SchoolScannerTable * table, Labels * labels)
-	: AbstractSizeProviderTable{table}, _table(table), _labels(labels)
+	: AbstractSizeProviderTable{table},
+	_table(table),
+	_customs(new CustomCsvDbTable(_table->db())),
+	_labels(labels)
 {
-
+	_customs->loadIntoDefinities();
 }
 
 int Importer::rowCount(const QModelIndex &) const
@@ -313,6 +317,23 @@ void Importer::clearColumns()
 	setCanImport(false);
 	setIgnoredCols({});
 	setNeedsReset(false);
+}
+
+void Importer::addCustomCsvToDb(const QString &csvName, const QString &dbTitle)
+{
+	setNeedsReset(true);
+
+	for(const ColumnDefinition * colDef : SchoolScannerDefinities::columnDefs())
+		if(colDef->friendlyName() == dbTitle)
+		{
+			_customs->appendRows({QVariantList({csvName, colDef->dbName(), type()})});
+
+			SchoolScannerDefinities::addCsvToMaps(csvName, colDef->dbName(), type() == "Docenten");
+			while(_ignoredCols.count(csvName))
+				_ignoredCols.remove(_ignoredCols.indexOf(csvName));
+			emit ignoredColsChanged();
+			return;
+		}
 }
 
 QStringList Importer::columnTitles() const

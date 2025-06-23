@@ -41,6 +41,8 @@ public:
 	void						registerFilter(FilterListModel * lm);
 	TableModelFiltered		*	filtered();
 
+	Database				*	db() { return _db;}
+
 signals:
 	void						filteredChanged();
 

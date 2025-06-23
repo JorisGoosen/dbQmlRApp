@@ -36,7 +36,7 @@ bool MainModel::loadDatabase(QString path)
 	emit loadInQml(_labels, _schoolTable);
 
 	if(_schoolTable->rowCount() > 0)
-		setQmlsShown({"Analyse", "FilteredData", "Data", "Import"});
+		setQmlsShown({"Analyse", "FilteredData", "Data", "Import", "Customs" });
 	else
 		setQmlsShown({"Import"});
 

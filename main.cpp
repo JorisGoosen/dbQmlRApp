@@ -20,6 +20,7 @@
 #include "mainmodel.h"
 #include <QDir>
 #include "schoolscannertable.h"
+#include "customcsvdbtable.h"
 #include <QTimer>
 #include <QQuickStyle>
 #ifdef WIN32
@@ -81,8 +82,10 @@ int main(int argc, char *argv[])
 	QObject::connect(&mainModel, &MainModel::loadInQml, &mainEng, [&](Labels * labels, SchoolScannerTable * table)
 	{
 
-		Importer * importer = new Importer(table, labels);
+		Importer			* importer	= new Importer(table, labels);
+
 		mainEng.rootContext()->setContextProperty("schoolScannerTable",			table);
+		mainEng.rootContext()->setContextProperty("customsTable",				importer->customs());
 		mainEng.rootContext()->setContextProperty("labels",						labels);
 		mainEng.rootContext()->setContextProperty("importer",					importer);
 

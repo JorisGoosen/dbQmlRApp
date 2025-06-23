@@ -110,6 +110,10 @@ FocusScope
 					width:		columnsList.width/5
 					text:		"Voeg toe"
 					groot:		false
+
+					onClicked:	{
+						importer.addCustomCsvToDb(modelData, control.displayText);
+					}
 				}
 			}
 		}

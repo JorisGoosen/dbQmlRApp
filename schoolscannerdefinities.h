@@ -13,8 +13,7 @@ public:
 
 	static bool									isColumnForCsvColumn(const QString & csvName, const QString & dbName, bool docent);
 
-	static void									addCsvToDb(const QString  & csvName, const QString & dbName, bool docent);
-	static void									initCustom();
+	static void									addCsvToMaps(const QString  & csvName, const QString & dbName, bool docent);
 
 private:
 	SchoolScannerDefinities() {}
@@ -25,6 +24,8 @@ private:
 	static const std::map<QString, QString>		_mapCsvToDb,
 												_mapCsvToDbStudent,
 												_mapCsvToDbDocent;
+	static std::map<QString, QString>			_mapCsvToDbStudentCustom,
+												_mapCsvToDbDocentCustom;
 };
 
 #endif // SCHOOLSCANNERDEFINITIES_H

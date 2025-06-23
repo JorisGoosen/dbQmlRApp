@@ -182,6 +182,8 @@ qt_add_qml_module(qmlR
 	NO_RESOURCE_TARGET_PATH
 	QML_FILES
 	QML_FILES MissingColumnsSelectah.qml
+	SOURCES customcsvdbtable.h customcsvdbtable.cpp
+	QML_FILES Customs.qml
 #    RESOURCES
 #        img/world.png
 )
