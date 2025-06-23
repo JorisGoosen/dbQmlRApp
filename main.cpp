@@ -39,19 +39,19 @@ int main(int argc, char *argv[])
 #ifdef WIN32
 	{
 		QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-		if(!env.contains("R_HOME"))
-			env.insert("R_HOME", "C:\\Program Files\\R\\R-4.3.1");
-
+		//if(!env.contains("R_HOME"))
+		env.insert("R_HOME", QDir::currentPath() + "\\R-4.3.1-schoolscanner");
 		env.insert("PATH", env.value("R_HOME") + "\\bin\\x64;" + env.value("PATH"));
 
 
-		if(!env.contains("R_LIBS_USER"))
-			env.insert("R_LIBS_USER", QDir::toNativeSeparators(QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation)) + "\\..\\R\\win-library\\4.3");
-		env.insert("R_LIBS",  env.value("R_LIBS_USER") + ";" + env.value("R_HOME") + "\\library");
+		//if(!env.contains("R_LIBS_USER"))
+		//	env.insert("R_LIBS_USER", QDir::toNativeSeparators(QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation)) + "\\..\\R\\win-library\\4.3");
+		//env.insert("R_LIBS",  env.value("R_LIBS_USER") + ";" + env.value("R_HOME") + "\\library");
+		env.insert("R_LIBS",  env.value("R_HOME") + "\\library");
 
-/*		std::cerr << "R_HOME=" << env.value("R_HOME").toStdString() <<
+		std::cerr << "R_HOME=" << env.value("R_HOME").toStdString() <<
 			"\nR_LIBS=" << env.value("R_LIBS").toStdString() <<
-			"\nPATH=" << env.value("PATH").toStdString() <<std::endl;*/
+			"\nPATH=" << env.value("PATH").toStdString() <<std::endl;
 	}
 #endif
 	QQmlApplicationEngine		mainEng;

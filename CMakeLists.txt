@@ -30,9 +30,9 @@ link_directories(${QT_LIBRARY_DIR})
 
 find_package(SQLite3 3.39.5 REQUIRED)
 
-if (WIN32)
-    set(ENV{PATH} "C:\\Program Files\\R\\R-4.3.1\\bin\\x64;$ENV{PATH}")
-endif()
+#//if (WIN32)#
+#	set(ENV{PATH} "..\\R-4.3.1-schoolscanner\\bin\\x64;$ENV{PATH}")
+#endif()
 
 message(STATUS "Collecting R info")
 execute_process(COMMAND R RHOME OUTPUT_VARIABLE R_HOME)
