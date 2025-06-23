@@ -76,7 +76,7 @@ void Importer::collectDbColumns()
 	if(missing)
 		std::cerr << "\",\"\" }," << std::endl;
 
-	setIgnoredCols(missendeKolommen.join(", "));
+	setIgnoredCols(missendeKolommen);
 
 	//See if we have to add schoolType or type
 	ColumnDefinition	*	schoolTypeCd	= nullptr,
@@ -311,7 +311,23 @@ void Importer::clearColumns()
 	endResetModel();
 
 	setCanImport(false);
-	setIgnoredCols("");
+	setIgnoredCols({});
+	setNeedsReset(false);
+}
+
+QStringList Importer::columnTitles() const
+{
+	static QStringList titles = []()
+	{
+		QStringList titles;
+
+		for(const ColumnDefinition * colDef : SchoolScannerDefinities::columnDefs())
+			titles.append(colDef->friendlyName());
+
+		return titles;
+	}();
+
+	return titles;
 }
 
 
@@ -355,15 +371,28 @@ void Importer::setCanImport(bool newCanImport)
 	emit canImportChanged();
 }
 
-QString Importer::ignoredCols() const
+QStringList Importer::ignoredCols() const
 {
 	return _ignoredCols;
 }
 
-void Importer::setIgnoredCols(const QString &newIgnoredCols)
+void Importer::setIgnoredCols(const QStringList &newIgnoredCols)
 {
 	if (_ignoredCols == newIgnoredCols)
 		return;
 	_ignoredCols = newIgnoredCols;
 	emit ignoredColsChanged();
+}
+
+bool Importer::needsReset() const
+{
+	return _needsReset;
+}
+
+void Importer::setNeedsReset(bool newNeedsReset)
+{
+	if (_needsReset == newNeedsReset)
+		return;
+	_needsReset = newNeedsReset;
+	emit needsResetChanged();
 }

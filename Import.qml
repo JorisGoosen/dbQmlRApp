@@ -79,16 +79,9 @@ ColumnLayout
 
 	}
 
-	TextArea
+	MissingColumnsSelectah
 	{
-		wrapMode:			Text.WrapAtWordBoundaryOrAnywhere
-		text:				importer.ignoredCols
-		visible:			importer.ignoredCols !== ""
-		implicitWidth:		column.width
-		width:				column.width
-		color:				controlForegroundNeutral
-		font.family:		fontFamilie
-		font.pixelSize:		14
+
 	}
 
 	RectButton
@@ -96,6 +89,15 @@ ColumnLayout
 		id:				importeerKnop
 		text:			"Importeer bestand"
 		onClicked:		importer.actuallyImport()
+		visible:		importer && importer.canImport && !importer.needsReset
+		implicitWidth:	column.width
+	}
+
+	RectButton
+	{
+		id:				resetKnop
+		text:			"Reset"
+		onClicked:		importer.clearColumns()
 		visible:		importer && importer.canImport
 		implicitWidth:	column.width
 	}

@@ -181,6 +181,7 @@ qt_add_qml_module(qmlR
             FilteredData.qml
 	NO_RESOURCE_TARGET_PATH
 	QML_FILES
+	QML_FILES MissingColumnsSelectah.qml
 #    RESOURCES
 #        img/world.png
 )

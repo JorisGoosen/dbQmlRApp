@@ -37,11 +37,12 @@ class Importer : public AbstractSizeProviderTable
 {
 	Q_OBJECT
 
-	Q_PROPERTY(QString	schoolType			READ schoolType			WRITE setSchoolType			NOTIFY schoolTypeChanged		)
-	Q_PROPERTY(QString	type				READ type				WRITE setType				NOTIFY typeChanged				)
-	Q_PROPERTY(bool		canImport			READ canImport			WRITE setCanImport			NOTIFY canImportChanged			)
-	Q_PROPERTY(QString	ignoredCols			READ ignoredCols		WRITE setIgnoredCols		NOTIFY ignoredColsChanged		)
-
+	Q_PROPERTY(QString		schoolType			READ schoolType			WRITE setSchoolType			NOTIFY schoolTypeChanged		)
+	Q_PROPERTY(QString		type				READ type				WRITE setType				NOTIFY typeChanged				)
+	Q_PROPERTY(bool			canImport			READ canImport			WRITE setCanImport			NOTIFY canImportChanged			)
+	Q_PROPERTY(QStringList	ignoredCols			READ ignoredCols		WRITE setIgnoredCols		NOTIFY ignoredColsChanged		)
+	Q_PROPERTY(bool			needsReset			READ needsReset			WRITE setNeedsReset			NOTIFY needsResetChanged		)
+	Q_PROPERTY(QStringList	columnTitles		READ columnTitles		CONSTANT		)
 
 public:
 	explicit Importer(SchoolScannerTable * table, Labels * labels);
@@ -59,6 +60,9 @@ public:
 	Q_INVOKABLE bool		importCsv(QTextStream & csvStream, QChar sepa = ';');
 	Q_INVOKABLE void		clearColumns();
 
+	QStringList columnTitles() const;
+
+
 	QString schoolType()	const;
 	QString type()			const;
 
@@ -66,8 +70,11 @@ public:
 	bool canImport() const;
 	void setCanImport(bool newCanImport);
 
-	QString ignoredCols() const;
-	void setIgnoredCols(const QString &newIgnoredCols);
+	QStringList ignoredCols() const;
+	void setIgnoredCols(const QStringList &newIgnoredCols);
+
+	bool needsReset() const;
+	void setNeedsReset(bool newNeedsReset);
 
 public slots:
 	void actuallyImport();
@@ -82,17 +89,20 @@ signals:
 	void	canImportChanged();
 	void	showData();
 
-	void ignoredColsChanged();
+	void	ignoredColsChanged();
+
+	void needsResetChanged();
 
 private:
 	ImportColumns			_columns;
-	SchoolScannerTable	*	_table	= nullptr;
-	Labels				*	_labels	= nullptr;
+	SchoolScannerTable	*	_table			= nullptr;
+	Labels				*	_labels			= nullptr;
 
 	QString					_schoolType		= "VO",
-							_type			= "Leerlingen",
-							_ignoredCols	= "";
-	bool					_canImport		= false;
+							_type			= "Leerlingen";
+	QStringList				_ignoredCols;
+	bool					_canImport		= false,
+							_needsReset;
 };
 
 #endif // IMPORTER_H
