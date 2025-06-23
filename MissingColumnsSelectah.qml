@@ -30,7 +30,7 @@ FocusScope
 				Text
 				{
 					text:					modelData
-					width:					(columnsList.width/6)*2
+					width:					(columnsList.width/4)*2
 					font.bold:				true
 					font.family:			fontFamilie
 					font.pixelSize:			14
@@ -38,12 +38,13 @@ FocusScope
 					horizontalAlignment:	Text.AlignHCenter
 					verticalAlignment:		Text.AlignVCenter
 					height:					toevoeger.height
+					visible:				!control.down
 				}
 
 				ComboBox
 				{
 					id:						control
-					width:					(columnsList.width/6)*3
+					width:					!down ? (columnsList.width/4) : columnsList.width
 					model:					importer.columnTitles
 					font.bold:				true
 					font.family:			fontFamilie
@@ -83,7 +84,8 @@ FocusScope
 						required property var model
 						required property int index
 
-						width: control.width
+						implicitWidth:		control.width
+
 						contentItem: Text
 						{
 							text:					delegate.model[control.textRole]
@@ -107,10 +109,10 @@ FocusScope
 				RectButton
 				{
 					id:			toevoeger
-					width:		columnsList.width/5
+					width:		columnsList.width/4
 					text:		"Voeg toe"
 					groot:		false
-
+					visible:	!control.down
 					onClicked:	{
 						importer.addCustomCsvToDb(modelData, control.displayText);
 					}
