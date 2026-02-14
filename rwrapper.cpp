@@ -251,11 +251,11 @@ void RWrapper::startRespiro(QList<int> channels, int runtimeSec, int channelRunt
 			"  channels = " + channelsStr  + "\n"
 			"  rc = RespiroControl$new(1:12)\n"
 			"  rc$start(\n"
-			"    runtime=.runtimeSec,\n"
-			"    channelRuntime=.channelRuntimeSec,\n"
-			"    CalibrateCO2=.calibrateCO2,\n"
-			"    Internalleaktest=.internalLeakTest,\n"
-			"    InitialHsFlush=.initialHsFlush\n)"
+			"    monitorRunTime=.runtimeSec,\n"
+			"    monitorCycleDuration=.channelRuntimeSec,\n"
+			"    calibrateCO2=.calibrateCO2,\n"
+			"    internalLeakTest=.internalLeakTest,\n"
+			"    initialHsFlush=.initialHsFlush\n)"
 			"\n},error=function(error) { print(sys.calls()); print(paste(error)); respiroGui_push_error(paste(error))}\n)"
 			;
 
