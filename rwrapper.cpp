@@ -249,7 +249,7 @@ void RWrapper::startRespiro(QList<int> channels, int runtimeSec, int channelRunt
 			"library(respiro)\n"
 			"withCallingHandlers(\n{\n"
 			"  channels = " + channelsStr  + "\n"
-			"  rc = RespiroControl$new(1:12)\n"
+			"  rc = RespiroControl$new(channels)\n"
 			"  rc$start(\n"
 			"    monitorRunTime=.runtimeSec,\n"
 			"    monitorCycleDuration=.channelRuntimeSec,\n"
