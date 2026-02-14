@@ -32,35 +32,34 @@ find_package(SQLite3 3.41.2 REQUIRED)
 
 
 message(STATUS "Collecting R info")
-execute_process(COMMAND R RHOME OUTPUT_VARIABLE R_HOME)
-
+execute_process(COMMAND "R RHOME" OUTPUT_VARIABLE R_HOME)
+message(STATUS "R_HOME: ${R_HOME}")
 set(NUM_TRUNC_CHARS 2)
 
-execute_process(COMMAND R CMD config --cppflags OUTPUT_VARIABLE RCPPFLAGS)
-string(SUBSTRING ${RCPPFLAGS} ${NUM_TRUNC_CHARS} -1 RCPPFLAGS)
-include_directories(${RCPPFLAGS})
 
-execute_process(COMMAND R CMD config --ldflags OUTPUT_VARIABLE RLDFLAGS)
-string(LENGTH ${RLDFLAGS} RLDFLAGS_LEN)
-string(STRIP ${RLDFLAGS} RLDFLAGS)
+execute_process(COMMAND "Rscript -e \"renv::status()\"" OUTPUT_VARIABLE RENV_STATUS)
+message(STATUS "RENV_STATUS: ${RENV_STATUS}")
 
-execute_process(COMMAND Rscript -e "Rcpp:::CxxFlags()" OUTPUT_VARIABLE RCPPINCL)
-string(SUBSTRING ${RCPPINCL} ${NUM_TRUNC_CHARS} -1 RCPPINCL)
-string(REPLACE "\"" "" RCPPINCL ${RCPPINCL}) #Rcpp::CxxFlags() adds quotes around the include directory, which is friendly and all but breaks include_directories
-include_directories(${RCPPINCL})
+execute_process(COMMAND Rscript -e "cat(find.package('Rcpp'))" OUTPUT_VARIABLE RCPP_LOCATION)
+#execute_process(COMMAND "R CMD config --cppflags" OUTPUT_VARIABLE RCPPFLAGS ECHO_OUTPUT_VARIABLE)
+set(RCPPFLAGS -I/Library/Frameworks/R.framework/Resources/include)
+string(SUBSTRING ${RCPPFLAGS} ${NUM_TRUNC_CHARS} -1 RCPPINCLUDE)
+message(STATUS "RCPPFLAGS: ${RCPPFLAGS} RCPPINCLUDE: ${RCPPINCLUDE}")
+include_directories(${RCPPINCLUDE})
 
-execute_process(COMMAND Rscript -e "Rcpp:::LdFlags()" OUTPUT_VARIABLE RCPPLIBS)
-if (${RCPPLIBS} MATCHES "[-][L]([^ ;])+")
-    string(SUBSTRING ${CMAKE_MATCH_0} ${NUM_TRUNC_CHARS} -1 RCPPLIBS_L)
-    link_directories(${RCPPLIBS_L} )
-endif()
+set(RCPPCPPFLAGS -I${RCPP_LOCATION}/include)
+include_directories(${RCPP_LOCATION}/include)
+message(STATUS "RCPP_LOCATION: ${RCPP_LOCATION} \nRCPPCPPFLAGS: ${RCPPCPPFLAGS}")
 
-if (${RCPPLIBS} MATCHES "[-][l][R]([^;])+")
-    string(SUBSTRING ${CMAKE_MATCH_0} ${NUM_TRUNC_CHARS} -1 RCPPLIBS_l)
-endif()
+#execute_process(COMMAND "R CMD config --ldflags" OUTPUT_VARIABLE RLDFLAGS ECHO_OUTPUT_VARIABLE)
+#string(LENGTH ${RLDFLAGS} RLDFLAGS_LEN)
+#string(STRIP ${RLDFLAGS} RLDFLAGS)
 
-execute_process(COMMAND Rscript -e "RInside:::CxxFlags()"
-                OUTPUT_VARIABLE RINSIDEINCL)
+set(RLDFLAGS "-L/opt/R/arm64/lib -F/Library/Frameworks/R.framework/.. -framework R -L/opt/R/arm64/lib -lbz2 -lz -licucore -ldl -lm -liconv")
+
+execute_process(COMMAND Rscript -e "RInside:::CxxFlags()" OUTPUT_VARIABLE RINSIDEINCL)
+			
+message(STATUS "RINSIDEINCL: ${RINSIDEINCL}")
 string(SUBSTRING ${RINSIDEINCL} ${NUM_TRUNC_CHARS} -1 RINSIDEINCL)
 include_directories(${RINSIDEINCL})
 
@@ -86,6 +85,7 @@ execute_process(COMMAND R CMD config BLAS_LIBS   OUTPUT_VARIABLE RBLAS)
 execute_process(COMMAND R CMD config LAPACK_LIBS OUTPUT_VARIABLE RLAPACK)
 
 set(CMAKE_CXX_FLAGS "-W -Wall -pedantic -Wextra ${CMAKE_CXX_FLAGS}")
+set(CMAKE_LD_FLAGS "${RLDFLAGS}")
 
 if (CMAKE_BUILD_TYPE STREQUAL "DEBUG" OR
     CMAKE_BUILD_TYPE STREQUAL "RelWithDebugInfo" )
@@ -161,7 +161,6 @@ target_link_libraries(
 	Qt6::Gui
 	${BLAS_LIBS}
 	${LAPACK_LIBS}
-	${RCPPLIBS_l}
 	${RINSIDELIBS_l}
 	${RLDFLAGS}
 	SQLite::SQLite3
