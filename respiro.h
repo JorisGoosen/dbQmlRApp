@@ -21,39 +21,39 @@ typedef std::map<QString, Feedback*>	FeedbackMap;
 class Respiro : public QObject
 {
 	Q_OBJECT
-	Q_PROPERTY(float		o2					READ o2					WRITE setO2					NOTIFY o2Changed				)
-	Q_PROPERTY(float		ch4					READ ch4				WRITE setCh4				NOTIFY ch4Changed				)
-	Q_PROPERTY(float		co2					READ co2				WRITE setCo2				NOTIFY co2Changed				)
-	Q_PROPERTY(float		pressure			READ pressure			WRITE setPressure			NOTIFY pressureChanged			)
-	Q_PROPERTY(float		temp1				READ temp1				WRITE setTemp1				NOTIFY temp1Changed				)
-	Q_PROPERTY(float		temp2				READ temp2				WRITE settemp2				NOTIFY temp2Changed				)
-	Q_PROPERTY(QString		error				READ error				WRITE setError				NOTIFY errorChanged				)
-	Q_PROPERTY(QString		warning				READ warning			WRITE setWarning			NOTIFY warningChanged			)
+	Q_PROPERTY(float		O2					READ O2					WRITE setO2							NOTIFY O2Changed				)
+	Q_PROPERTY(float		CH4					READ CH4				WRITE setCh4						NOTIFY CH4Changed				)
+	Q_PROPERTY(float		CO2					READ CO2				WRITE setCO2						NOTIFY CO2Changed				)
+	Q_PROPERTY(float		pressure			READ pressure			WRITE setPressure					NOTIFY pressureChanged			)
+	Q_PROPERTY(float		temp1				READ temp1				WRITE seTemperatureRespirometer		NOTIFY temp1Changed				)
+	Q_PROPERTY(float		temp2				READ temp2				WRITE setTemperatureSample			NOTIFY temp2Changed				)
+	Q_PROPERTY(QString		error				READ error				WRITE setError						NOTIFY errorChanged				)
+	Q_PROPERTY(QString		warning				READ warning			WRITE setWarning					NOTIFY warningChanged			)
+	
+	Q_PROPERTY(int			curChannel			READ curChannel			WRITE setCurChannel					NOTIFY curChannelChanged		)
+	Q_PROPERTY(QVariantList valvesOpened		READ valvesOpened											NOTIFY valvesOpenedChanged		) //List of booleans
+	Q_PROPERTY(bool			pumpOn				READ pumpOn				WRITE setPumpOn						NOTIFY pumpOnChanged			)
+	Q_PROPERTY(bool			O2On				READ O2On				WRITE setO2On						NOTIFY O2OnChanged				)
+	Q_PROPERTY(bool			CO2On				READ CO2On				WRITE setCO2On						NOTIFY CO2OnChanged				)
+	Q_PROPERTY(bool			CH4On				READ CH4On				WRITE setCh4On						NOTIFY CH4OnChanged				)
 
-	Q_PROPERTY(int			curChannel			READ curChannel			WRITE setCurChannel			NOTIFY curChannelChanged		)
-	Q_PROPERTY(QVariantList valvesOpened		READ valvesOpened									NOTIFY valvesOpenedChanged		) //List of booleans
-	Q_PROPERTY(bool			pumpOn				READ pumpOn				WRITE setPumpOn				NOTIFY pumpOnChanged			)
-	Q_PROPERTY(bool			o2On				READ o2On				WRITE setO2On				NOTIFY o2OnChanged				)
-	Q_PROPERTY(bool			co2On				READ co2On				WRITE setCo2On				NOTIFY co2OnChanged				)
-	Q_PROPERTY(bool			ch4On				READ ch4On				WRITE setCh4On				NOTIFY ch4OnChanged				)
+	Q_PROPERTY(bool			vent0				READ vent0				WRITE setVent0						NOTIFY vent0Changed				)
+	Q_PROPERTY(bool			vent1				READ vent1				WRITE setVent1						NOTIFY vent1Changed				)
+	Q_PROPERTY(bool			vent2				READ vent2				WRITE setVent2						NOTIFY vent2Changed				)
 
-	Q_PROPERTY(bool			vent0				READ vent0				WRITE setVent0				NOTIFY vent0Changed				)
-	Q_PROPERTY(bool			vent1				READ vent1				WRITE setVent1				NOTIFY vent1Changed				)
-	Q_PROPERTY(bool			vent2				READ vent2				WRITE setVent2				NOTIFY vent2Changed				)
+	Q_PROPERTY(bool			instantPause		READ instantPause		WRITE setInstantPause				NOTIFY instantPauseChanged		)
+	Q_PROPERTY(bool			delayedPause		READ delayedPause		WRITE setDelayedPause				NOTIFY delayedPauseChanged		)
+	Q_PROPERTY(bool			controlWanted		READ controlWanted		WRITE setControlWanted				NOTIFY controlWantedChanged		)
 
-	Q_PROPERTY(bool			instantPause		READ instantPause		WRITE setInstantPause		NOTIFY instantPauseChanged		)
-	Q_PROPERTY(bool			delayedPause		READ delayedPause		WRITE setDelayedPause		NOTIFY delayedPauseChanged		)
-	Q_PROPERTY(bool			controlWanted		READ controlWanted		WRITE setControlWanted		NOTIFY controlWantedChanged		)
+	Q_PROPERTY(QString		outputFolder		READ outputFolder		WRITE setOutputFolder				NOTIFY outputFolderChanged		)
+	Q_PROPERTY(QStringList	feedback			READ feedback												NOTIFY feedbackChanged			)
 
-	Q_PROPERTY(QString		outputFolder		READ outputFolder		WRITE setOutputFolder		NOTIFY outputFolderChanged		)
-	Q_PROPERTY(QStringList	feedback			READ feedback										NOTIFY feedbackChanged			)
-
-	Q_PROPERTY(QVariantList channelInit			READ channelInit		WRITE setChannelInit		NOTIFY channelInitChanged		) //List of booleans
-	Q_PROPERTY(int			runtimeSec			READ runtimeSec			WRITE setRuntimeSec			NOTIFY runtimeSecChanged		)
-	Q_PROPERTY(int			channelRuntimeSec	READ channelRuntimeSec	WRITE setChannelRuntimeSec	NOTIFY channelRuntimeSecChanged	)
-	Q_PROPERTY(bool			calibrateCO2		READ calibrateCO2		WRITE setCalibrateCO2		NOTIFY calibrateCO2Changed		)
-	Q_PROPERTY(bool			internalLeakTest	READ internalLeakTest	WRITE setInternalLeakTest	NOTIFY internalLeakTestChanged	)
-	Q_PROPERTY(bool			initialHsFlush		READ initialHsFlush		WRITE setInitialHsFlush		NOTIFY initialHsFlushChanged	)
+	Q_PROPERTY(QVariantList channelInit			READ channelInit		WRITE setChannelInit				NOTIFY channelInitChanged		) //List of booleans
+	Q_PROPERTY(int			runtimeSec			READ runtimeSec			WRITE setRuntimeSec					NOTIFY runtimeSecChanged		)
+	Q_PROPERTY(int			channelRuntimeSec	READ channelRuntimeSec	WRITE setChannelRuntimeSec			NOTIFY channelRuntimeSecChanged	)
+	Q_PROPERTY(bool			calibrateCO2		READ calibrateCO2		WRITE setCalibrateCO2				NOTIFY calibrateCO2Changed		)
+	Q_PROPERTY(bool			internalLeakTest	READ internalLeakTest	WRITE setInternalLeakTest			NOTIFY internalLeakTestChanged	)
+	Q_PROPERTY(bool			initialHsFlush		READ initialHsFlush		WRITE setInitialHsFlush				NOTIFY initialHsFlushChanged	)
 
 public:
 	explicit Respiro();
@@ -70,9 +70,9 @@ public:
 	TableModel	*		dataProc()		const	{ return _dataProc;	}
 	TableModel	*		msgs()			const	{ return _msgs;		}
 
-	float				o2()				const;
-	float				ch4()				const;
-	float				co2()				const;
+	float				O2()				const;
+	float				CH4()				const;
+	float				CO2()				const;
 	float				pressure()			const;
 	float				temp1()				const;
 	float				temp2()				const;
@@ -81,9 +81,9 @@ public:
 	int					curChannel()		const;
 	QVariantList		valvesOpened()		const;
 	bool				pumpOn()			const;
-	bool				o2On()				const;
-	bool				co2On()				const;
-	bool				ch4On()				const;
+	bool				O2On()				const;
+	bool				CO2On()				const;
+	bool				CH4On()				const;
 	bool				instantPause()		const;
 	bool				delayedPause()		const;
 	bool				controlWanted()		const;
@@ -103,16 +103,16 @@ public:
 
 	void				setO2(					float					newO2);
 	void				setCh4(					float					newCh4);
-	void				setCo2(					float					newCo2);
+	void				setCO2(					float					newCO2);
 	void				setPressure(			float					newPressure);
-	void				setTemp1(				float					newTemp1);
-	void				settemp2(				float					newTemp2);
+	void				seTemperatureRespirometer(				float					newTemp1);
+	void				setTemperatureSample(				float					newTemp2);
 	void				setError(				const QString	&		newError);
 	void				setWarning(				const QString	&		newWarning);
 	void				setCurChannel(			int						newCurChannel);
 	void				setPumpOn(				bool					newPumpOn);
 	void				setO2On(				bool					newO2On);
-	void				setCo2On(				bool					newCo2On);
+	void				setCO2On(				bool					newCO2On);
 	void				setCh4On(				bool					newCh4On);
 	void				setInstantPause(		bool					newInstantPause);
 	void				setDelayedPause(		bool					newDelayedPause);
@@ -136,20 +136,21 @@ public slots:
 	void				push_valve_state(		int		channel, bool valve_open);
 	void				push_vent_state(		int		vent,		bool vent_open);
 	void				push_pump_state(		bool	pump_on);
-	void				push_o2_state(			bool	o2_on);
-	void				push_co2_state(			bool	co2_on);
-	void				push_ch4_state(			bool	ch4_on);
+	void				push_O2_state(			bool	O2_on);
+	void				push_CO2_state(			bool	CO2_on);
+	void				push_CH4_state(			bool	CH4_on);
 	void				push_error(				QString	error);
 	void				push_warning(			QString	warning);
 	void				push_info(				QString info);
 	void				push_loading_feedback(	QString feedback, bool finished, QString error);
 	void				push_datafilepath(		QString datafilepath);
 	void				start();
+	void				receive_last_values( int relTime, int measuring_channel, float pressure, float flow, float temperatureRespirometer, float temperatureSample, float CO2_ADC, float O2_raw, float CH4_raw, float CO2_raw);
 
 signals:
-	void				o2Changed();
-	void				ch4Changed();
-	void				co2Changed();
+	void				O2Changed();
+	void				CH4Changed();
+	void				CO2Changed();
 	void				pressureChanged();
 	void				temp1Changed();
 	void				temp2Changed();
@@ -158,9 +159,9 @@ signals:
 	void				curChannelChanged();
 	void				valvesOpenedChanged();
 	void				pumpOnChanged();
-	void				o2OnChanged();
-	void				co2OnChanged();
-	void				ch4OnChanged();
+	void				O2OnChanged();
+	void				CO2OnChanged();
+	void				CH4OnChanged();
 	void				instantPauseChanged(bool);
 	void				delayedPauseChanged(bool);
 	void				controlWantedChanged(bool);
@@ -187,7 +188,7 @@ signals:
 			bool		internalLeakTest,
 			bool		initialHsFlush
 	);
-
+	
 private:
 	void				loadModels();
 
@@ -196,9 +197,9 @@ private:
 	TableModel		*	_dataProc	= nullptr,
 					*	_dataMeas	= nullptr,
 					*	_msgs		= nullptr;
-	int					_o2,
-						_ch4,
-						_co2,
+	int					_O2,
+						_CH4,
+						_CO2,
 						_pressure,
 						_curChannel,
 						_runtimeSec			= 365 * 24 * 60 * 60,
@@ -211,9 +212,9 @@ private:
 						_dataFilePath;
 	std::vector<bool>	_valvesOpened;
 	bool				_pumpOn,
-						_o2On,
-						_co2On,
-						_ch4On,
+						_O2On,
+						_CO2On,
+						_CH4On,
 						_instantPause		= false,
 						_delayedPause		= false,
 						_controlWanted		= false,

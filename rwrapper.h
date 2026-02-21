@@ -6,6 +6,7 @@
 
 void respiroGui_push_meas_data();
 void respiroGui_push_proc_data();
+void respiroGui_push_last_values( int relTime, int measuring_channel, float pressure, float flow, float temperatureRespirometer, float temperatureSample, float CO2_ADC, float O2_raw, float CH4_raw, float CO2_raw);
 void respiroGui_push_current_channel(	int			channel);
 void respiroGui_push_valve_state(		int			channel, bool valve_open);
 void respiroGui_push_pump_state(		bool		pump_on);
@@ -83,15 +84,15 @@ signals:
 	void prevOutputChanged();
 	void plotWidthChanged(int w);
 	void plotHeightChanged(int h);
-
+	void push_last_values( int relTime, int measuring_channel, float pressure, float flow, float temperatureRespirometer, float temperatureSample, float CO2_ADC, float O2_raw, float CH4_raw, float CO2_raw);
 	void push_meas_data();
 	void push_proc_data();
 	void push_current_channel(	int		channel);
 	void push_valve_state(		int		channel, bool valve_open);
 	void push_pump_state(		bool	pump_on);
-	void push_o2_state(			bool	o2_on);
-	void push_co2_state(		bool	co2_on);
-	void push_ch4_state(		bool	ch4_on);
+	void push_O2_state(			bool	O2_on);
+	void push_CO2_state(		bool	CO2_on);
+	void push_CH4_state(		bool	CH4_on);
 	void push_error(			QString	error);
 	void push_warning(			QString	warning);
 	void push_info(				QString	warning);

@@ -51,11 +51,11 @@ Item
 			width:			gasFeedback.boxWidth
 			height:			gasFeedback.height
 
-			text:			"co2"
-			value:			respiro.co2
-			checked:		respiro.co2On
+			text:			"CO2"
+			value:			respiro.CO2
+			checked:		respiro.CO2On
 
-			onClicked:		(newChecked)=>{ respiro.co2On = newChecked; }
+			onClicked:		(newChecked)=>{ respiro.CO2On = newChecked; }
 		}
 
 		HWFeedbackButton
@@ -63,11 +63,11 @@ Item
 			width:			gasFeedback.boxWidth
 			height:			gasFeedback.height
 
-			text:			"ch4"
-			value:			respiro.ch4
-			checked:		respiro.ch4On
+			text:			"CH4"
+			value:			respiro.CH4
+			checked:		respiro.CH4On
 
-			onClicked:		(newChecked)=>{ respiro.ch4On = newChecked; }
+			onClicked:		(newChecked)=>{ respiro.CH4On = newChecked; }
 		}
 
 		HWFeedbackButton
@@ -75,11 +75,11 @@ Item
 			width:			gasFeedback.boxWidth
 			height:			gasFeedback.height
 
-			text:			"o2"
-			value:			respiro.o2
-			checked:		respiro.o2On
+			text:			"O2"
+			value:			respiro.O2
+			checked:		respiro.O2On
 
-			onClicked:		(newChecked)=>{ respiro.o2On = newChecked; }
+			onClicked:		(newChecked)=>{ respiro.O2On = newChecked; }
 		}
 
 	}
@@ -331,7 +331,7 @@ Item
 		Text
 		{
 			id:					temperaturePressureText
-			text:				"<b>Temperature1:</b>&nbsp;" + respiro.temp1 + "<sup>c</sup><br><b>Temperature2:</b>&nbsp;" + respiro.temp2 + "<sup>c</sup><br><b>Pressure:</b>&nbsp;" + respiro.pressure + "bar"
+			text:				"<b>Temperature Respiro:</b>&nbsp;" + respiro.temp1 + "<sup>c</sup><br><b>Temperature Sample:</b>&nbsp;" + respiro.temp2 + "<sup>c</sup><br><b>Pressure:</b>&nbsp;" + respiro.pressure + "bar"
 			anchors.centerIn:	parent
 			color:				foregroundColor
 		}

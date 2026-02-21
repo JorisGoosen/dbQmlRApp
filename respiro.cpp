@@ -100,43 +100,43 @@ const QString  Respiro::dbPath() const
 	return QFileInfo(_dataFilePath).absoluteFilePath();
 }
 
-float Respiro::o2() const
+float Respiro::O2() const
 {
-	return _o2;
+	return _O2;
 }
 
 void Respiro::setO2(float newO2)
 {
-	if (_o2 == newO2)
+	if (_O2 == newO2)
 		return;
-	_o2 = newO2;
-	emit o2Changed();
+	_O2 = newO2;
+	emit O2Changed();
 }
 
-float Respiro::ch4() const
+float Respiro::CH4() const
 {
-	return _ch4;
+	return _CH4;
 }
 
 void Respiro::setCh4(float newCh4)
 {
-	if (_ch4 == newCh4)
+	if (_CH4 == newCh4)
 		return;
-	_ch4 = newCh4;
-	emit ch4Changed();
+	_CH4 = newCh4;
+	emit CH4Changed();
 }
 
-float Respiro::co2() const
+float Respiro::CO2() const
 {
-	return _co2;
+	return _CO2;
 }
 
-void Respiro::setCo2(float newCo2)
+void Respiro::setCO2(float newCO2)
 {
-	if (_co2 == newCo2)
+	if (_CO2 == newCO2)
 		return;
-	_co2 = newCo2;
-	emit co2Changed();
+	_CO2 = newCO2;
+	emit CO2Changed();
 }
 
 float Respiro::pressure() const
@@ -157,7 +157,7 @@ float Respiro::temp1() const
 	return _temp1;
 }
 
-void Respiro::setTemp1(float newTemp1)
+void Respiro::seTemperatureRespirometer(float newTemp1)
 {
 	if (qFuzzyCompare(_temp1, newTemp1))
 		return;
@@ -170,7 +170,7 @@ float Respiro::temp2() const
 	return _temp2;
 }
 
-void Respiro::settemp2(float newTemp2)
+void Respiro::setTemperatureSample(float newTemp2)
 {
 	if (qFuzzyCompare(_temp2, newTemp2))
 		return;
@@ -238,43 +238,43 @@ void Respiro::setPumpOn(bool newPumpOn)
 	emit pumpOnChanged();
 }
 
-bool Respiro::o2On() const
+bool Respiro::O2On() const
 {
-	return _o2On;
+	return _O2On;
 }
 
 void Respiro::setO2On(bool newO2On)
 {
-	if (_o2On == newO2On)
+	if (_O2On == newO2On)
 		return;
-	_o2On = newO2On;
-	emit o2OnChanged();
+	_O2On = newO2On;
+	emit O2OnChanged();
 }
 
-bool Respiro::co2On() const
+bool Respiro::CO2On() const
 {
-	return _co2On;
+	return _CO2On;
 }
 
-void Respiro::setCo2On(bool newCo2On)
+void Respiro::setCO2On(bool newCO2On)
 {
-	if (_co2On == newCo2On)
+	if (_CO2On == newCO2On)
 		return;
-	_co2On = newCo2On;
-	emit co2OnChanged();
+	_CO2On = newCO2On;
+	emit CO2OnChanged();
 }
 
-bool Respiro::ch4On() const
+bool Respiro::CH4On() const
 {
-	return _ch4On;
+	return _CH4On;
 }
 
 void Respiro::setCh4On(bool newCh4On)
 {
-	if (_ch4On == newCh4On)
+	if (_CH4On == newCh4On)
 		return;
-	_ch4On = newCh4On;
-	emit ch4OnChanged();
+	_CH4On = newCh4On;
+	emit CH4OnChanged();
 }
 
 bool Respiro::instantPause() const
@@ -368,19 +368,19 @@ void Respiro::push_pump_state(bool pump_on)
 	setPumpOn(pump_on);
 }
 
-void Respiro::push_o2_state(bool o2_on)
+void Respiro::push_O2_state(bool O2_on)
 {
-	setO2(o2_on);
+	setO2(O2_on);
 }
 
-void Respiro::push_co2_state(bool co2_on)
+void Respiro::push_CO2_state(bool CO2_on)
 {
-	setCo2(co2_on);
+	setCO2(CO2_on);
 }
 
-void Respiro::push_ch4_state(bool ch4_on)
+void Respiro::push_CH4_state(bool CH4_on)
 {
-	setCh4(ch4_on);
+	setCh4(CH4_on);
 }
 
 void Respiro::push_error(QString error)
@@ -496,6 +496,20 @@ void Respiro::push_loading_feedback(QString feedback, bool finished, QString err
 void Respiro::start()
 {
 	emit startSignal(initChannelsInts(), _runtimeSec, _channelRuntimeSec, _calibrateCO2, _internalLeakTest, _initialHsFlush);
+	
+	
+}
+
+void Respiro::receive_last_values(int relTime, int measuring_channel, float pressure, float flow, float temperatureRespirometer, float temperatureSample, float CO2_ADC, float O2_raw, float CH4_raw, float CO2_raw)
+{
+	seTemperatureRespirometer(	temperatureRespirometer		);
+	setTemperatureSample(		temperatureSample			);
+	setRuntimeSec(				relTime						);
+	setCurChannel(				measuring_channel			);
+	setPressure(				pressure					);
+	setCh4(						CH4_raw						);
+	setCO2(						CO2_raw						);
+	setO2(						O2_raw						);
 }
 
 const QString	&	 Respiro::outputFolder() const

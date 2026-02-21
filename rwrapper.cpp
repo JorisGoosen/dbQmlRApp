@@ -9,17 +9,18 @@ RWrapper::RWrapper(QObject *parent)
 	assert(!_singleton);
 	_singleton = this;
 
-	(*R)["respiroGui_push_meas_data"]				= Rcpp::InternalFunction(&respiroGui_push_meas_data);
-	(*R)["respiroGui_push_proc_data"]				= Rcpp::InternalFunction(&respiroGui_push_proc_data);
 	(*R)["respiroGui_push_current_channel"]			= Rcpp::InternalFunction(&respiroGui_push_current_channel);
+	(*R)["respiroGui_push_last_values"]				= Rcpp::InternalFunction(&respiroGui_push_last_values);
 	(*R)["respiroGui_push_valve_state"]				= Rcpp::InternalFunction(&respiroGui_push_valve_state);
 	(*R)["respiroGui_push_pump_state"]				= Rcpp::InternalFunction(&respiroGui_push_pump_state);
-	(*R)["respiroGui_push_o2_state"]				= Rcpp::InternalFunction(&respiroGui_push_o2_state);
+	(*R)["respiroGui_push_meas_data"]				= Rcpp::InternalFunction(&respiroGui_push_meas_data);
+	(*R)["respiroGui_push_proc_data"]				= Rcpp::InternalFunction(&respiroGui_push_proc_data);
 	(*R)["respiroGui_push_co2_state"]				= Rcpp::InternalFunction(&respiroGui_push_co2_state);
 	(*R)["respiroGui_push_ch4_state"]				= Rcpp::InternalFunction(&respiroGui_push_ch4_state);
+	(*R)["respiroGui_push_o2_state"]				= Rcpp::InternalFunction(&respiroGui_push_o2_state);
 	(*R)["respiroGui_push_error"]					= Rcpp::InternalFunction(&respiroGui_push_error);
-	(*R)["respiroGui_push_warning"]					= Rcpp::InternalFunction(&respiroGui_push_warning);
 	(*R)["respiroGui_push_info"]					= Rcpp::InternalFunction(&respiroGui_push_info);
+	(*R)["respiroGui_push_warning"]					= Rcpp::InternalFunction(&respiroGui_push_warning);
 	(*R)["respiroGui_push_datafilepath"]			= Rcpp::InternalFunction(&respiroGui_push_datafilepath);
 	(*R)["respiroGui_poll_instant_pause"]			= Rcpp::InternalFunction(&respiroGui_poll_instant_pause);
 	(*R)["respiroGui_poll_delayed_pause"]			= Rcpp::InternalFunction(&respiroGui_poll_delayed_pause);
@@ -125,6 +126,13 @@ void respiroGui_push_proc_data()
 	emit RWrapper::singleton()->push_proc_data();
 }
 
+
+void respiroGui_push_last_values( int relTime, int measuring_channel, float pressure, float flow, float temperatureRespirometer, float temperatureSample, float CO2_ADC, float O2_raw, float CH4_raw, float CO2_raw)
+{
+	emit RWrapper::singleton()->push_last_values(relTime, measuring_channel, pressure, flow, temperatureRespirometer, temperatureSample, CO2_ADC, O2_raw, CH4_raw, CO2_raw);
+}
+
+
 void respiroGui_push_current_channel(	int			channel)
 {
 	emit RWrapper::singleton()->push_current_channel(channel);
@@ -140,19 +148,19 @@ void respiroGui_push_pump_state( bool		pump_on)
 	emit RWrapper::singleton()->push_pump_state(pump_on);
 }
 
-void respiroGui_push_o2_state(			bool		o2_on)
+void respiroGui_push_o2_state(			bool		O2_on)
 {
-	emit RWrapper::singleton()->push_o2_state(o2_on);
+	emit RWrapper::singleton()->push_O2_state(O2_on);
 }
 
-void respiroGui_push_co2_state(			bool		co2_on)
+void respiroGui_push_co2_state(			bool		CO2_on)
 {
-	emit RWrapper::singleton()->push_co2_state(co2_on);
+	emit RWrapper::singleton()->push_CO2_state(CO2_on);
 }
 
-void respiroGui_push_ch4_state(			bool		ch4_on)
+void respiroGui_push_ch4_state(			bool		CH4_on)
 {
-	emit RWrapper::singleton()->push_ch4_state(ch4_on);
+	emit RWrapper::singleton()->push_CH4_state(CH4_on);
 }
 
 void respiroGui_push_error(				std::string	error)
