@@ -20,16 +20,17 @@ int TableModel::columnCount(const QModelIndex &) const
 
 QVariant TableModel::data(const QModelIndex & index, int role) const
 {
-	if(index.column() < 0 || index.column() >= _columnDefinitions.size())
+	const int rowC = rowCount();
+	if(index.column() < 0 || index.column() >= int(_columnDefinitions.size()))
 		return QVariant();
 
-	if(index.row() < 0 || index.row() >= rowCount())
+	if(index.row() < 0 || index.row() >= rowC)
 		return QVariant();
 
 	if(role != Qt::DisplayRole)
 		return QVariant();
 
-	return _db->tableValue(_tableName, _columnDefinitions[index.column()], index.row());
+	return _db->tableValue(_tableName, _columnDefinitions[index.column()], _upsideDown ? rowC - (1+index.row()) : index.row());
 }
 
 QVariant TableModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -38,28 +39,26 @@ QVariant TableModel::headerData(int section, Qt::Orientation orientation, int ro
 		return QVariant();
 
 	if(orientation == Qt::Vertical)
-		return section;
+		return !_upsideDown ? section : rowCount() - (1+section);
 
-	return section < 0 || section >= _columnDefinitions.size() ? QVariant() : _columnDefinitions[section]->friendlyName();
+	return section < 0 || section >= int(_columnDefinitions.size()) ? QVariant() : _columnDefinitions[section]->friendlyName();
 }
 
 void TableModel::appendRows(const std::vector<QVariantList> & values, const ColumnDefinitions * columnDefinitions)
 {
 	size_t rowC = rowCount();
-	beginInsertRows(QModelIndex(), rowC, rowC + values.size());
+	if(_upsideDown)		beginResetModel();
+	else				beginInsertRows(QModelIndex(), rowC, rowC + values.size());
+	
 	_db->tableWriteRows(_tableName, columnDefinitions ? *columnDefinitions : _columnDefinitions, values);
-	endInsertRows();
+	
+	if(_upsideDown)		endResetModel();
+	else				endInsertRows();
 }
 
-QString TableModel::dbplyrCode(bool doInit) const
+QString TableModel::dbplyrCode() const
 {
 	QStringList code;
-
-	if(doInit)
-		code.append({
-							"library(dplyr);",
-							"con <- DBI::dbConnect(RSQLite::SQLite(), dbname = '" + QString::fromStdString(_db->dbFile()) + "');"
-					});
 
 	code.append({
 							_tableName + "sql <- tbl(con, '"+_tableName+"');",
@@ -86,7 +85,6 @@ int TableModel::columnWidthProvider(int col)
 
 int TableModel::rowHeightProvider(int row)
 {
-
 
 	QString header = headerData(row, Qt::Vertical).toString();
 
@@ -135,4 +133,19 @@ void TableModel::setCellMargin(int newCellMargin)
 		return;
 	_cellMargin = newCellMargin;
 	emit cellMarginChanged();
+}
+
+bool TableModel::upsideDown() const
+{
+	return _upsideDown;
+}
+
+void TableModel::setUpsideDown(bool newUpsideDown)
+{
+	if (_upsideDown == newUpsideDown)
+		return;
+	beginResetModel();
+	_upsideDown = newUpsideDown;
+	emit upsideDownChanged();
+	endResetModel();
 }

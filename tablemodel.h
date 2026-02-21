@@ -14,6 +14,7 @@ class TableModel : public QAbstractTableModel
 
 	Q_PROPERTY(QFont	metricFont			READ metricFont			WRITE setMetricFont			NOTIFY metricFontChanged		)
 	Q_PROPERTY(int		cellMargin			READ cellMargin			WRITE setCellMargin			NOTIFY cellMarginChanged		)
+	Q_PROPERTY(bool		upsideDown			READ upsideDown			WRITE setUpsideDown			NOTIFY upsideDownChanged		)
 
 
 public:
@@ -28,7 +29,7 @@ public:
 	const QString			&	tableName()			const { return _tableName; }
 	const ColumnDefinitions	&	columnDefinitions()	const { return _columnDefinitions;}
 
-	QString		dbplyrCode(bool doInit=true) const;
+	QString		dbplyrCode() const;
 
 	Q_INVOKABLE int			columnWidthProvider(int col);
 	Q_INVOKABLE int			rowHeightProvider(int row);
@@ -39,10 +40,17 @@ public:
 	int cellMargin() const;
 	void setCellMargin(int newCellMargin);
 
+	bool upsideDown() const;
+	void setUpsideDown(bool newUpsideDown);
+	
+	void refresh() { beginResetModel(); endResetModel(); };
+	
 signals:
 	void	metricFontChanged();
 	void	cellMarginChanged();
 
+	void upsideDownChanged();
+	
 private:
 	Database			*   _db;
 	QString					_tableName;
@@ -54,7 +62,7 @@ private:
 	QTextOption				_textOption;
 	int						_maxWidthCol = 250,
 							_cellMargin = 20;
-
+	bool					_upsideDown = true;
 };
 
 #endif // TABLEMODEL_H

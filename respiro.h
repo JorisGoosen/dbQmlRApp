@@ -2,7 +2,6 @@
 #define RESPIRO_H
 
 #include "tablemodel.h"
-#include "labels.h"
 #include <QObject>
 
 struct Feedback
@@ -70,7 +69,6 @@ public:
 	TableModel	*		dataMeas()		const	{ return _dataMeas;	}
 	TableModel	*		dataProc()		const	{ return _dataProc;	}
 	TableModel	*		msgs()			const	{ return _msgs;		}
-	Labels		*		labels()		const	{ return _labels;	}
 
 	float				o2()				const;
 	float				ch4()				const;
@@ -90,7 +88,7 @@ public:
 	bool				delayedPause()		const;
 	bool				controlWanted()		const;
 	const QString	&	outputFolder()		const;
-	const QString	&	dbPath()			const;
+	const QString		dbPath()			const;
 	QStringList			feedback()			const;
 	QVariantList		channelInit()		const;
 	QList<int>			initChannelsInts()	const;
@@ -132,8 +130,8 @@ public:
 
 public slots:
 	void				setChannelInit(		int index, bool checked);
-	void				push_meas_data(			int		channel, float o2, float ch4, float co2, float pressure, float temp1, float temp2, int phase);
-	void				push_proc_data(			int		channel, float o2, float ch4, float co2);
+	void				push_meas_data();
+	void				push_proc_data();
 	void				push_current_channel(	int		channel);
 	void				push_valve_state(		int		channel, bool valve_open);
 	void				push_vent_state(		int		vent,		bool vent_open);
@@ -195,7 +193,6 @@ private:
 
 private:
 	Database		*	_db			= nullptr;
-	Labels			*	_labels		= nullptr;
 	TableModel		*	_dataProc	= nullptr,
 					*	_dataMeas	= nullptr,
 					*	_msgs		= nullptr;
@@ -211,7 +208,7 @@ private:
 	QString				_error,
 						_warning,
 						_outputFolder,
-						_datafilepath;
+						_dataFilePath;
 	std::vector<bool>	_valvesOpened;
 	bool				_pumpOn,
 						_o2On,

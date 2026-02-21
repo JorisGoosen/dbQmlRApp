@@ -99,15 +99,8 @@ Item
 		}
 	}
 
-	TableView
+	ScrollView
 	{
-		id:				mainTableView
-		clip:			true
-		reuseItems:		true
-
-		columnWidthProvider:	function() { return -1; }
-		rowHeightProvider: 		function() { return -1; }
-
 		anchors
 		{
 			top:	horizontalHeader.bottom
@@ -115,29 +108,41 @@ Item
 			right:	parent.right
 			bottom:	parent.bottom
 		}
-
-		delegate: Rectangle
+		
+		TableView
 		{
-			implicitWidth:	100
-			implicitHeight: 50
-			color:			"transparent"
-			border.color:	foregroundColor
-			border.width:	1
+			id:				mainTableView
+			clip:			true
+			reuseItems:		true
+	
+			columnWidthProvider:	function() { return -1; }
+			rowHeightProvider: 		function() { return -1; }
+	
 
-			Text
+	
+			delegate: Rectangle
 			{
-				text:					display;
-				anchors.centerIn:		parent
-				color:					foregroundColor
-				wrapMode:				Text.WrapAtWordBoundaryOrAnywhere
-				horizontalAlignment:	Text.AlignHCenter
-				verticalAlignment:		Text.AlignVCenter
-				height:					contentHeight  + generalMargin
-				anchors
+				implicitWidth:	100
+				implicitHeight: 50
+				color:			"transparent"
+				border.color:	foregroundColor
+				border.width:	1
+	
+				Text
 				{
-					left:		parent.left
-					right:		parent.right
-					margins:	model.cellMargin / 2
+					text:					display;
+					anchors.centerIn:		parent
+					color:					foregroundColor
+					wrapMode:				Text.WrapAtWordBoundaryOrAnywhere
+					horizontalAlignment:	Text.AlignHCenter
+					verticalAlignment:		Text.AlignVCenter
+					height:					contentHeight  + generalMargin
+					anchors
+					{
+						left:		parent.left
+						right:		parent.right
+						margins:	model.cellMargin / 2
+					}
 				}
 			}
 		}

@@ -13,23 +13,31 @@ Respiro::Respiro()
 	typedef ColumnDefinition	CD;
 
 	_dataMeasuredDefs = {
-		new CD("Channel",			"channel",	ColumnType::NumInt),
-		new CD("O<sub>2</sub>",		"o2",		ColumnType::NumDbl),
-		new CD("CH<sub>4</sub>",	"ch4",		ColumnType::NumDbl),
-		new CD("CO<sub>2</sub>",	"co2",		ColumnType::NumDbl),
-		new CD("Pressure",			"pressure",	ColumnType::NumDbl),
-		new CD("Temp. 1",			"temp1",	ColumnType::NumDbl),
-		new CD("Temp. 2",			"temp2",	ColumnType::NumDbl),
-		new CD("Phase",				"phase",	ColumnType::NumInt),
-		new CD("Timestamp",			"utc",		ColumnType::DateTime)
+		new CD("ID",					"id",				ColumnType::PrimaryKey),
+		new CD("Timestamp",				"DateTime",			ColumnType::DateTime),
+		new CD("Cycle",					"cycle",			ColumnType::NumInt),
+		new CD("Phase",					"phase",			ColumnType::Text),
+		new CD("Channel ID",			"channelID",		ColumnType::NumInt),
+		new CD("Flow ml min",			"flow_ml_min",		ColumnType::NumDbl),
+		new CD("O<sub>2</sub>%%",		"O2_perc",			ColumnType::NumDbl),
+		new CD("CH<sub>4</sub> ppm",	"CH4_ppm",			ColumnType::NumDbl),
+		new CD("CO<sub>2</sub> ppm",	"CO2_ppm",			ColumnType::NumDbl),
+		new CD("Pressure mBar",			"p_mBar",			ColumnType::NumDbl),
+		new CD("Temperature",			"temp_C",			ColumnType::NumDbl),
+		new CD("Sample temperature",	"sampleTemp_C",		ColumnType::NumDbl),
+		new CD("Internal Vol. ml",		"intVol_ml",		ColumnType::NumDbl),
+		new CD("hsVol ml",				"hsVol_ml",			ColumnType::NumDbl)
 	};
 
 	_dataProcessedDefs = {
-		new CD("Channel",				"channel",	ColumnType::NumInt),
-		new CD("O<sub>2</sub> prod.",	"o2",		ColumnType::NumDbl),
-		new CD("CH<sub>4</sub> prod.",	"ch4",		ColumnType::NumDbl),
-		new CD("CO<sub>2</sub> prod.",	"co2",		ColumnType::NumDbl),
-		new CD("Timestamp",				"utc",		ColumnType::DateTime)
+		new CD("ID",					"id",				ColumnType::PrimaryKey),
+		new CD("Channel",				"cycle",			ColumnType::NumInt),
+		new CD("Channel",				"channelID",		ColumnType::NumInt),
+		new CD("Timestamp",				"DateTimeFrom",		ColumnType::DateTime),
+		new CD("Timestamp",				"DateTimeTo",		ColumnType::DateTime),
+		new CD("O<sub>2</sub> prod.",	"O2_umol_h",		ColumnType::NumDbl),
+		new CD("CH<sub>4</sub> prod.",	"CH4_umol_h",		ColumnType::NumDbl),
+		new CD("CO<sub>2</sub> prod.",	"CO2_umol_h",		ColumnType::NumDbl),
 	};
 
 	_msgsDefs =
@@ -43,26 +51,26 @@ Respiro::Respiro()
 void Respiro::loadModels()
 {
 	_db			= new Database(dbPath().toStdString());
-	_labels		= new Labels(		_db,							this);
-	_dataMeas	= new TableModel(	_db, "RespiroDataMeasured",		_dataMeasuredDefs);
-	_dataProc	= new TableModel(	_db, "RespiroDataProcessed",	_dataProcessedDefs);
-	_msgs		= new TableModel(	_db, "RespiroMsgs",				_msgsDefs);
+	_dataMeas	= new TableModel(	_db, "measurements",			_dataMeasuredDefs);
+	_dataProc	= new TableModel(	_db, "prod",					_dataProcessedDefs);
+	//_msgs		= new TableModel(	_db, "RespiroMsgs",				_msgsDefs);
 
 	emit modelsLoaded();
 }
 
 void Respiro::startSession()
 {
-	QDir	newOutputFolder = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation).at(0);
+	QDir	newOutputFolder = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation).at(0); //should be related somehow to datafilepath but isnt
 	QString	newFolder		= QDateTime::currentDateTimeUtc().toString("yyyy.MM.dd_hhmm");
 
 	newOutputFolder.mkpath(newFolder);
 
 	setOutputFolder(QDir(newOutputFolder.filePath(newFolder)).absolutePath());
 
-
-	loadModels();
 	start();
+
+	//loadModels();
+	//Instead we will wait until respiro creates a database file!
 }
 
 
@@ -86,14 +94,11 @@ QString Respiro::feedbackError(const QString & feedbackMsg)
 	return _feedbackMap.contains(feedbackMsg) ? _feedbackMap[feedbackMsg]->error : "???";
 }
 
-const QString & Respiro::dbPath() const
+const QString  Respiro::dbPath() const
 {
-	static QString dbPath;
-	dbPath = QDir(_outputFolder).absoluteFilePath("respiro.sqlite");
-	return dbPath;
+	assert(_dataFilePath != "");
+	return QFileInfo(_dataFilePath).absoluteFilePath();
 }
-
-
 
 float Respiro::o2() const
 {
@@ -311,14 +316,14 @@ void Respiro::setControlWanted(bool newControlWanted)
 	emit controlWantedChanged(_controlWanted);
 }
 
-void Respiro::push_meas_data(int channel, float o2, float ch4, float co2, float pressure, float temp1, float temp2, int phase)
+void Respiro::push_meas_data()
 {
-	dataMeas()->appendRows({{channel, o2, ch4, co2, pressure, temp1, temp2, phase, QDateTime::currentDateTimeUtc().toSecsSinceEpoch()}}, &_dataMeasuredDefs);
+	dataMeas()->refresh();
 }
 
-void Respiro::push_proc_data(int channel, float o2, float ch4, float co2)
+void Respiro::push_proc_data()
 {
-	dataMeas()->appendRows({{channel, o2, ch4, co2, QDateTime::currentDateTimeUtc().toSecsSinceEpoch()}}, &_dataMeasuredDefs);
+	dataProc()->refresh();
 }
 
 void Respiro::push_current_channel(int channel)
@@ -380,24 +385,79 @@ void Respiro::push_ch4_state(bool ch4_on)
 
 void Respiro::push_error(QString error)
 {
+	static QStringList backlog; 
+	
 	std::cerr << error.toStdString() << std::endl;
-	_msgs->appendRows({{"Error", error, QDateTime::currentDateTimeUtc().toSecsSinceEpoch()}}, &_msgsDefs);
+	
+	if(_msgs)
+	{
+		if(backlog.size())
+		{
+			for(QString & m : backlog)
+				_msgs->appendRows({{"Error", m, 0}});
+			backlog.clear();
+		}
+		
+		_msgs->appendRows({{"Error", error, QDateTime::currentSecsSinceEpoch()}}, &_msgsDefs);
+	}
+	else
+	{
+		backlog << error;	
+	}
+	
 }
 
 void Respiro::push_warning(QString warning)
 {
+	static QStringList backlog; 
+	
 	std::cout << warning.toStdString() << std::endl;
-	_msgs->appendRows({{"Warning", warning, QDateTime::currentDateTimeUtc().toSecsSinceEpoch()}}, &_msgsDefs);
+	if(_msgs)
+	{
+		if(backlog.size())
+		{
+			for(QString & m : backlog)
+				_msgs->appendRows({{"Warning", m, 0}});
+			backlog.clear();
+		}
+		
+		_msgs->appendRows({{"Warning", warning, QDateTime::currentSecsSinceEpoch()}}, &_msgsDefs);
+	}
+	else
+	{
+		backlog << warning;	
+	}
 }
 
 void Respiro::push_info(QString info)
 {
-	_msgs->appendRows({{"Info", info, QDateTime::currentDateTimeUtc().toSecsSinceEpoch()}}, &_msgsDefs);
+	static QStringList backlog; 
+	
+	if(_msgs)
+	{
+		if(backlog.size())
+		{
+			for(QString & m : backlog)
+				_msgs->appendRows({{"Info", m, 0}});
+			backlog.clear();
+		}
+		
+		_msgs->appendRows({{"Info", info, QDateTime::currentSecsSinceEpoch()}}, &_msgsDefs);
+	}
+	else
+	{
+		backlog << info;	
+	}
 }
 
 void Respiro::push_datafilepath(QString path)
 {
-	_datafilepath = path;
+	_dataFilePath = path;
+	
+	loadModels();
+	
+	if(_msgs)
+		_msgs->appendRows({{"Info", "Datafile is at '" + _dataFilePath + "'", QDateTime::currentSecsSinceEpoch()}}, &_msgsDefs);
 }
 
 void Respiro::push_loading_feedback(QString feedback, bool finished, QString error)

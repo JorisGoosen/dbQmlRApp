@@ -97,7 +97,6 @@ endif()
 #Set up our actual application
 set(sources
 	main.cpp
-	labels.cpp
 	respiro.cpp
 	rwrapper.cpp
 	database.cpp
@@ -109,7 +108,6 @@ set(sources
 )
 
 set(headers
-	labels.h
 	respiro.h
 	settings.h
 	rwrapper.h

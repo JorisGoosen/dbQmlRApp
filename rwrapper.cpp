@@ -114,15 +114,15 @@ void RWrapper::setPlotHeight(int newPlotHeight)
 	emit plotHeightChanged(_plotHeight);
 }
 
-void respiroGui_push_meas_data(int channel, float o2, float ch4, float co2, float pressure, float temp1, float temp2, int phase)
+void respiroGui_push_meas_data()
 {
-	emit RWrapper::singleton()->push_meas_data(channel, o2, ch4, co2, pressure, temp1, temp2, phase);
+	emit RWrapper::singleton()->push_meas_data();
 }
 
 
-void respiroGui_push_proc_data(int channel, float o2, float ch4, float co2)
+void respiroGui_push_proc_data()
 {
-	emit RWrapper::singleton()->push_proc_data(channel, o2, ch4, co2);
+	emit RWrapper::singleton()->push_proc_data();
 }
 
 void respiroGui_push_current_channel(	int			channel)

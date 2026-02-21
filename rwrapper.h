@@ -4,8 +4,8 @@
 #include <QObject>
 #include <RInside.h>
 
-void respiroGui_push_meas_data(			int			channel, float o2, float ch4, float co2, float pressure, float temp1, float temp2, int phase);
-void respiroGui_push_proc_data(			int			channel, float o2, float ch4, float co2);
+void respiroGui_push_meas_data();
+void respiroGui_push_proc_data();
 void respiroGui_push_current_channel(	int			channel);
 void respiroGui_push_valve_state(		int			channel, bool valve_open);
 void respiroGui_push_pump_state(		bool		pump_on);
@@ -84,8 +84,8 @@ signals:
 	void plotWidthChanged(int w);
 	void plotHeightChanged(int h);
 
-	void push_meas_data(			int		channel, float o2, float ch4, float co2, float pressure, float temp1, float temp2, int phase);
-	void push_proc_data(			int		channel, float o2, float ch4, float co2);
+	void push_meas_data();
+	void push_proc_data();
 	void push_current_channel(	int		channel);
 	void push_valve_state(		int		channel, bool valve_open);
 	void push_pump_state(		bool	pump_on);

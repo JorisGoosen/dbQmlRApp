@@ -1,5 +1,7 @@
 #include "database.h"
 #include <iostream>
+#include <QDateTime>
+#include <QThread>
 
 Database::Database(const std::filesystem::path & file, QObject *parent)
 	: QObject{parent}
@@ -17,9 +19,9 @@ void Database::setDbFile(const std::filesystem::path & file)
 	assert(_dbFile == "");
 	_dbFile = file;
 
-	if(!std::filesystem::exists(dbFile()))
-		create();
-	 else
+	//if(!std::filesystem::exists(dbFile()))
+	//	create();
+	// else
 		load();
 }
 
@@ -56,7 +58,7 @@ void Database::load()
   if(!std::filesystem::exists(dbFile()))
     throw std::runtime_error("Trying to load '" + dbFile() + "' but it doesn't exist!");
 
-  int ret = sqlite3_open_v2(dbFile().c_str(), &_db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_FULLMUTEX, NULL);
+  int ret = sqlite3_open_v2(dbFile().c_str(), &_db, SQLITE_OPEN_READONLY| SQLITE_OPEN_FULLMUTEX, NULL);
 
   if(ret != SQLITE_OK)
     {
@@ -168,12 +170,17 @@ void Database::_runStatements(const std::string & statements, bindParametersType
 
 				case SQLITE_ROW:
 					if(processRow)
-						(*processRow)(row, dbStmt);
+						(*processRow)(row++, dbStmt);
 
+					break;
+					
+				case SQLITE_BUSY:
+					std::cout << "DB busy!" << std::endl;
+					QThread::msleep(200);
 					break;
 				}
 
-				row++;
+				
 			}
 			while((ret == SQLITE_BUSY || ret == SQLITE_ROW) && ret != SQLITE_DONE);
 
@@ -251,12 +258,17 @@ void Database::_runStatementsRepeatedly(const std::string & statements, std::fun
 
 		    case SQLITE_ROW:
 		      if(processRow)
-			(*processRow)(row, repetition, dbStmt);
+				(*processRow)(row++, repetition, dbStmt);
 
 		      break;
+			  
+			  case SQLITE_BUSY:
+				  std::cout << "DB busy!" << std::endl;
+				  QThread::msleep(200);
+				  break;
 		    }
 
-		  row++;
+		
 		}
 	      while((ret == SQLITE_BUSY || ret == SQLITE_ROW) && ret != SQLITE_DONE);
 	    }
@@ -377,7 +389,7 @@ void Database::tableCreate(const QString & tableName, const ColumnDefinitions & 
 
 void Database::tableWriteRows(const QString & tableName, const ColumnDefinitions & cols, const std::vector<QVariantList> & rows)
 {
-	transactionWriteBegin();
+	if(rows.size() > 1)	transactionWriteBegin();
 
 	QString query = "INSERT INTO " + tableName + " ( " + tableColumnQueryFrag(cols) + ") VALUES ( " + tableColumnQueryFrag(cols, false, true) + ");";
 
@@ -398,7 +410,7 @@ void Database::tableWriteRows(const QString & tableName, const ColumnDefinitions
 		});
 
 
-	transactionWriteEnd();
+	if(rows.size() > 1) transactionWriteEnd();
 
 }
 
@@ -498,8 +510,10 @@ QVariant Database::tableExtractColumnDefValue(sqlite3_stmt * stmt, size_t param,
 	case ColumnType::PrimaryKey:
 	case ColumnType::NumInt:
 	case ColumnType::NumBool:
-	case ColumnType::DateTime: //unix epoch
 		return QVariant(sqlite3_column_int(stmt, param));
+		
+	case ColumnType::DateTime: //unix epoch
+		return QDateTime::fromSecsSinceEpoch(sqlite3_column_int(stmt, param));
 
 	case ColumnType::Duration:
 	case ColumnType::NumDbl:

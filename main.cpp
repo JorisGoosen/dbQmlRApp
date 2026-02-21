@@ -26,9 +26,9 @@ int main(int argc, char *argv[])
 {
 	QGuiApplication				app(argc, argv);
 
-	QCoreApplication::setOrganizationName(	"JorisGoosen");
-	QCoreApplication::setOrganizationDomain("jorisgoosen.nl");
-	QCoreApplication::setApplicationName(	"School Scanner");
+	QCoreApplication::setOrganizationName(	"Biont Research");
+	QCoreApplication::setOrganizationDomain("biontresearch.nl");
+	QCoreApplication::setApplicationName(	"Respirometer");
 
 	QQmlApplicationEngine		mainEng;
 
@@ -95,7 +95,6 @@ int main(int argc, char *argv[])
 	auto respiroModelsLoadedHandler = [&]()
 	{
 		mainEng.rootContext()->setContextProperty("database",				respiro.db());
-		mainEng.rootContext()->setContextProperty("labels",					respiro.labels());
 		mainEng.rootContext()->setContextProperty("respiroDataMeas",		respiro.dataMeas());
 		mainEng.rootContext()->setContextProperty("respiroDataProc",		respiro.dataProc());
 		mainEng.rootContext()->setContextProperty("respiroMsgs",			respiro.msgs());
@@ -109,9 +108,9 @@ int main(int argc, char *argv[])
 
 		rWrapper.runRCommand(rWriteImage.readAll());
 		*/
-		rWrapper.runRCommand(respiro.dataMeas()->dbplyrCode());
-		rWrapper.runRCommand(respiro.dataProc()->dbplyrCode(false));
-		rWrapper.runRCommand(respiro.msgs()->dbplyrCode(false));
+		//rWrapper.runRCommand(respiro.dataMeas()->dbplyrCode());
+		//rWrapper.runRCommand(respiro.dataProc()->dbplyrCode());
+		//rWrapper.runRCommand(respiro.msgs()->dbplyrCode());
 	};
 
 	QObject::connect(&respiro, &Respiro::modelsLoaded, respiroModelsLoadedHandler);
