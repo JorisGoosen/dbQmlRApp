@@ -140,6 +140,7 @@ qt_add_qml_module(qmlR
 	NO_RESOURCE_TARGET_PATH
 	RESOURCES
 	    dummy.png
+		
 )
 
 qt_add_resources(qmlR "R"

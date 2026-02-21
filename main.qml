@@ -11,6 +11,7 @@ Window
 	color:		windowBackgroundColor
 
 	onClosing:	mainModel.closing();
+	visibility:	Window.FullScreen
 
 
 	TabBar

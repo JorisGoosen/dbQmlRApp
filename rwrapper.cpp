@@ -20,11 +20,11 @@ RWrapper::RWrapper(QObject *parent)
 	(*R)["respiroGui_push_error"]					= Rcpp::InternalFunction(&respiroGui_push_error);
 	(*R)["respiroGui_push_warning"]					= Rcpp::InternalFunction(&respiroGui_push_warning);
 	(*R)["respiroGui_push_info"]					= Rcpp::InternalFunction(&respiroGui_push_info);
+	(*R)["respiroGui_push_datafilepath"]			= Rcpp::InternalFunction(&respiroGui_push_datafilepath);
 	(*R)["respiroGui_poll_instant_pause"]			= Rcpp::InternalFunction(&respiroGui_poll_instant_pause);
 	(*R)["respiroGui_poll_delayed_pause"]			= Rcpp::InternalFunction(&respiroGui_poll_delayed_pause);
 	(*R)["respiroGui_poll_control_wanted"]			= Rcpp::InternalFunction(&respiroGui_poll_control_wanted);
 	(*R)["respiroGui_push_loading_feedback"]		= Rcpp::InternalFunction(&respiroGui_push_loading_feedback);
-
 }
 
 QString RWrapper::runRCommand(QString command)
@@ -114,13 +114,13 @@ void RWrapper::setPlotHeight(int newPlotHeight)
 	emit plotHeightChanged(_plotHeight);
 }
 
-void respiroGui_push_meas_data(int channel, int o2, int ch4, int co2, int pressure, float temp1, float temp2, int phase)
+void respiroGui_push_meas_data(int channel, float o2, float ch4, float co2, float pressure, float temp1, float temp2, int phase)
 {
 	emit RWrapper::singleton()->push_meas_data(channel, o2, ch4, co2, pressure, temp1, temp2, phase);
 }
 
 
-void respiroGui_push_proc_data(int channel, int o2, int ch4, int co2)
+void respiroGui_push_proc_data(int channel, float o2, float ch4, float co2)
 {
 	emit RWrapper::singleton()->push_proc_data(channel, o2, ch4, co2);
 }
@@ -135,7 +135,7 @@ void respiroGui_push_valve_state(		int			channel, bool valve_open)
 	emit RWrapper::singleton()->push_valve_state(channel, valve_open);
 }
 
-void respiroGui_push_pump_state(		bool		pump_on)
+void respiroGui_push_pump_state( bool		pump_on)
 {
 	emit RWrapper::singleton()->push_pump_state(pump_on);
 }
@@ -168,6 +168,11 @@ void respiroGui_push_warning(			std::string	warning)
 void respiroGui_push_info(std::string info)
 {
 	emit RWrapper::singleton()->push_info(QString::fromStdString(info));
+}
+
+void respiroGui_push_datafilepath(std::string datafile)
+{
+	emit RWrapper::singleton()->push_datafilepath(QString::fromStdString(datafile));
 }
 
 bool respiroGui_poll_instant_pause()

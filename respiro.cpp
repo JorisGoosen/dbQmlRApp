@@ -14,10 +14,10 @@ Respiro::Respiro()
 
 	_dataMeasuredDefs = {
 		new CD("Channel",			"channel",	ColumnType::NumInt),
-		new CD("O<sub>2</sub>",		"o2",		ColumnType::NumInt),
-		new CD("CH<sub>4</sub>",	"ch4",		ColumnType::NumInt),
-		new CD("CO<sub>2</sub>",	"co2",		ColumnType::NumInt),
-		new CD("Pressure",			"pressure",	ColumnType::NumInt),
+		new CD("O<sub>2</sub>",		"o2",		ColumnType::NumDbl),
+		new CD("CH<sub>4</sub>",	"ch4",		ColumnType::NumDbl),
+		new CD("CO<sub>2</sub>",	"co2",		ColumnType::NumDbl),
+		new CD("Pressure",			"pressure",	ColumnType::NumDbl),
 		new CD("Temp. 1",			"temp1",	ColumnType::NumDbl),
 		new CD("Temp. 2",			"temp2",	ColumnType::NumDbl),
 		new CD("Phase",				"phase",	ColumnType::NumInt),
@@ -26,9 +26,9 @@ Respiro::Respiro()
 
 	_dataProcessedDefs = {
 		new CD("Channel",				"channel",	ColumnType::NumInt),
-		new CD("O<sub>2</sub> prod.",	"o2",		ColumnType::NumInt),
-		new CD("CH<sub>4</sub> prod.",	"ch4",		ColumnType::NumInt),
-		new CD("CO<sub>2</sub> prod.",	"co2",		ColumnType::NumInt),
+		new CD("O<sub>2</sub> prod.",	"o2",		ColumnType::NumDbl),
+		new CD("CH<sub>4</sub> prod.",	"ch4",		ColumnType::NumDbl),
+		new CD("CO<sub>2</sub> prod.",	"co2",		ColumnType::NumDbl),
 		new CD("Timestamp",				"utc",		ColumnType::DateTime)
 	};
 
@@ -95,12 +95,12 @@ const QString & Respiro::dbPath() const
 
 
 
-int Respiro::o2() const
+float Respiro::o2() const
 {
 	return _o2;
 }
 
-void Respiro::setO2(int newO2)
+void Respiro::setO2(float newO2)
 {
 	if (_o2 == newO2)
 		return;
@@ -108,12 +108,12 @@ void Respiro::setO2(int newO2)
 	emit o2Changed();
 }
 
-int Respiro::ch4() const
+float Respiro::ch4() const
 {
 	return _ch4;
 }
 
-void Respiro::setCh4(int newCh4)
+void Respiro::setCh4(float newCh4)
 {
 	if (_ch4 == newCh4)
 		return;
@@ -121,12 +121,12 @@ void Respiro::setCh4(int newCh4)
 	emit ch4Changed();
 }
 
-int Respiro::co2() const
+float Respiro::co2() const
 {
 	return _co2;
 }
 
-void Respiro::setCo2(int newCo2)
+void Respiro::setCo2(float newCo2)
 {
 	if (_co2 == newCo2)
 		return;
@@ -134,12 +134,12 @@ void Respiro::setCo2(int newCo2)
 	emit co2Changed();
 }
 
-int Respiro::pressure() const
+float Respiro::pressure() const
 {
 	return _pressure;
 }
 
-void Respiro::setPressure(int newPressure)
+void Respiro::setPressure(float newPressure)
 {
 	if (_pressure == newPressure)
 		return;
@@ -311,12 +311,12 @@ void Respiro::setControlWanted(bool newControlWanted)
 	emit controlWantedChanged(_controlWanted);
 }
 
-void Respiro::push_meas_data(int channel, int o2, int ch4, int co2, int pressure, float temp1, float temp2, int phase)
+void Respiro::push_meas_data(int channel, float o2, float ch4, float co2, float pressure, float temp1, float temp2, int phase)
 {
 	dataMeas()->appendRows({{channel, o2, ch4, co2, pressure, temp1, temp2, phase, QDateTime::currentDateTimeUtc().toSecsSinceEpoch()}}, &_dataMeasuredDefs);
 }
 
-void Respiro::push_proc_data(int channel, int o2, int ch4, int co2)
+void Respiro::push_proc_data(int channel, float o2, float ch4, float co2)
 {
 	dataMeas()->appendRows({{channel, o2, ch4, co2, QDateTime::currentDateTimeUtc().toSecsSinceEpoch()}}, &_dataMeasuredDefs);
 }
@@ -393,6 +393,11 @@ void Respiro::push_warning(QString warning)
 void Respiro::push_info(QString info)
 {
 	_msgs->appendRows({{"Info", info, QDateTime::currentDateTimeUtc().toSecsSinceEpoch()}}, &_msgsDefs);
+}
+
+void Respiro::push_datafilepath(QString path)
+{
+	_datafilepath = path;
 }
 
 void Respiro::push_loading_feedback(QString feedback, bool finished, QString error)

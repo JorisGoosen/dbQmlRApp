@@ -1,9 +1,9 @@
 #ifndef RESPIRO_H
 #define RESPIRO_H
 
-#include <QObject>
 #include "tablemodel.h"
 #include "labels.h"
+#include <QObject>
 
 struct Feedback
 {
@@ -22,10 +22,10 @@ typedef std::map<QString, Feedback*>	FeedbackMap;
 class Respiro : public QObject
 {
 	Q_OBJECT
-	Q_PROPERTY(int			o2					READ o2					WRITE setO2					NOTIFY o2Changed				)
-	Q_PROPERTY(int			ch4					READ ch4				WRITE setCh4				NOTIFY ch4Changed				)
-	Q_PROPERTY(int			co2					READ co2				WRITE setCo2				NOTIFY co2Changed				)
-	Q_PROPERTY(int			pressure			READ pressure			WRITE setPressure			NOTIFY pressureChanged			)
+	Q_PROPERTY(float		o2					READ o2					WRITE setO2					NOTIFY o2Changed				)
+	Q_PROPERTY(float		ch4					READ ch4				WRITE setCh4				NOTIFY ch4Changed				)
+	Q_PROPERTY(float		co2					READ co2				WRITE setCo2				NOTIFY co2Changed				)
+	Q_PROPERTY(float		pressure			READ pressure			WRITE setPressure			NOTIFY pressureChanged			)
 	Q_PROPERTY(float		temp1				READ temp1				WRITE setTemp1				NOTIFY temp1Changed				)
 	Q_PROPERTY(float		temp2				READ temp2				WRITE settemp2				NOTIFY temp2Changed				)
 	Q_PROPERTY(QString		error				READ error				WRITE setError				NOTIFY errorChanged				)
@@ -72,10 +72,10 @@ public:
 	TableModel	*		msgs()			const	{ return _msgs;		}
 	Labels		*		labels()		const	{ return _labels;	}
 
-	int					o2()				const;
-	int					ch4()				const;
-	int					co2()				const;
-	int					pressure()			const;
+	float				o2()				const;
+	float				ch4()				const;
+	float				co2()				const;
+	float				pressure()			const;
 	float				temp1()				const;
 	float				temp2()				const;
 	const QString	&	error()				const;
@@ -103,10 +103,10 @@ public:
 	bool				vent1()				const;
 	bool				vent2()				const;
 
-	void				setO2(					int						newO2);
-	void				setCh4(					int						newCh4);
-	void				setCo2(					int						newCo2);
-	void				setPressure(			int						newPressure);
+	void				setO2(					float					newO2);
+	void				setCh4(					float					newCh4);
+	void				setCo2(					float					newCo2);
+	void				setPressure(			float					newPressure);
 	void				setTemp1(				float					newTemp1);
 	void				settemp2(				float					newTemp2);
 	void				setError(				const QString	&		newError);
@@ -132,8 +132,8 @@ public:
 
 public slots:
 	void				setChannelInit(		int index, bool checked);
-	void				push_meas_data(			int		channel, int o2, int ch4, int co2, int pressure, float temp1, float temp2, int phase);
-	void				push_proc_data(			int		channel, int o2, int ch4, int co2);
+	void				push_meas_data(			int		channel, float o2, float ch4, float co2, float pressure, float temp1, float temp2, int phase);
+	void				push_proc_data(			int		channel, float o2, float ch4, float co2);
 	void				push_current_channel(	int		channel);
 	void				push_valve_state(		int		channel, bool valve_open);
 	void				push_vent_state(		int		vent,		bool vent_open);
@@ -145,6 +145,7 @@ public slots:
 	void				push_warning(			QString	warning);
 	void				push_info(				QString info);
 	void				push_loading_feedback(	QString feedback, bool finished, QString error);
+	void				push_datafilepath(		QString datafilepath);
 	void				start();
 
 signals:
@@ -209,7 +210,8 @@ private:
 						_temp2;
 	QString				_error,
 						_warning,
-						_outputFolder;
+						_outputFolder,
+						_datafilepath;
 	std::vector<bool>	_valvesOpened;
 	bool				_pumpOn,
 						_o2On,
@@ -230,7 +232,7 @@ private:
 						_msgsDefs;
 	Feedbacks			_feedbacks;
 	FeedbackMap			_feedbackMap;
-	QVariantList		_channelInit		= QVariantList(12, true);
+	QVariantList		_channelInit		= QVariantList(12, false);
 };
 
 #endif // RESPIRO_H

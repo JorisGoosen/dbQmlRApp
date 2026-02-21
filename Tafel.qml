@@ -25,6 +25,7 @@ Item
 		id:				horizontalHeader
 		syncView:		mainTableView
 		clip:			true
+		reuseItems:		true
 		anchors
 		{
 			top:		parent.top
@@ -64,6 +65,7 @@ Item
 		id:				verticalHeader
 		syncView:		mainTableView
 		clip:			true
+		reuseItems:		true
 		anchors
 		{
 			top:		mainTableView.top
@@ -99,8 +101,9 @@ Item
 
 	TableView
 	{
-		id:		mainTableView
-		clip:	true
+		id:				mainTableView
+		clip:			true
+		reuseItems:		true
 
 		columnWidthProvider:	function() { return -1; }
 		rowHeightProvider: 		function() { return -1; }

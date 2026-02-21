@@ -78,7 +78,7 @@ int TableModel::columnWidthProvider(int col)
 
 	int largestVal = bounds.width();
 
-	for(int row=0; row<rowCount(); row++)
+	for(int row=0; row<rowCount() && row < 10; row++)
 		largestVal = std::max(largestVal, _metrics.boundingRect(_maxBounds, Qt::TextWordWrap, data(index(row, col)).toString()).width());
 
 	return std::min(largestVal, _maxBounds.width()) + _cellMargin;

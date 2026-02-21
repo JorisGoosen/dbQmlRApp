@@ -4,59 +4,46 @@ import QtQuick.Layouts
 
 SplitView
 {
-	orientation:	Qt.Horizontal
+	orientation:	Qt.Vertical
 
-	SplitView
+	Tafel
 	{
-		orientation: Qt.Vertical
-		SplitView.preferredWidth:	parent.width * 0.33333
+		model:						respiroDataProc
 
-		Tafel
-		{
-			model:						respiroDataProc
+		columnWidthProvider:		respiroDataProc.columnWidthProvider
+		rowHeightProvider:			respiroDataProc.rowHeightProvider
 
-			columnWidthProvider:		respiroDataProc.columnWidthProvider
-			rowHeightProvider:			respiroDataProc.rowHeightProvider
-
-			//visible:					respiroDataProc.rowCount > 0
-		}
-
-		Tafel
-		{
-			model:						respiroDataMeas
-
-			columnWidthProvider:		respiroDataMeas.columnWidthProvider
-			rowHeightProvider:			respiroDataMeas.rowHeightProvider
-
-			//visible:					respiroDataMeas.rowCount > 0
-		}
+		//visible:					respiroDataProc.rowCount > 0
 	}
 
-	SplitView
+	Tafel
 	{
-		orientation: Qt.Vertical
+		model:						respiroDataMeas
 
-		SplitView.preferredWidth: parent.width * 0.666667
+		columnWidthProvider:		respiroDataMeas.columnWidthProvider
+		rowHeightProvider:			respiroDataMeas.rowHeightProvider
 
-		Image
-		{
-			source: "dummy.png"
-			SplitView.preferredHeight: parent.height * 0.666667
+		//visible:					respiroDataMeas.rowCount > 0
+	}
 
-			onWidthChanged:			R.plotWidth		= width
-			onHeightChanged:		R.plotHeight	= height
-		}
+	Image
+	{
+		source: "dummy.png"
+		SplitView.preferredHeight: parent.height * 0.666667
 
-		Tafel
-		{
-			model:						respiroMsgs
+		onWidthChanged:			R.plotWidth		= width
+		onHeightChanged:		R.plotHeight	= height
+	}
 
-			columnWidthProvider:		respiroMsgs.columnWidthProvider
-			rowHeightProvider:			respiroMsgs.rowHeightProvider
+	Tafel
+	{
+		model:						respiroMsgs
 
-			SplitView.minimumHeight:	model.rowCount > 0 ? 200 : 0
-			SplitView.preferredHeight:	parent.height * 0.333333
-			//visible:					respiroMsgs.rowCount > 0
-		}
+		columnWidthProvider:		respiroMsgs.columnWidthProvider
+		rowHeightProvider:			respiroMsgs.rowHeightProvider
+
+		SplitView.minimumHeight:	model.rowCount > 0 ? 200 : 0
+		SplitView.preferredHeight:	parent.height * 0.333333
+		//visible:					respiroMsgs.rowCount > 0
 	}
 }

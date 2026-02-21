@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
 
 	QThread rThread;
 	rWrapper.moveToThread(&rThread);
-	rThread.start();
+	rThread.start(QThread::Priority::NormalPriority);
 
 	QObject::connect(&rWrapper,		&RWrapper::push_meas_data,			&respiro,	&Respiro::push_meas_data		);
 	QObject::connect(&rWrapper,		&RWrapper::push_proc_data,			&respiro,	&Respiro::push_proc_data		);
@@ -55,6 +55,7 @@ int main(int argc, char *argv[])
 	QObject::connect(&rWrapper,		&RWrapper::push_error,				&respiro,	&Respiro::push_error			);
 	QObject::connect(&rWrapper,		&RWrapper::push_warning,			&respiro,	&Respiro::push_warning			);
 	QObject::connect(&rWrapper,		&RWrapper::push_info,				&respiro,	&Respiro::push_info				);
+	QObject::connect(&rWrapper,		&RWrapper::push_datafilepath,		&respiro,	&Respiro::push_datafilepath		);
 	QObject::connect(&rWrapper,		&RWrapper::push_loading_feedback,	&respiro,	&Respiro::push_loading_feedback	);
 
 	QObject::connect(&respiro,		&Respiro::outputFolderChanged,		&rWrapper,	&RWrapper::setOutputFolder		);
@@ -93,11 +94,12 @@ int main(int argc, char *argv[])
 
 	auto respiroModelsLoadedHandler = [&]()
 	{
-		mainEng.rootContext()->setContextProperty("database",			respiro.db());
-		mainEng.rootContext()->setContextProperty("labels",				respiro.labels());
-		mainEng.rootContext()->setContextProperty("respiroDataMeas",	respiro.dataMeas());
-		mainEng.rootContext()->setContextProperty("respiroDataProc",	respiro.dataProc());
-		mainEng.rootContext()->setContextProperty("respiroMsgs",		respiro.msgs());
+		mainEng.rootContext()->setContextProperty("database",				respiro.db());
+		mainEng.rootContext()->setContextProperty("labels",					respiro.labels());
+		mainEng.rootContext()->setContextProperty("respiroDataMeas",		respiro.dataMeas());
+		mainEng.rootContext()->setContextProperty("respiroDataProc",		respiro.dataProc());
+		mainEng.rootContext()->setContextProperty("respiroMsgs",			respiro.msgs());
+		
 
 		/*QFile	//rMain(		":/R/main.R"			),
 				rWriteImage(":/R/writeImage.R"	);
