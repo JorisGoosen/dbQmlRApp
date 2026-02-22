@@ -41,7 +41,17 @@ Item
 		
 		Item
 		{
-			Layout.fillHeight: true	
+			Layout.fillHeight:	true	
+			implicitWidth:		parent.width
+			
+			Image
+			{
+				source:				"images/logo_biont_research.png"	
+				width:				sourceSize.width * 0.5
+				height:				sourceSize.height * 0.5
+				anchors.centerIn:	parent
+			}
+			
 		}
 	
 		ChannelsSelector

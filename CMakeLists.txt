@@ -129,6 +129,7 @@ qt_add_qml_module(qmlR
 		Init.qml
 		Data.qml
 		Tafel.qml
+		MyText.qml
 		Loading.qml
 		Hardware.qml
 		RectButton.qml
@@ -138,8 +139,7 @@ qt_add_qml_module(qmlR
 	NO_RESOURCE_TARGET_PATH
 	RESOURCES
 	    dummy.png
-		QML_FILES MyText.qml
-		
+		images/logo_biont_research.png
 )
 
 qt_add_resources(qmlR "R"
