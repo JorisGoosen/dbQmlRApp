@@ -17,11 +17,12 @@ Item
 	
 		FileDialog
 		{
-			id:					oldSessionSelector
-			acceptLabel:		"Select old session folder"
-			currentFolder:		StandardPaths.standardLocations(StandardPaths.AppDataLocation)[0]
-			options:			FolderDialog.ReadOnly
-			onAccepted:			respiro.loadOldSession(currentFolder)
+			id:									oldSessionSelector
+			acceptLabel:						"Select old session db"
+			currentFolder:						StandardPaths.standardLocations(StandardPaths.AppDataLocation)[0]
+			options:							FolderDialog.ReadOnly
+			onAccepted:							respiro.loadOldSession(selectedFile)
+			//selectedNameFilter.extensions:		"db"
 	
 		}
 	

@@ -75,14 +75,15 @@ void Respiro::startSession()
 
 void Respiro::loadOldSession(const QString & oldOutputdatafile)
 {
-	if(!QFileInfo::exists(oldOutputdatafile))
+	QFileInfo dataFileInfo(oldOutputdatafile.startsWith("file:") ? QUrl(oldOutputdatafile).toLocalFile() : oldOutputdatafile);
+	
+	std::cerr << "Trying to load old session from '" << dataFileInfo.absoluteFilePath().toStdString() << "'" << std::endl;
+	
+	if(!dataFileInfo.exists())
 		emit cantFindOldDatabase();
 	
-	_dataFilePath = oldOutputdatafile;
-	
-	setOutputFolder(QFileInfo(_dataFilePath).dir().absolutePath());
-
-	loadModels();
+	setOutputFolder(dataFileInfo.dir().absolutePath());
+	_dataFilePath = dataFileInfo.absoluteFilePath();
 	
 	start();
 }

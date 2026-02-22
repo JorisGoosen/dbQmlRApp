@@ -141,6 +141,7 @@ qt_add_qml_module(qmlR
 	RESOURCES
 	    dummy.png
 		images/logo_biont_research.png
+		images/logo_biont_research.svg
 )
 
 qt_add_resources(qmlR "R"

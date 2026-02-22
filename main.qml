@@ -91,19 +91,6 @@ Window
 				}
 			}
 		
-			readonly property Item _toolTipOverrideItem: Item
-			{
-				//These properties override those for ALL attached ToolTips in the application
-				//ToolTip.toolTip shouldn't be changed anywhere else otherwise we get hard to debug behaviour
-				ToolTip.toolTip.background:		Rectangle { color: backgroundColor; border.width: 1; border.color: foregroundColor }
-				ToolTip.toolTip.contentItem:	Text
-				{
-					//font:			jaspTheme.font
-					wrapMode:		Text.WrapAtWordBoundaryOrAnywhere
-					text:			ToolTip.toolTip.text
-				}
-				ToolTip.toolTip.z:						1234
-			}
 		}
 	
 		Item
