@@ -4,9 +4,10 @@ import QtQuick
 Item
 {
 	
-	
+	property alias rectBack:	rectBack
 	Rectangle
 	{
+		id:					rectBack
 		z:					-1
 		color:				backgroundColor
 		border.color:		foregroundColor
@@ -15,8 +16,8 @@ Item
 		radius:				20
 	}
 	
-	implicitWidth:		tekstWortel.implicitWidth
-	implicitHeight:		tekstWortel.implicitHeight
+	implicitWidth:		tekstWortel.contentWidth	+ 2*generalMargin
+	implicitHeight:		tekstWortel.contentHeight	+2*generalMargin
 	
 	property alias text:				tekstWortel.text
 	property alias color:				tekstWortel.color
@@ -33,7 +34,7 @@ Item
 		horizontalAlignment:	Text.AlignHCenter
 		verticalAlignment:		Text.AlignVCenter
 		textFormat:				Text.RichText
-		
+		width:					parent.width
 		topPadding:				generalMargin
 		leftPadding:			generalMargin
 		rightPadding:			generalMargin

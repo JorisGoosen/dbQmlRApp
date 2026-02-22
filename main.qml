@@ -95,28 +95,31 @@ Window
 	
 		Item
 		{
-			id:								hider
-			property bool showMe:			respiro && respiro.backlog.length > 0
-			SplitView.preferredWidth:		!showMe ? 0 : 500
+			id:									hider
+			property bool showMe:				respiro && respiro.backlog.length > 0
+			SplitView.preferredWidth:			!showMe ? 0 : 500
 			
 			ListView
 			{
 				anchors
 				{
-					top:					parent.top
-					left:					parent.left
-					right:					parent.right					
-					bottom:					smallLogoBox.top
+					top:						parent.top
+					left:						parent.left
+					right:						parent.right					
+					bottom:						smallLogoBox.top
+					margins:					2
 				}
-				clip:						true
-				visible:					hider.showMe
-				model:						!hider.showMe ? [] : respiro.backlog
-				delegate:					MyText 
+				spacing:						2
+				clip:							true
+				visible:						hider.showMe
+				model:							!hider.showMe ? [] : respiro.backlog
+				delegate:						MyText 
 				{ 
-					text:					modelData;
-					font.pixelSize:			9
-					width:					ListView.view.width
-					horizontalAlignment:	Text.AlignLeft
+					text:						modelData;
+					font.pixelSize:				9
+					width:						ListView.view.width
+					horizontalAlignment:		Text.AlignLeft
+					//rectBack.anchors.margins:	generalMargin
 				}
 			}
 			
