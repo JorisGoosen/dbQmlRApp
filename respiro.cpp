@@ -152,7 +152,7 @@ void Respiro::setPressure(float newPressure)
 	emit pressureChanged();
 }
 
-float Respiro::temp1() const
+float Respiro::tempRespiro() const
 {
 	return _temp1;
 }
@@ -165,7 +165,7 @@ void Respiro::seTemperatureRespirometer(float newTemp1)
 	emit temp1Changed();
 }
 
-float Respiro::temp2() const
+float Respiro::tempSample() const
 {
 	return _temp2;
 }
@@ -383,71 +383,89 @@ void Respiro::push_CH4_state(bool CH4_on)
 	setCh4(CH4_on);
 }
 
+
+void Respiro::push_generic_info(QString info, QString infoType)
+{		
+	if(_backlog.size() > 200)
+		_backlog.erase(_backlog.begin(), _backlog.begin() + 100);
+	
+	
+	_backlog << infoType + ": " + QString(10 - infoType.size(), ' ') + info;
+	emit backlogChanged();
+	
+	
+
+}
+
+
 void Respiro::push_error(QString error)
-{
-	static QStringList backlog; 
-	
+{	
 	std::cerr << error.toStdString() << std::endl;
+	push_generic_info(error, "Error");
 	
-	if(_msgs)
-	{
-		if(backlog.size())
-		{
-			for(QString & m : backlog)
-				_msgs->appendRows({{"Error", m, 0}});
-			backlog.clear();
-		}
-		
-		_msgs->appendRows({{"Error", error, QDateTime::currentSecsSinceEpoch()}}, &_msgsDefs);
-	}
-	else
-	{
-		backlog << error;	
-	}
+	//if(_msgs)
+	//{
+	//	if(_backlogError.size())
+	//	{
+	//		for(QString & m : _backlogError)
+	//			_msgs->appendRows({{"Error", m, 0}});
+	//		_backlogError.clear();
+	//		emit backlogErrorChanged();
+	//	}
+	//	
+	//	_msgs->appendRows({{"Error", error, QDateTime::currentSecsSinceEpoch()}}, &_msgsDefs);
+	//}
+	//else
+	//{
+	//	_backlogError << error;
+	//	emit backlogErrorChanged();
+	//}
 	
 }
 
 void Respiro::push_warning(QString warning)
-{
-	static QStringList backlog; 
-	
+{	
 	std::cout << warning.toStdString() << std::endl;
-	if(_msgs)
-	{
-		if(backlog.size())
-		{
-			for(QString & m : backlog)
-				_msgs->appendRows({{"Warning", m, 0}});
-			backlog.clear();
-		}
-		
-		_msgs->appendRows({{"Warning", warning, QDateTime::currentSecsSinceEpoch()}}, &_msgsDefs);
-	}
-	else
-	{
-		backlog << warning;	
-	}
+	push_generic_info(warning, "Warning");
+	//if(_msgs)
+	//{
+	//	if(_backlogWarn.size())
+	//	{
+	//		for(QString & m : _backlogWarn)
+	//			_msgs->appendRows({{"Warning", m, 0}});
+	//		_backlogWarn.clear();
+	//		emit backlogWarnChanged();
+	//	}
+	//	
+	//	_msgs->appendRows({{"Warning", warning, QDateTime::currentSecsSinceEpoch()}}, &_msgsDefs);
+	//}
+	//else
+	//{
+	//	_backlogWarn << warning;	
+	//	emit backlogWarnChanged();
+	//}
 }
 
 void Respiro::push_info(QString info)
 {
-	static QStringList backlog; 
-	
-	if(_msgs)
-	{
-		if(backlog.size())
-		{
-			for(QString & m : backlog)
-				_msgs->appendRows({{"Info", m, 0}});
-			backlog.clear();
-		}
-		
-		_msgs->appendRows({{"Info", info, QDateTime::currentSecsSinceEpoch()}}, &_msgsDefs);
-	}
-	else
-	{
-		backlog << info;	
-	}
+	push_generic_info(info, "Info");
+	//if(_msgs)
+	//{
+	//	if(_backlogInfo.size())
+	//	{
+	//		for(QString & m : _backlogInfo)
+	//			_msgs->appendRows({{"Info", m, 0}});
+	//		_backlogInfo.clear();
+	//		emit backlogInfoChanged();
+	//	}
+	//	
+	//	_msgs->appendRows({{"Info", info, QDateTime::currentSecsSinceEpoch()}}, &_msgsDefs);
+	//}
+	//else
+	//{
+	//	_backlogInfo << info;
+	//	emit backlogInfoChanged();
+	//}
 }
 
 void Respiro::push_datafilepath(QString path)
@@ -672,3 +690,18 @@ void Respiro::setVent2(bool newVent2)
 	_vent2 = newVent2;
 	emit vent2Changed();
 }
+
+QStringList __convertor(const QStringList & in)
+{
+	QStringList out = in.size() > 100 ? in.last(100) : in;
+	
+	std::reverse(out.begin(), out.end());
+	
+	return out;
+}
+
+QStringList Respiro::backlog() const
+{
+	return __convertor(_backlog);
+}
+

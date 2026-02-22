@@ -143,6 +143,12 @@ void respiroGui_push_valve_state(		int			channel, bool valve_open)
 	emit RWrapper::singleton()->push_valve_state(channel, valve_open);
 }
 
+
+void respiroGui_push_vent_state(int id, bool vent_on)
+{
+	emit RWrapper::singleton()->push_vent_state(id, vent_on);
+}
+
 void respiroGui_push_pump_state( bool		pump_on)
 {
 	emit RWrapper::singleton()->push_pump_state(pump_on);
@@ -264,11 +270,12 @@ void RWrapper::startRespiro(QList<int> channels, int runtimeSec, int channelRunt
 			"  channels = " + channelsStr  + "\n"
 			"  rc = RespiroControl$new(channels)\n"
 			"  rc$start(\n"
-			"    monitorRunTime=.runtimeSec,\n"
-			"    monitorCycleDuration=.channelRuntimeSec,\n"
-			"    calibrateCO2=.calibrateCO2,\n"
-			"    internalLeakTest=.internalLeakTest,\n"
-			"    initialHsFlush=.initialHsFlush\n)"
+			"    channels             = channels,\n"
+			"    monitorRunTime       = .runtimeSec,\n"
+			"    calibrateCO2         = .calibrateCO2,\n"
+			"    internalLeakTest     = .internalLeakTest,\n"
+			"    monitorCycleDuration = .channelRuntimeSec,\n"
+			"    initialHsFlush       = .initialHsFlush\n)"
 			"\n},error=function(error) { print(sys.calls()); print(paste(error)); respiroGui_push_error(paste(error))}\n)"
 			;
 

@@ -16,7 +16,7 @@ Rectangle
 	signal clicked(bool newChecked);
 	
 	implicitWidth:		Math.max(200,	feedbackText.implicitWidth)
-	implicitHeight:		Math.max(80,	feedbackText.implicitHeight)
+	implicitHeight:		Math.max(60,	feedbackText.implicitHeight)
 
 	ChannelButton
 	{

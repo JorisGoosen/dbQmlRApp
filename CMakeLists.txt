@@ -138,7 +138,7 @@ qt_add_qml_module(qmlR
 	NO_RESOURCE_TARGET_PATH
 	RESOURCES
 	    dummy.png
-		QML_FILES Text.qml
+		QML_FILES MyText.qml
 		
 )
 

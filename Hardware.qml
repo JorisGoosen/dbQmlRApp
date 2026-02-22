@@ -331,7 +331,7 @@ Item
 		Text
 		{
 			id:					temperaturePressureText
-			text:				"<b>Temperature Respiro:</b>&nbsp;" + respiro.temp1 + "<sup>c</sup><br><b>Temperature Sample:</b>&nbsp;" + respiro.temp2 + "<sup>c</sup><br><b>Pressure:</b>&nbsp;" + respiro.pressure + "bar"
+			text:				"<b>Temperature Respiro:</b>&nbsp;" + respiro.tempRespiro + "<sup>c</sup><br><b>Temperature Sample:</b>&nbsp;" + respiro.tempSample + "<sup>c</sup><br><b>Pressure:</b>&nbsp;" + respiro.pressure + "mBar"
 			anchors.centerIn:	parent
 			color:				foregroundColor
 		}

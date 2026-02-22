@@ -25,8 +25,8 @@ class Respiro : public QObject
 	Q_PROPERTY(float		CH4					READ CH4				WRITE setCh4						NOTIFY CH4Changed				)
 	Q_PROPERTY(float		CO2					READ CO2				WRITE setCO2						NOTIFY CO2Changed				)
 	Q_PROPERTY(float		pressure			READ pressure			WRITE setPressure					NOTIFY pressureChanged			)
-	Q_PROPERTY(float		temp1				READ temp1				WRITE seTemperatureRespirometer		NOTIFY temp1Changed				)
-	Q_PROPERTY(float		temp2				READ temp2				WRITE setTemperatureSample			NOTIFY temp2Changed				)
+	Q_PROPERTY(float		tempRespiro			READ tempRespiro				WRITE seTemperatureRespirometer		NOTIFY temp1Changed				)
+	Q_PROPERTY(float		tempSample			READ tempSample				WRITE setTemperatureSample			NOTIFY temp2Changed				)
 	Q_PROPERTY(QString		error				READ error				WRITE setError						NOTIFY errorChanged				)
 	Q_PROPERTY(QString		warning				READ warning			WRITE setWarning					NOTIFY warningChanged			)
 	
@@ -54,6 +54,9 @@ class Respiro : public QObject
 	Q_PROPERTY(bool			calibrateCO2		READ calibrateCO2		WRITE setCalibrateCO2				NOTIFY calibrateCO2Changed		)
 	Q_PROPERTY(bool			internalLeakTest	READ internalLeakTest	WRITE setInternalLeakTest			NOTIFY internalLeakTestChanged	)
 	Q_PROPERTY(bool			initialHsFlush		READ initialHsFlush		WRITE setInitialHsFlush				NOTIFY initialHsFlushChanged	)
+	
+	Q_PROPERTY(QStringList	backlog				READ backlog												NOTIFY backlogChanged			)
+	
 
 public:
 	explicit Respiro();
@@ -74,8 +77,8 @@ public:
 	float				CH4()				const;
 	float				CO2()				const;
 	float				pressure()			const;
-	float				temp1()				const;
-	float				temp2()				const;
+	float				tempRespiro()				const;
+	float				tempSample()				const;
 	const QString	&	error()				const;
 	const QString	&	warning()			const;
 	int					curChannel()		const;
@@ -128,6 +131,9 @@ public:
 	void				setVent1(				bool					newVent1);
 	void				setVent2(				bool					newVent2);
 
+	QStringList backlog() const;
+
+	
 public slots:
 	void				setChannelInit(		int index, bool checked);
 	void				push_meas_data();
@@ -139,6 +145,7 @@ public slots:
 	void				push_O2_state(			bool	O2_on);
 	void				push_CO2_state(			bool	CO2_on);
 	void				push_CH4_state(			bool	CH4_on);
+	void				push_generic_info(QString info, QString infoType);
 	void				push_error(				QString	error);
 	void				push_warning(			QString	warning);
 	void				push_info(				QString info);
@@ -179,6 +186,8 @@ signals:
 	void				vent0Changed();
 	void				vent1Changed();
 	void				vent2Changed();
+	void				backlogChanged();
+
 
 	void				startSignal(
 			QList<int>	channels,
@@ -231,6 +240,7 @@ private:
 	Feedbacks			_feedbacks;
 	FeedbackMap			_feedbackMap;
 	QVariantList		_channelInit		= QVariantList(12, false);
+	QStringList			_backlog;
 };
 
 #endif // RESPIRO_H
