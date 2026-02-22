@@ -7,9 +7,14 @@ Item
 	ColumnLayout
 	{
 		id:			columnLayout
-		height:		Math.min(implicitHeight, parent.height)
+		height:		parent.height
 		spacing:	generalMargin
 		width:		parent.width
+		
+		Item
+		{
+			Layout.fillHeight: true	
+		}
 		
 		Repeater
 		{
@@ -72,6 +77,11 @@ Item
 					}
 				}
 			}
+		}
+		
+		Item
+		{
+			Layout.fillHeight: true	
 		}
 	}
 }
