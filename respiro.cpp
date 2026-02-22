@@ -69,19 +69,22 @@ void Respiro::startSession()
 
 	start();
 
-	//loadModels();
-	//Instead we will wait until respiro creates a database file!
+	//loadModels(); //Instead we will wait until respiro creates a database file!
 }
 
 
-void Respiro::loadOldSession(const QString & oldOutputFolder)
+void Respiro::loadOldSession(const QString & oldOutputdatafile)
 {
-	setOutputFolder(oldOutputFolder);
-
-	if(!QFileInfo::exists(dbPath()))
+	if(!QFileInfo::exists(oldOutputdatafile))
 		emit cantFindOldDatabase();
-	else
-		loadModels();
+	
+	_dataFilePath = oldOutputdatafile;
+	
+	setOutputFolder(QFileInfo(_dataFilePath).dir().absolutePath());
+
+	loadModels();
+	
+	start();
 }
 
 bool Respiro::feedbackFinished(const QString & feedbackMsg)
@@ -513,7 +516,7 @@ void Respiro::push_loading_feedback(QString feedback, bool finished, QString err
 
 void Respiro::start()
 {
-	emit startSignal(initChannelsInts(), _runtimeSec, _channelRuntimeSec, _calibrateCO2, _internalLeakTest, _initialHsFlush);
+	emit startSignal(_dataFilePath, initChannelsInts(), _runtimeSec, _channelRuntimeSec, _calibrateCO2, _internalLeakTest, _initialHsFlush);
 	
 	
 }

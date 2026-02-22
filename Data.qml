@@ -15,7 +15,7 @@ SplitView
 		columnWidthProvider:		respiroDataProc.columnWidthProvider
 		rowHeightProvider:			respiroDataProc.rowHeightProvider
 		
-		SplitView.preferredHeight: parent.height * 0.4
+		SplitView.preferredHeight: parent.height * 0.5
 
 		//visible:					respiroDataProc.rowCount > 0
 	}
@@ -51,93 +51,15 @@ SplitView
 	//	SplitView.preferredHeight:	parent.height * 0.333333
 	//	//visible:					respiroMsgs.rowCount > 0
 	//}
-	Item
+		
+	LastValues
 	{
-			
-		implicitHeight:			infoRow.implicitHeight
 		implicitWidth:			parent.width
 		
-		SplitView.minimumHeight: infoRow.implicitHeight
-		SplitView.maximumHeight: infoRow.implicitHeight
+		SplitView.preferredHeight:	implicitHeight
+		SplitView.minimumHeight:	implicitHeight
+		SplitView.maximumHeight:	implicitHeight
 		
-		RowLayout
-		{
-			id:					infoRow
-			implicitHeight:		childrenRect.height
-			
-			MyText
-			{
-				text:			qsTr("Last measurements: ")
-				height:			co2Button.height
-			}
-			
-			HWFeedbackButton
-			{
-				id:				co2Button
-				text:			"CO2"
-				value:			respiro.CO2
-				checked:		respiro.CO2On
-	
-				onClicked:		(newChecked)=>{ respiro.CO2On = newChecked; }
-			}
-	
-			HWFeedbackButton
-			{
-	
-				text:			"CH4"
-				value:			respiro.CH4
-				checked:		respiro.CH4On
-	
-				onClicked:		(newChecked)=>{ respiro.CH4On = newChecked; }
-			}
-	
-			HWFeedbackButton
-			{
-	
-				text:			"O2"
-				value:			respiro.O2
-				checked:		respiro.O2On
-	
-				onClicked:		(newChecked)=>{ respiro.O2On = newChecked; }
-			}	
-			
-			Rectangle
-			{
-				id:					temperaturePressureBox
-				color:				backgroundColor
-				border.color:		foregroundColor
-				border.width:		1
-				width:				temperaturePressureText.contentWidth  + 2*generalMargin
-				height:				parent.height //temperaturePressureText.contentHeight + generalMargin
-		
-				Text
-				{
-					id:					temperaturePressureText
-					text:				"<b>Temperature Respiro:</b>&nbsp;" + respiro.tempRespiro.toFixed(2) + "<sup>c</sup><br><b>Temperature Sample:</b>&nbsp;" + respiro.tempSample.toFixed(2) + "<sup>c</sup><br><b>Pressure:</b>&nbsp;" + respiro.pressure + "mBar"
-					anchors.centerIn:	parent
-					color:				foregroundColor
-				}
-			}
-			
-			Rectangle
-			{
-				id:					channelbox
-				color:				backgroundColor
-				border.color:		foregroundColor
-				border.width:		1
-				width:				channelText.contentWidth  + 2*generalMargin
-				height:				parent.height //temperaturePressureText.contentHeight + generalMargin
-		
-				Text
-				{
-					id:					channelText
-					text:				"<b>Current channel:</b>&nbsp;" + respiro.curChannel
-					anchors.centerIn:	parent
-					color:				foregroundColor
-				}
-			}
-			
-		}
 	}
 }
 

@@ -15,7 +15,7 @@ Item
 		
 		anchors.centerIn:	parent
 	
-		FolderDialog
+		FileDialog
 		{
 			id:					oldSessionSelector
 			acceptLabel:		"Select old session folder"

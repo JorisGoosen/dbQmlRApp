@@ -19,6 +19,20 @@ Item
 		visible:				false
 		Component.onCompleted:	mainTableView.model.metricFont = metricFontSetter.font
 	}
+	
+	Rectangle
+	{
+		anchors
+		{
+			top:		parent.top
+			left:		parent.left
+			right:		parent.right
+			bottom:		horizontalHeader.bottom
+		}
+		
+		color:			backgroundColor
+		z:				-10
+	}
 
 	HorizontalHeaderView
 	{
@@ -29,37 +43,41 @@ Item
 		anchors
 		{
 			top:		parent.top
-			left:		mainTableView.left
+			left:		scrollviewHier.left
 			right:		parent.right
 		}
 
 		delegate: Rectangle
 		{
-			implicitWidth:	100
+			implicitWidth:	headerText.contentWidth + model.cellMargin
 			implicitHeight: 50
-			color:			"transparent"
+			color:			backgroundHColor
 			border.color:	foregroundHColor
 			border.width:	1
 
 			Text
 			{
+				id:						headerText
 				text:					display;
 				anchors.centerIn:		parent
+				textFormat:				Text.RichText
 				color:					foregroundHColor
-				wrapMode:				Text.WrapAtWordBoundaryOrAnywhere
+				wrapMode:				Text.NoWrap
 				horizontalAlignment:	Text.AlignHCenter
 				verticalAlignment:		Text.AlignVCenter
 				height:					contentHeight  + generalMargin
-				anchors
-				{
-					left:		parent.left
-					right:		parent.right
-					margins:	model.cellMargin / 2
-				}
 			}
 		}
 	}
 
+	Rectangle
+	{
+		anchors.fill:	verticalHeader
+		color:			backgroundColor
+		z:				-10
+	}
+
+	
 	VerticalHeaderView
 	{
 		id:				verticalHeader
@@ -68,7 +86,7 @@ Item
 		reuseItems:		true
 		anchors
 		{
-			top:		mainTableView.top
+			top:		scrollviewHier.top
 			left:		parent.left
 			bottom:		parent.bottom
 		}
@@ -77,9 +95,10 @@ Item
 		{
 			implicitWidth:	100
 			implicitHeight: 50
-			color:			"transparent"
+			color:			backgroundHColor
 			border.color:	foregroundHColor
 			border.width:	1
+			
 			Text
 			{
 				text:					display;
@@ -98,9 +117,19 @@ Item
 			}
 		}
 	}
+	
+	Rectangle
+	{
+		anchors.fill:	scrollviewHier
+		color:			"transparent"
+		border.color:	foregroundHColor
+		border.width:	1
+		z:				-10
+	}
 
 	ScrollView
 	{
+		id:			scrollviewHier
 		anchors
 		{
 			top:	horizontalHeader.bottom

@@ -248,12 +248,13 @@ void RWrapper::setControlWanted(bool newControlWanted)
 	emit controlWantedChanged();
 }
 
-void RWrapper::startRespiro(QList<int> channels, int runtimeSec, int channelRuntimeSec, bool calibrateCO2, bool internalLeakTest, bool initialHsFlush)
+void RWrapper::startRespiro(QString datafile, QList<int> channels, int runtimeSec, int channelRuntimeSec, bool calibrateCO2, bool internalLeakTest, bool initialHsFlush)
 {
 	std::cout << "Starting respiro with runtimeSec=" << runtimeSec <<", channelRuntimeSec=" << channelRuntimeSec << ", calibrateCO2=" << (calibrateCO2 ? "yes":"no") <<
 				 ", internalLeakTest="<< (internalLeakTest ? "yes":"no") << ", initialHsFlush="<< (initialHsFlush ? "yes":"no") << std::endl;
 	std::cout << "Outputfolder: '" << _outputFolder.toStdString() << std::endl;
 
+	(*R)[".dataFile"]			= datafile.toStdString();
 	(*R)[".runtimeSec"]			= runtimeSec;
 	(*R)[".channelRuntimeSec"]	= channelRuntimeSec;
 	(*R)[".calibrateCO2"]		= calibrateCO2;
@@ -268,7 +269,7 @@ void RWrapper::startRespiro(QList<int> channels, int runtimeSec, int channelRunt
 			"library(respiro)\n"
 			"withCallingHandlers(\n{\n"
 			"  channels = " + channelsStr  + "\n"
-			"  rc = RespiroControl$new(channels)\n"
+			"  rc = RespiroControl$new(channels" + (datafile != "" ? ", dataFile=.dataFile" : "")+")\n"
 			"  rc$start(\n"
 			"    channels             = channels,\n"
 			"    monitorRunTime       = .runtimeSec,\n"
@@ -296,7 +297,10 @@ void RWrapper::exitR()
 		QThread::msleep(200);
 
 	if(_running)
+	{
 		std::cerr << "Couldnt exit R cleanly by asking control..." << std::endl;
+		exit(2);
+	}
 	else
 		std::cout << "R exited cleanly" <<std::endl;
 }

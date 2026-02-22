@@ -6,10 +6,11 @@ Item
 {
 	ColumnLayout
 	{
-		id:			columnLayout
-		height:		parent.height
-		spacing:	generalMargin
-		width:		parent.width
+		id:					columnLayout
+		height:				parent.height
+		spacing:			generalMargin
+		width:				parent.width * .5
+		anchors.centerIn:	parent
 		
 		Item
 		{
@@ -25,8 +26,8 @@ Item
 				border.color:	feedbackStatus.color
 				border.width:	1
 	
-				width:			childrenRect.width		+ 20
-				height:			childrenRect.height		+ 20
+				width:			columnLayout.width
+				height:			30
 				radius:			height
 	
 				Layout.alignment: Qt.AlignHCenter

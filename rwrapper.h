@@ -71,6 +71,7 @@ public:
 
 public slots:
 	void startRespiro(
+			QString		datafile,
 			QList<int>	channels,
 			int			runtimeSec,
 			int			channelRuntimeSec,
@@ -81,7 +82,7 @@ public slots:
 
 	void exitR();
 
-signals:
+signals:	
 	void prevOutputChanged();
 	void plotWidthChanged(int w);
 	void plotHeightChanged(int h);

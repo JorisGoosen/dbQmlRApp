@@ -132,6 +132,7 @@ qt_add_qml_module(qmlR
 		MyText.qml
 		Loading.qml
 		Hardware.qml
+		LastValues.qml
 		RectButton.qml
 		ChannelButton.qml
 		HWFeedbackButton.qml

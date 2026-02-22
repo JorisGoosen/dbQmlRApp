@@ -106,20 +106,55 @@ Window
 			}
 		}
 	
-		
-		ListView
+		Item
 		{
-			SplitView.preferredWidth: 500
+			id:								hider
+			property bool showMe:			respiro && respiro.backlog.length > 0
+			SplitView.preferredWidth:		!showMe ? 0 : 500
 			
+			ListView
+			{
+				anchors
+				{
+					top:					parent.top
+					left:					parent.left
+					right:					parent.right					
+					bottom:					smallLogoBox.top
+				}
+				clip:						true
+				visible:					hider.showMe
+				model:						!hider.showMe ? [] : respiro.backlog
+				delegate:					MyText 
+				{ 
+					text:					modelData;
+					font.pixelSize:			9
+					width:					ListView.view.width
+					horizontalAlignment:	Text.AlignLeft
+				}
+			}
 			
-			visible:	!!respiro
-			model:		!respiro ? [] : respiro.backlog
-			delegate:	MyText 
-			{ 
-				text:					modelData;
-				font.pixelSize:			9
-				width:					ListView.view.width
-				horizontalAlignment:	Text.AlignLeft
+			Rectangle
+			{
+				id:							smallLogoBox
+				height:						2*generalMargin + (smallLogo.sourceSize.height / smallLogo.sourceSize.width) * smallLogo.width
+				border.color:				foregroundColor
+				border.width:				2
+				color:						"#cccccc"
+				
+				Image
+				{
+					id:							smallLogo
+					source:						"images/logo_biont_research.png"
+					anchors.fill:				parent
+					anchors.margins:			generalMargin
+				}
+					
+				anchors
+				{
+					right:					parent.right					
+					bottom:					parent.bottom
+					left:					parent.left
+				}
 			}
 		}
 	}

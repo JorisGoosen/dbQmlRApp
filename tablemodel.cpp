@@ -30,7 +30,22 @@ QVariant TableModel::data(const QModelIndex & index, int role) const
 	if(role != Qt::DisplayRole)
 		return QVariant();
 
-	return _db->tableValue(_tableName, _columnDefinitions[index.column()], _upsideDown ? rowC - (1+index.row()) : index.row());
+	QVariant var = _db->tableValue(_tableName, _columnDefinitions[index.column()], _upsideDown ? rowC - (1+index.row()) : index.row());
+	
+	bool itsAnInt = false;
+	int anInt = var.toInt(&itsAnInt);
+	
+
+	bool itsADouble = false;
+	double dbl = var.toDouble(&itsADouble);
+	
+	if(anInt && std::abs(double(anInt) - dbl) < 0.000001)
+		return QString::number(anInt);
+		
+	if(itsADouble)
+		return QString::number(dbl, 'f', 3);
+	
+	return var;
 }
 
 QVariant TableModel::headerData(int section, Qt::Orientation orientation, int role) const

@@ -84,6 +84,7 @@ int main(int argc, char *argv[])
 	mainEng.rootContext()->setContextProperty("backgroundColor",		"black");
 	mainEng.rootContext()->setContextProperty("foregroundColor",		"white");
 	mainEng.rootContext()->setContextProperty("foregroundHColor",		"lightgrey");
+	mainEng.rootContext()->setContextProperty("backgroundHColor",		"#222222");
 	mainEng.rootContext()->setContextProperty("windowBackgroundColor",	"grey");
 
 	mainEng.rootContext()->setContextProperty("controlBackgroundNeutral",	"lightgrey");

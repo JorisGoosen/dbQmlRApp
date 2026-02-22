@@ -190,6 +190,7 @@ signals:
 
 
 	void				startSignal(
+			QString		dataFilePath,
 			QList<int>	channels,
 			int			runtimeSec,
 			int			channelRuntimeSec,
@@ -206,14 +207,14 @@ private:
 	TableModel		*	_dataProc	= nullptr,
 					*	_dataMeas	= nullptr,
 					*	_msgs		= nullptr;
-	int					_O2,
+	int					_curChannel,
+						_runtimeSec			= 365 * 24 * 60 * 60,
+						_channelRuntimeSec	= 5 * 60;
+	float				_O2,
 						_CH4,
 						_CO2,
 						_pressure,
-						_curChannel,
-						_runtimeSec			= 365 * 24 * 60 * 60,
-						_channelRuntimeSec	= 5 * 60;
-	float				_temp1,
+						_temp1,
 						_temp2;
 	QString				_error,
 						_warning,
