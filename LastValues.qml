@@ -17,13 +17,13 @@ RowLayout
 	
 	MyText
 	{
-		text:			"<b>CO<sub>2</sub>:</b>&nbsp;" + respiro.CO2.toFixed(3)
+		text:			"<b>CO<sub>2</sub>:</b>&nbsp;" + respiro.CO2.toFixed(2)
 		implicitWidth:	uniformWidth
 	}
 	
 	MyText
 	{
-		text:			"<b>CH<sub>4</sub>:</b>&nbsp;" + respiro.CH4.toFixed(3)
+		text:			"<b>CH<sub>4</sub>:</b>&nbsp;" + respiro.CH4.toFixed(2)
 		implicitWidth:	uniformWidth
 	}
 	
@@ -35,19 +35,19 @@ RowLayout
 	
 	MyText
 	{
-		text:			"<b>Temp. Respiro:</b>&nbsp;" + respiro.tempRespiro.toFixed(2) + "<sup>c</sup>"
+		text:			"<b>Temp. Respiro:</b>&nbsp;" + respiro.tempRespiro.toFixed(1) + "<sup>c</sup>"
 		implicitWidth:	uniformWidth
 	}
 	
 	MyText
 	{
-		text:			"<b>Temp. Sample:</b>&nbsp;" + respiro.tempSample.toFixed(2) + "<sup>c</sup>"
+		text:			"<b>Temp. Sample:</b>&nbsp;" + respiro.tempSample.toFixed(1) + "<sup>c</sup>"
 		implicitWidth:	uniformWidth
 	}
 	
 	MyText
 	{
-		text:			"<b>Pressure:</b>&nbsp;" + respiro.pressure.toFixed(2) + " mBar"
+		text:			"<b>Pressure:</b>&nbsp;" + respiro.pressure.toFixed(1) + " mBar"
 		implicitWidth:	uniformWidth
 	}
 	
