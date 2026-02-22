@@ -54,7 +54,7 @@ private:
   void			_runStatements(				const std::string & statements,	bindParametersType			*	bindParameters = nullptr,	processRowType			* processRow = nullptr);	///< Runs several sql statements without looking at the results. Unless processRow is not NULL, then this is called for each row.
   void			_runStatementsRepeatedly(	const std::string & statements, bindParametersFactoryType		bindParameterFactory,		processRowRepeatedType	* processRow = nullptr);
 
-  void			create();										///< Creates a new sqlite database in sessiondir and loads it
+  //void			create();										///< Creates a new sqlite database in sessiondir and loads it
   void			load();											///< Loads a sqlite database from sessiondir (after loading a jaspfile)
   void			close();										///< Closes the loaded database and disconnects
 

@@ -45,8 +45,8 @@ int main(int argc, char *argv[])
 	
 	
 	QObject::connect(&rWrapper,		&RWrapper::push_last_values,		&respiro,	&Respiro::receive_last_values	);
-	QObject::connect(&rWrapper,		&RWrapper::push_meas_data,			&respiro,	&Respiro::push_meas_data		);
-	QObject::connect(&rWrapper,		&RWrapper::push_proc_data,			&respiro,	&Respiro::push_proc_data		);
+	QObject::connect(&rWrapper,		&RWrapper::push_meas_data,			&respiro,	&Respiro::push_meas_data,		Qt::QueuedConnection);
+	QObject::connect(&rWrapper,		&RWrapper::push_proc_data,			&respiro,	&Respiro::push_proc_data,		Qt::QueuedConnection);
 	QObject::connect(&rWrapper,		&RWrapper::push_current_channel,	&respiro,	&Respiro::push_current_channel	);
 	QObject::connect(&rWrapper,		&RWrapper::push_valve_state,		&respiro,	&Respiro::push_valve_state		);
 	QObject::connect(&rWrapper,		&RWrapper::push_vent_state,			&respiro,	&Respiro::push_vent_state		);

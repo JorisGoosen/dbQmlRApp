@@ -26,28 +26,28 @@ void Database::setDbFile(const std::filesystem::path & file)
 }
 
 
-void Database::create()
-{
-  assert(!_db);
-
-  std::cout << "Creating database at '" << dbFile() << "'" << std::endl;
-
-  if(std::filesystem::exists(dbFile()))
-    {
-      std::cout << "Database::create: Removing existing sqlite internal db at " << dbFile() << std::endl;
-      std::filesystem::remove(dbFile());
-    }
-
-  int ret = sqlite3_open_v2(dbFile().c_str(), &_db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_FULLMUTEX, NULL);
-
-  if(ret != SQLITE_OK)
-  {
-    std::cerr << "Couldnt open sqlite internal db, because of: " << (_db ? sqlite3_errmsg(_db) : "not even a broken sqlite3 obj was returned..." ) << std::endl;
-    throw std::runtime_error("Couldnt create database....");
-  }
-  else
-    std::cout << "Opened internal sqlite database for creation at '" << dbFile() << "'." << std::endl;
-}
+//void Database::create()
+//{
+//  assert(!_db);
+//
+//  std::cout << "Creating database at '" << dbFile() << "'" << std::endl;
+//
+//  if(std::filesystem::exists(dbFile()))
+//    {
+//      std::cout << "Database::create: Removing existing sqlite internal db at " << dbFile() << std::endl;
+//      std::filesystem::remove(dbFile());
+//    }
+//
+//  int ret = sqlite3_open_v2(dbFile().c_str(), &_db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_FULLMUTEX, NULL);
+//
+//  if(ret != SQLITE_OK)
+//  {
+//    std::cerr << "Couldnt open sqlite internal db, because of: " << (_db ? sqlite3_errmsg(_db) : "not even a broken sqlite3 obj was returned..." ) << std::endl;
+//    throw std::runtime_error("Couldnt create database....");
+//  }
+//  else
+//    std::cout << "Opened internal sqlite database for creation at '" << dbFile() << "'." << std::endl;
+//}
 
 void Database::load()
 {
@@ -513,7 +513,7 @@ QVariant Database::tableExtractColumnDefValue(sqlite3_stmt * stmt, size_t param,
 		return QVariant(sqlite3_column_int(stmt, param));
 		
 	case ColumnType::DateTime: //unix epoch
-		return QDateTime::fromSecsSinceEpoch(sqlite3_column_int(stmt, param));
+		return QDateTime::fromSecsSinceEpoch(sqlite3_column_int(stmt, param)).toString(Qt::DateFormat::ISODate);
 
 	case ColumnType::Duration:
 	case ColumnType::NumDbl:

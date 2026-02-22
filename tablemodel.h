@@ -60,7 +60,7 @@ private:
 	QFontMetrics			_metrics;
 	QRect					_maxBounds;
 	QTextOption				_textOption;
-	int						_maxWidthCol = 250,
+	int						_maxWidthCol = 350,
 							_cellMargin = 20;
 	bool					_upsideDown = true;
 };

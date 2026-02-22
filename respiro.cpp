@@ -13,13 +13,13 @@ Respiro::Respiro()
 	typedef ColumnDefinition	CD;
 
 	_dataMeasuredDefs = {
-		new CD("ID",					"id",				ColumnType::PrimaryKey),
+		new CD("DB ID",					"id",				ColumnType::PrimaryKey),
 		new CD("Timestamp",				"DateTime",			ColumnType::DateTime),
 		new CD("Cycle",					"cycle",			ColumnType::NumInt),
 		new CD("Phase",					"phase",			ColumnType::Text),
 		new CD("Channel ID",			"channelID",		ColumnType::NumInt),
 		new CD("Flow ml min",			"flow_ml_min",		ColumnType::NumDbl),
-		new CD("O<sub>2</sub>%%",		"O2_perc",			ColumnType::NumDbl),
+		new CD("O<sub>2</sub>%",		"O2_perc",			ColumnType::NumDbl),
 		new CD("CH<sub>4</sub> ppm",	"CH4_ppm",			ColumnType::NumDbl),
 		new CD("CO<sub>2</sub> ppm",	"CO2_ppm",			ColumnType::NumDbl),
 		new CD("Pressure mBar",			"p_mBar",			ColumnType::NumDbl),
@@ -30,11 +30,11 @@ Respiro::Respiro()
 	};
 
 	_dataProcessedDefs = {
-		new CD("ID",					"id",				ColumnType::PrimaryKey),
-		new CD("Channel",				"cycle",			ColumnType::NumInt),
-		new CD("Channel",				"channelID",		ColumnType::NumInt),
-		new CD("Timestamp",				"DateTimeFrom",		ColumnType::DateTime),
-		new CD("Timestamp",				"DateTimeTo",		ColumnType::DateTime),
+		new CD("DB ID",					"id",				ColumnType::PrimaryKey),
+		new CD("Cycle",					"cycle",			ColumnType::NumInt),
+		new CD("Channel ID",			"channelID",		ColumnType::NumInt),
+		new CD("Time from",				"DateTimeFrom",		ColumnType::DateTime),
+		new CD("Time to",				"DateTimeTo",		ColumnType::DateTime),
 		new CD("O<sub>2</sub> prod.",	"O2_umol_h",		ColumnType::NumDbl),
 		new CD("CH<sub>4</sub> prod.",	"CH4_umol_h",		ColumnType::NumDbl),
 		new CD("CO<sub>2</sub> prod.",	"CO2_umol_h",		ColumnType::NumDbl),
