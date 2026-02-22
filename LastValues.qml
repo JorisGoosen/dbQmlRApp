@@ -2,11 +2,10 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-
 RowLayout
 {
 	id:					infoRow
-	implicitHeight:		childrenRect.height	
+	implicitHeight:     childrenRect.height
 	
 	property real uniformWidth: ((width-spacing) / 8) - spacing
 	

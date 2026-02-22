@@ -17,7 +17,7 @@ Item
 	}
 	
 	implicitWidth:		tekstWortel.contentWidth	+ 2*generalMargin
-	implicitHeight:		tekstWortel.contentHeight	+2*generalMargin
+	implicitHeight:		tekstWortel.contentHeight	+ 2*generalMargin
 	
 	property alias text:				tekstWortel.text
 	property alias color:				tekstWortel.color
@@ -28,7 +28,7 @@ Item
 	Text
 	{
 		id:						tekstWortel
-		font:					"monospace"
+		//font:					"monospace"
 		color:					foregroundHColor
 		wrapMode:				Text.WrapAtWordBoundaryOrAnywhere
 		horizontalAlignment:	Text.AlignHCenter
