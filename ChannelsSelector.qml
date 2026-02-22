@@ -3,12 +3,16 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 
-Item
+Rectangle
 {
 	id: rootHere
 	property alias model:	channelRepeater.model
 
 	height:	scroller.height
+	
+	color:			controlBackgroundNeutral
+	border.color:	controlForegroundNeutral
+	border.width:	1
 
 	ScrollView
 	{
@@ -18,18 +22,15 @@ Item
 			horizontalCenter:	parent.horizontalCenter
 		}
 
-		width:				Math.min(titleAndMore.implicitWidth, rootHere.width)
+		width:				parent.width
 		height:				titleAndMore.height
 
-		Rectangle
+		Item
 		{
 			id:				titleAndMore
 			implicitWidth:	rowLayout.width
-			implicitHeight:	rowLayout.y + rowLayout.height + generalMargin
+			implicitHeight:	rowLayout.y + rowLayout.height + 2*generalMargin
 
-			color:			controlBackgroundNeutral
-			border.color:	controlForegroundNeutral
-			border.width:	1
 
 			Text
 			{
@@ -50,8 +51,8 @@ Item
 
 				anchors
 				{
-					top:	titleText.bottom
-					left:	parent.left
+					top:				titleText.bottom
+					horizontalCenter:	parent.horizontalCenter
 				}
 
 				Repeater

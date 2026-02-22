@@ -2,66 +2,73 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-ColumnLayout
+Item
 {
-	id:			columnLayout
-	Repeater
+	ColumnLayout
 	{
-		model:	respiro.feedback
-
-		Rectangle
+		id:			columnLayout
+		height:		Math.min(implicitHeight, parent.height)
+		spacing:	generalMargin
+		width:		parent.width
+		
+		Repeater
 		{
-			border.color:	feedbackStatus.color
-			border.width:	1
-
-			width:			childrenRect.width		+ 20
-			height:			childrenRect.height		+ 20
-			radius:			height
-
-			Layout.alignment: Qt.AlignHCenter
-
-			Item
+			model:	respiro.feedback
+	
+			Rectangle
 			{
-				anchors.centerIn:	parent
-				width:				Math.max(Math.max(feedbackMsg.contentWidth, feedbackErrorMsg.contentWidth)*2 + feedbackStatus.width, columnLayout.width / 2)
-				height:				feedbackMsg.height
-
-				Text
+				border.color:	feedbackStatus.color
+				border.width:	1
+	
+				width:			childrenRect.width		+ 20
+				height:			childrenRect.height		+ 20
+				radius:			height
+	
+				Layout.alignment: Qt.AlignHCenter
+	
+				Item
 				{
-					id:		feedbackMsg
-					text:	modelData
-
-					anchors
+					anchors.centerIn:	parent
+					width:				Math.max(Math.max(feedbackMsg.contentWidth, feedbackErrorMsg.contentWidth)*2 + feedbackStatus.width, columnLayout.width / 2)
+					height:				feedbackMsg.height
+	
+					Text
 					{
-						right:			feedbackStatus.left
-						rightMargin:		10
-						verticalCenter:	parent.verticalCenter
+						id:		feedbackMsg
+						text:	modelData
+	
+						anchors
+						{
+							right:			feedbackStatus.left
+							rightMargin:		10
+							verticalCenter:	parent.verticalCenter
+						}
+	
 					}
-
-				}
-
-				Rectangle
-				{
-					id:		feedbackStatus
-					radius:	width
-					height:	feedbackMsg.height
-					width:	height
-					color:	!respiro.feedbackFinished(modelData) ? "blue" : !respiro.feedbackError(modelData) ? "green" : "red"
-
-					anchors.centerIn: parent
-				}
-
-				Text
-				{
-					id:		feedbackErrorMsg
-					text:	respiro.feedbackError(modelData)
-					color:	"darkred"
-
-					anchors
+	
+					Rectangle
 					{
-						left:			feedbackStatus.right
-						leftMargin:		10
-						verticalCenter:	parent.verticalCenter
+						id:		feedbackStatus
+						radius:	width
+						height:	feedbackMsg.height
+						width:	height
+						color:	!respiro.feedbackFinished(modelData) ? "blue" : !respiro.feedbackError(modelData) ? "green" : "red"
+	
+						anchors.centerIn: parent
+					}
+	
+					Text
+					{
+						id:		feedbackErrorMsg
+						text:	respiro.feedbackError(modelData)
+						color:	"darkred"
+	
+						anchors
+						{
+							left:			feedbackStatus.right
+							leftMargin:		10
+							verticalCenter:	parent.verticalCenter
+						}
 					}
 				}
 			}

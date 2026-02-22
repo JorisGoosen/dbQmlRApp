@@ -13,87 +13,114 @@ Window
 	onClosing:	mainModel.closing();
 	visibility:	Window.FullScreen
 
-
-	TabBar
+	SplitView
 	{
-		id:		tabBar
-
-		anchors
+		orientation:	Qt.Horizontal
+		anchors.fill:	parent
+		
+		FocusScope
 		{
-			top:	parent.top
-			left:	parent.left
-			right:	parent.right
-		}
-
-		onCurrentIndexChanged:	stack.currentIndex = currentIndex
-
-		Repeater
-		{
-			model:	mainModel? mainModel.qmlsShown : []
-
-			TabButton
+			SplitView.fillWidth:	true
+			
+			TabBar
 			{
-				id:		tabButton
-				text:	modelData
-
-				property bool selected: index === tabBar.currentIndex
-
-				contentItem:	Text
+				id:		tabBar
+		
+				anchors
 				{
-					color:				tabButton.selected ? controlBackgroundPressed : controlBackgroundNeutral
-					text:				tabButton.text
-					anchors.centerIn:	parent
+					top:	parent.top
+					left:	parent.left
+					right:	parent.right
 				}
-
-				background: Rectangle
+		
+				onCurrentIndexChanged:	stack.currentIndex = currentIndex
+		
+				Repeater
 				{
-						color:	tabButton.selected ? controlForegroundPressed : controlForegroundNeutral
+					model:	mainModel? mainModel.qmlsShown : []
+		
+					TabButton
+					{
+						id:		tabButton
+						text:	modelData
+		
+						property bool selected: index === tabBar.currentIndex
+		
+						contentItem:	Text
+						{
+							color:				tabButton.selected ? controlBackgroundPressed : controlBackgroundNeutral
+							text:				tabButton.text
+							anchors.centerIn:	parent
+						}
+		
+						background: Rectangle
+						{
+								color:	tabButton.selected ? controlForegroundPressed : controlForegroundNeutral
+						}
+					}
 				}
 			}
-		}
-	}
-
-	StackLayout
-	{
-		id:						stack
-		clip:					true
-		currentIndex:			1
-		onCurrentIndexChanged:	tabBar.currentIndex = currentIndex
-
-		Repeater
-		{
-			id:		swipeRepeater
-			model:	mainModel? mainModel.qmlsShown : []
-
-			onModelChanged:	tabBar.setCurrentIndex(0)
-
-			Loader
+		
+			StackLayout
 			{
-				id:				qmlLoader
-				source:			modelData + ".qml"
+				id:						stack
+				clip:					true
+				currentIndex:			1
+				onCurrentIndexChanged:	tabBar.currentIndex = currentIndex
+		
+				Repeater
+				{
+					id:		swipeRepeater
+					model:	mainModel? mainModel.qmlsShown : []
+		
+					onModelChanged:	tabBar.setCurrentIndex(0)
+		
+					Loader
+					{
+						id:				qmlLoader
+						source:			modelData + ".qml"
+					}
+				}
+		
+				anchors
+				{
+					top:	tabBar.bottom
+					left:	parent.left
+					right:	parent.right
+					bottom:	parent.bottom
+				}
+			}
+		
+			readonly property Item _toolTipOverrideItem: Item
+			{
+				//These properties override those for ALL attached ToolTips in the application
+				//ToolTip.toolTip shouldn't be changed anywhere else otherwise we get hard to debug behaviour
+				ToolTip.toolTip.background:		Rectangle { color: backgroundColor; border.width: 1; border.color: foregroundColor }
+				ToolTip.toolTip.contentItem:	Text
+				{
+					//font:			jaspTheme.font
+					wrapMode:		Text.WrapAtWordBoundaryOrAnywhere
+					text:			ToolTip.toolTip.text
+				}
+				ToolTip.toolTip.z:						1234
 			}
 		}
-
-		anchors
+	
+		
+		ListView
 		{
-			top:	tabBar.bottom
-			left:	parent.left
-			right:	parent.right
-			bottom:	parent.bottom
+			SplitView.preferredWidth: 500
+			
+			
+			visible:	!!respiro
+			model:		!respiro ? [] : respiro.backlog
+			delegate:	MyText 
+			{ 
+				text:					modelData;
+				font.pixelSize:			9
+				width:					ListView.view.width
+				horizontalAlignment:	Text.AlignLeft
+			}
 		}
-	}
-
-	readonly property Item _toolTipOverrideItem: Item
-	{
-		//These properties override those for ALL attached ToolTips in the application
-		//ToolTip.toolTip shouldn't be changed anywhere else otherwise we get hard to debug behaviour
-		ToolTip.toolTip.background:		Rectangle { color: backgroundColor; border.width: 1; border.color: foregroundColor }
-		ToolTip.toolTip.contentItem:	Text
-		{
-			//font:			jaspTheme.font
-			wrapMode:		Text.WrapAtWordBoundaryOrAnywhere
-			text:			ToolTip.toolTip.text
-		}
-		ToolTip.toolTip.z:						1234
 	}
 }
