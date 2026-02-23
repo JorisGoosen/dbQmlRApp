@@ -34,6 +34,7 @@ class RWrapper : public QObject
 	Q_PROPERTY(bool			instantPause		READ instantPause		WRITE setInstantPause	NOTIFY instantPauseChanged	)
 	Q_PROPERTY(bool			delayedPause		READ delayedPause		WRITE setDelayedPause	NOTIFY delayedPauseChanged	)
 	Q_PROPERTY(bool			controlWanted		READ controlWanted		WRITE setControlWanted	NOTIFY controlWantedChanged	)
+	Q_PROPERTY(bool			inited				READ inited				WRITE setInited			NOTIFY initedChanged		)
 	Q_PROPERTY(bool			running				READ running			WRITE setRunning		NOTIFY runningChanged		)
 	Q_PROPERTY(QString		outputFolder		READ outputFolder		WRITE setOutputFolder	NOTIFY outputFolderChanged	)
 
@@ -69,10 +70,16 @@ public:
 	QString outputFolder() const;
 	void setOutputFolder(const QString & newOutputFolder);
 
+	bool inited() const;
+	void setInited(bool newInited);
+	
 public slots:
-	void startRespiro(
+	void initRespiro(
 			QString		datafile,
-			QList<int>	channels,
+			QList<int>	channels
+	);
+	
+	void startRespiro(
 			int			runtimeSec,
 			int			channelRuntimeSec,
 			bool		calibrateCO2,
@@ -106,10 +113,9 @@ signals:
 	void delayedPauseChanged();
 	void controlWantedChanged();
 	void runningChanged();
-
-
 	void outputFolderChanged();
-
+	void initedChanged();
+	
 private:
 	RInside			*	R				= nullptr;
 	QStringList			_prevOutput		= { };
@@ -119,8 +125,9 @@ private:
 	bool				_instantPause	= false,
 						_delayedPause	= false,
 						_controlWanted	= false,
-						_running		= false;
-	QString _outputFolder;
+						_running		= false,
+						_inited			= false;
+	QString				_outputFolder;
 };
 
 #endif // RWRAPPER_H

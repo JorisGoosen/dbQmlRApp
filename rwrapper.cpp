@@ -248,30 +248,46 @@ void RWrapper::setControlWanted(bool newControlWanted)
 	emit controlWantedChanged();
 }
 
-void RWrapper::startRespiro(QString datafile, QList<int> channels, int runtimeSec, int channelRuntimeSec, bool calibrateCO2, bool internalLeakTest, bool initialHsFlush)
+void RWrapper::initRespiro(QString datafile, QList<int> channels)
+{
+	(*R)[".dataFile"]			= datafile.toStdString();
+	(*R)[".outputFolder"]		= _outputFolder.toStdString();
+		
+	const QString channelsStr = [channels](){ QStringList l; for(int channel : channels) l.append(QString::number(channel)); return ("c(" + l.join(",") + ")"); }();
+
+	const QString initRespiroR =
+			"setwd(.outputFolder)\n"
+			"library(respiro)\n"
+			"rc = NULL\n"
+			".channels = " + channelsStr  + "\n"
+			"withCallingHandlers(\n{\n"
+			"  rc = RespiroControl$new(.channels" + QString(datafile != "" ? ", dataFile=.dataFile" : "")+")\n"
+			"\n},error=function(error) { print(sys.calls()); print(paste(error)); respiroGui_push_error(paste(error))}\n)"
+			;
+
+	setRunning(true);
+	runRCommand(initRespiroR); 
+	setRunning(false);
+	setInited(true); //Show channelconf
+}
+
+void RWrapper::startRespiro(int runtimeSec, int channelRuntimeSec, bool calibrateCO2, bool internalLeakTest, bool initialHsFlush)
 {
 	std::cout << "Starting respiro with runtimeSec=" << runtimeSec <<", channelRuntimeSec=" << channelRuntimeSec << ", calibrateCO2=" << (calibrateCO2 ? "yes":"no") <<
 				 ", internalLeakTest="<< (internalLeakTest ? "yes":"no") << ", initialHsFlush="<< (initialHsFlush ? "yes":"no") << std::endl;
 	std::cout << "Outputfolder: '" << _outputFolder.toStdString() << std::endl;
 
-	(*R)[".dataFile"]			= datafile.toStdString();
 	(*R)[".runtimeSec"]			= runtimeSec;
 	(*R)[".channelRuntimeSec"]	= channelRuntimeSec;
 	(*R)[".calibrateCO2"]		= calibrateCO2;
 	(*R)[".internalLeakTest"]	= internalLeakTest;
 	(*R)[".initialHsFlush"]		= initialHsFlush;
-	(*R)[".outputFolder"]		= _outputFolder.toStdString();
 
-	const QString channelsStr = [channels](){ QStringList l; for(int channel : channels) l.append(QString::number(channel)); return ("c(" + l.join(",") + ")"); }();
 
 	const QString startR =
-			"setwd(.outputFolder)\n"
-			"library(respiro)\n"
 			"withCallingHandlers(\n{\n"
-			"  channels = " + channelsStr  + "\n"
-			"  rc = RespiroControl$new(channels" + (datafile != "" ? ", dataFile=.dataFile" : "")+")\n"
 			"  rc$start(\n"
-			"    channels             = channels,\n"
+			"    channels             = .channels,\n"
 			"    monitorRunTime       = .runtimeSec,\n"
 			"    calibrateCO2         = .calibrateCO2,\n"
 			"    internalLeakTest     = .internalLeakTest,\n"
@@ -282,7 +298,6 @@ void RWrapper::startRespiro(QString datafile, QList<int> channels, int runtimeSe
 
 	setRunning(true);
 	runRCommand(startR); //This will probably take a while ;)
-	//runRCommand("while(!respiroGui_poll_control_wanted()) Sys.sleep(1);"); //Can be used to test that control wanted gets set
 	setRunning(false);
 }
 
@@ -329,4 +344,17 @@ void RWrapper::setOutputFolder(const QString & newOutputFolder)
 		return;
 	_outputFolder = newOutputFolder;
 	emit outputFolderChanged();
+}
+
+bool RWrapper::inited() const
+{
+	return _inited;
+}
+
+void RWrapper::setInited(bool newInited)
+{
+	if (_inited == newInited)
+		return;
+	_inited = newInited;
+	emit initedChanged();
 }

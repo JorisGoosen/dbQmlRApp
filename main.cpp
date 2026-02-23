@@ -68,6 +68,7 @@ int main(int argc, char *argv[])
 
 
 	
+	QObject::connect(&rWrapper,		&RWrapper::initedChanged,			&mainModel,	[&](){ if(rWrapper.inited()) mainModel.inited(); });
 	QObject::connect(&respiro,		&Respiro::modelsLoaded,				&mainModel,	&MainModel::modelsLoaded,		Qt::QueuedConnection);
 	QObject::connect(&respiro,		&Respiro::respiroInited,			&mainModel,	&MainModel::respiroInited,		Qt::QueuedConnection);
 

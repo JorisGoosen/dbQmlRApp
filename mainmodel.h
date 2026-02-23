@@ -14,9 +14,10 @@ public:
 	QStringList qmlsShown() const;
 
 public slots:
+	void inited()			{ setQmlsShown( {"ChannelConf"					}); }
 	void dbLoaded()			{ setQmlsShown( {"Loading"						}); }
-	void modelsLoaded()		{ setQmlsShown( {"Loading", "Data", "Hardware"	}); }
-	void respiroInited()	{ setQmlsShown( {			"Data", "Hardware"	}); }
+	void modelsLoaded()		{ setQmlsShown( {"Loading", "Data"				}); }
+	void respiroInited()	{ setQmlsShown( {			"Data"				}); }
 	void closing();
 
 signals:
@@ -26,7 +27,7 @@ signals:
 private:
 	void setQmlsShown(const QStringList & newQmlsShown);
 
-	QStringList _qmlsShown = { "Init", "Hardware" };
+	QStringList _qmlsShown = { "Init" }; //, "Hardware"
 };
 
 #endif // MAINMODEL_H

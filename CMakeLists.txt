@@ -103,6 +103,7 @@ set(sources
 	settings.cpp
 	mainmodel.cpp
 	tablemodel.cpp
+	channelconf.cpp
 	plotrenderer.cpp
 	columndefinition.cpp
 )
@@ -115,6 +116,7 @@ set(headers
 	mainmodel.h
 	tablemodel.h
 	stringutils.h
+	channelconf.h
 	plotrenderer.h
 	enumutilities.h
 	columndefinition.h
@@ -134,6 +136,7 @@ qt_add_qml_module(qmlR
 		Hardware.qml
 		LastValues.qml
 		RectButton.qml
+		ChannelConf.qml
 		ChannelButton.qml
 		HWFeedbackButton.qml
 		ChannelsSelector.qml
