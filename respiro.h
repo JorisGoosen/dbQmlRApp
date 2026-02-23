@@ -250,7 +250,7 @@ private:
 						_msgsDefs;
 	Feedbacks			_feedbacks;
 	FeedbackMap			_feedbackMap;
-	QVariantList		_channelInit		= QVariantList(12, false);
+	QVariantList		_channelInit		= QVariantList(13, false);
 	QStringList			_backlog;
 	ChannelConfs		_channelConfs;
 };

@@ -298,6 +298,7 @@ void RWrapper::startRespiro(int runtimeSec, int channelRuntimeSec, bool calibrat
 	setRunning(true);
 	runRCommand(startR); //This will probably take a while ;)
 	setRunning(false);
+	runRCommand("rc$basalState(0)");
 }
 
 //From a direct connection so running in different thread than RWrapper itself!

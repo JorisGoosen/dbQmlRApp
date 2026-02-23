@@ -57,7 +57,7 @@ Rectangle
 
 				CheckBox
 				{
-					text:				index + 1
+					text:				index
 					checked:			modelData
 					onCheckedChanged:	if(checked != modelData) respiro.setChannelInit(index, checked);
 				}

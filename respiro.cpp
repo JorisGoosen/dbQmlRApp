@@ -575,11 +575,11 @@ QVariantList Respiro::channelInit() const
 
 QList<int> Respiro::initChannelsInts() const
 {
-	QList<int> l = {0};
+	QList<int> l = {};
 
 	for(int i=0; i<_channelInit.size(); i++)
 		if(_channelInit[i].toBool())
-			l.append(i+1);
+			l.append(i);
 
 	return l;
 }
