@@ -3,6 +3,7 @@
 
 #include "tablemodel.h"
 #include <QObject>
+#include "channelconf.h"
 
 struct Feedback
 {
@@ -56,6 +57,7 @@ class Respiro : public QObject
 	Q_PROPERTY(bool			initialHsFlush		READ initialHsFlush		WRITE setInitialHsFlush				NOTIFY initialHsFlushChanged	)
 	
 	Q_PROPERTY(QStringList	backlog				READ backlog												NOTIFY backlogChanged			)
+	Q_PROPERTY(QVariantList	channelConfs		READ channelConfs											NOTIFY channelConfsChanged		)
 	
 
 public:
@@ -134,6 +136,8 @@ public:
 	QStringList backlog() const;
 
 	
+	QVariantList channelConfs() const;
+	
 public slots:
 	void				setChannelInit(		int index, bool checked);
 	void				push_meas_data();
@@ -152,6 +156,7 @@ public slots:
 	void				push_loading_feedback(	QString feedback, bool finished, QString error);
 	void				push_datafilepath(		QString datafilepath);
 	void				start();
+	void				init();
 	void				receive_last_values( int relTime, int measuring_channel, float pressure, float flow, float temperatureRespirometer, float temperatureSample, float CO2_ADC, float O2_raw, float CH4_raw, float CO2_raw);
 
 signals:
@@ -174,6 +179,7 @@ signals:
 	void				controlWantedChanged(bool);
 	void				outputFolderChanged(QString);
 	void				modelsLoaded();
+	void				showLoading();
 	void				cantFindOldDatabase();
 	void				feedbackChanged();
 	void				channelInitChanged();
@@ -188,16 +194,20 @@ signals:
 	void				vent2Changed();
 	void				backlogChanged();
 
+	void				initSignal(
+			QString		dataFilePath,
+			QList<int>	channels
+	);
 
 	void				startSignal(
-			QString		dataFilePath,
-			QList<int>	channels,
 			int			runtimeSec,
 			int			channelRuntimeSec,
 			bool		calibrateCO2,
 			bool		internalLeakTest,
 			bool		initialHsFlush
 	);
+	
+	void channelConfsChanged();
 	
 private:
 	void				loadModels();
@@ -242,6 +252,7 @@ private:
 	FeedbackMap			_feedbackMap;
 	QVariantList		_channelInit		= QVariantList(12, false);
 	QStringList			_backlog;
+	ChannelConfs		_channelConfs;
 };
 
 #endif // RESPIRO_H

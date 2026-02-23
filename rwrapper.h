@@ -34,7 +34,6 @@ class RWrapper : public QObject
 	Q_PROPERTY(bool			instantPause		READ instantPause		WRITE setInstantPause	NOTIFY instantPauseChanged	)
 	Q_PROPERTY(bool			delayedPause		READ delayedPause		WRITE setDelayedPause	NOTIFY delayedPauseChanged	)
 	Q_PROPERTY(bool			controlWanted		READ controlWanted		WRITE setControlWanted	NOTIFY controlWantedChanged	)
-	Q_PROPERTY(bool			inited				READ inited				WRITE setInited			NOTIFY initedChanged		)
 	Q_PROPERTY(bool			running				READ running			WRITE setRunning		NOTIFY runningChanged		)
 	Q_PROPERTY(QString		outputFolder		READ outputFolder		WRITE setOutputFolder	NOTIFY outputFolderChanged	)
 
@@ -70,8 +69,6 @@ public:
 	QString outputFolder() const;
 	void setOutputFolder(const QString & newOutputFolder);
 
-	bool inited() const;
-	void setInited(bool newInited);
 	
 public slots:
 	void initRespiro(
@@ -88,6 +85,13 @@ public slots:
 	);
 
 	void exitR();
+	
+	QString		getStringFromChannelConf(int channelID, const QString & confName);
+	void		setStringIntoChannelConf(int channelID, const QString & confName, const QString & setting);
+	
+	double		getDoubleFromChannelConf(int channelID, const QString & confName);
+	void		setDoubleIntoChannelConf(int channelID, const QString & confName, const double setting);
+	
 
 signals:	
 	void prevOutputChanged();
@@ -114,7 +118,6 @@ signals:
 	void controlWantedChanged();
 	void runningChanged();
 	void outputFolderChanged();
-	void initedChanged();
 	
 private:
 	RInside			*	R				= nullptr;
@@ -125,8 +128,7 @@ private:
 	bool				_instantPause	= false,
 						_delayedPause	= false,
 						_controlWanted	= false,
-						_running		= false,
-						_inited			= false;
+						_running		= false;
 	QString				_outputFolder;
 };
 

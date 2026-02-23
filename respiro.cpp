@@ -5,6 +5,7 @@
 #include <QUrl>
 #include "database.h"
 #include <iostream>
+#include "rwrapper.h"
 
 Respiro::Respiro()
 	: QObject{}
@@ -67,7 +68,7 @@ void Respiro::startSession()
 
 	setOutputFolder(QDir(newOutputFolder.filePath(newFolder)).absolutePath());
 
-	start();
+	init();
 
 	//loadModels(); //Instead we will wait until respiro creates a database file!
 }
@@ -85,7 +86,7 @@ void Respiro::loadOldSession(const QString & oldOutputdatafile)
 	setOutputFolder(dataFileInfo.dir().absolutePath());
 	_dataFilePath = dataFileInfo.absoluteFilePath();
 	
-	start();
+	init();
 }
 
 bool Respiro::feedbackFinished(const QString & feedbackMsg)
@@ -515,11 +516,21 @@ void Respiro::push_loading_feedback(QString feedback, bool finished, QString err
 	}
 }
 
+void Respiro::init()
+{
+	auto channelInts = initChannelsInts();
+	emit initSignal(_dataFilePath, channelInts); //Init in R!
+	
+	for(int i : channelInts)
+		_channelConfs.push_back(new ChannelConf(i, RWrapper::singleton()));
+	
+	emit channelConfsChanged();
+}
+
 void Respiro::start()
 {
-	emit startSignal(_dataFilePath, initChannelsInts(), _runtimeSec, _channelRuntimeSec, _calibrateCO2, _internalLeakTest, _initialHsFlush);
-	
-	
+	emit showLoading();
+	emit startSignal(_runtimeSec, _channelRuntimeSec, _calibrateCO2, _internalLeakTest, _initialHsFlush);
 }
 
 void Respiro::receive_last_values(int relTime, int measuring_channel, float pressure, float flow, float temperatureRespirometer, float temperatureSample, float CO2_ADC, float O2_raw, float CH4_raw, float CO2_raw)
@@ -709,3 +720,13 @@ QStringList Respiro::backlog() const
 	return __convertor(_backlog);
 }
 
+
+QVariantList Respiro::channelConfs() const
+{
+	QVariantList out;
+	
+	for(ChannelConf * c : _channelConfs)
+		out.append(QVariant::fromValue(c));
+	
+	return out;
+}

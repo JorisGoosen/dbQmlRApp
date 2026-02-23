@@ -65,11 +65,12 @@ int main(int argc, char *argv[])
 	QObject::connect(&respiro,		&Respiro::delayedPauseChanged,		&rWrapper,	&RWrapper::setDelayedPause		);
 	QObject::connect(&respiro,		&Respiro::controlWantedChanged,		&rWrapper,	&RWrapper::setControlWanted		);
 	QObject::connect(&respiro,		&Respiro::startSignal,				&rWrapper,	&RWrapper::startRespiro			);
+	QObject::connect(&respiro,		&Respiro::initSignal,				&rWrapper,	&RWrapper::initRespiro			);
 
 
 	
-	QObject::connect(&rWrapper,		&RWrapper::initedChanged,			&mainModel,	[&](){ if(rWrapper.inited()) mainModel.inited(); });
-	QObject::connect(&respiro,		&Respiro::modelsLoaded,				&mainModel,	&MainModel::modelsLoaded,		Qt::QueuedConnection);
+	QObject::connect(&respiro,		&Respiro::channelConfsChanged,		&mainModel,	&MainModel::inited,				Qt::QueuedConnection);
+	QObject::connect(&respiro,		&Respiro::showLoading,				&mainModel,	&MainModel::modelsLoaded,		Qt::QueuedConnection);
 	QObject::connect(&respiro,		&Respiro::respiroInited,			&mainModel,	&MainModel::respiroInited,		Qt::QueuedConnection);
 
 	QObject::connect(&mainModel,	&MainModel::exitR,					&rWrapper,	&RWrapper::exitR,				Qt::DirectConnection);

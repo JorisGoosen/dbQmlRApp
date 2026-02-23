@@ -268,7 +268,6 @@ void RWrapper::initRespiro(QString datafile, QList<int> channels)
 	setRunning(true);
 	runRCommand(initRespiroR); 
 	setRunning(false);
-	setInited(true); //Show channelconf
 }
 
 void RWrapper::startRespiro(int runtimeSec, int channelRuntimeSec, bool calibrateCO2, bool internalLeakTest, bool initialHsFlush)
@@ -320,6 +319,26 @@ void RWrapper::exitR()
 		std::cout << "R exited cleanly" <<std::endl;
 }
 
+QString RWrapper::getStringFromChannelConf(int channelID, const QString & confName)
+{
+	return QString::fromStdString(R->parseEvalNT("rc$channelConf(col='"+confName.toStdString()+"', channelID="+std::to_string(channelID)+")"));
+}
+
+void RWrapper::setStringIntoChannelConf(int channelID, const QString &confName, const QString &setting)
+{
+	R->parseEvalQNT("rc$channelConf(col='"+confName.toStdString()+"', newValue='"+setting.toStdString()+"', channelID="+std::to_string(channelID)+")");
+}
+
+double RWrapper::getDoubleFromChannelConf(int channelID, const QString &confName)
+{
+	return R->parseEvalNT("rc$channelConf(col='"+confName.toStdString()+"', channelID="+std::to_string(channelID)+")");
+}
+
+void RWrapper::setDoubleIntoChannelConf(int channelID, const QString &confName, const double setting)
+{
+	R->parseEvalQNT("rc$channelConf(col='"+confName.toStdString()+"', newValue="+std::to_string(setting)+", channelID="+std::to_string(channelID)+")");
+}
+
 bool RWrapper::running() const
 {
 	return _running;
@@ -344,17 +363,4 @@ void RWrapper::setOutputFolder(const QString & newOutputFolder)
 		return;
 	_outputFolder = newOutputFolder;
 	emit outputFolderChanged();
-}
-
-bool RWrapper::inited() const
-{
-	return _inited;
-}
-
-void RWrapper::setInited(bool newInited)
-{
-	if (_inited == newInited)
-		return;
-	_inited = newInited;
-	emit initedChanged();
 }
