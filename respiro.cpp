@@ -522,7 +522,7 @@ void Respiro::init()
 	emit initSignal(_dataFilePath, channelInts); //Init in R!
 	
 	for(int i : channelInts)
-		_channelConfs.push_back(new ChannelConf(i, RWrapper::singleton()));
+		_channelConfs.push_back(new ChannelConf(i, RWrapper::singleton(), this));
 	
 	emit channelConfsChanged();
 }

@@ -19,7 +19,7 @@ class ChannelConf : public QObject
 	
 public:
 
-	explicit	ChannelConf(int channeldID, RWrapper * rWrapper);
+	explicit	ChannelConf(int channeldID, RWrapper * rWrapper, QObject * parent = nullptr);
 	
 	int			channelID()			;
 	QString		sampleID()			;

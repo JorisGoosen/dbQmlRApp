@@ -5,24 +5,68 @@ import QtQuick.Dialogs
 import QtCore
 
 
-ScrollView
+RowLayout
 {
-	ColumnLayout
+	anchors.fill:		parent
+	
+	Item
 	{
-		Repeater
-		{
-			//Channelsconfs hier?
-			model:			respiro.channelConfs
-			delegate:		channelConfComp
-		}
+		Layout.fillWidth:			true
+		implicitHeight:				parent.height
+	}
+	
+	ScrollView
+	{
+		implicitHeight:		parent.height
+		implicitWidth:		Math.min(parent.width,	contentWidth)
 		
-		RectButton
+		contentWidth:	columnChannels.childrenRect.width
+		contentHeight:	columnChannels.childrenRect.height
+		clip:			true
+		
+		ColumnLayout
 		{
-			text:				"Start"
-			onClicked:			respiro.start();
-			Layout.alignment:	Qt.AlignHCenter
+			id:		columnChannels
+			
+
+			
+			Item
+			{
+				Layout.fillHeight:	true	
+				implicitWidth:		parent.width
+
+			}
+						
+			Repeater
+			{
+				//Channelsconfs hier?
+				model:			respiro.channelConfs
+				delegate:		channelConfComp
+			}
+			
+			RectButton
+			{
+				text:				"Start"
+				onClicked:			respiro.start();
+				Layout.alignment:	Qt.AlignHCenter
+				implicitWidth:		400
+			}
+			
+			Item
+			{
+				Layout.fillHeight:	true	
+				implicitWidth:		parent.width
+			}
+			
 		}
 	}
+	
+	Item
+	{
+		Layout.fillWidth:			true
+		implicitHeight:				parent.height
+	}
+	
 	
 	Component
 	{
@@ -41,8 +85,9 @@ ScrollView
 			border.color:	foregroundHColor
 			border.width:	1
 			
-			width:			rijtje.implicitWidth  + 2 * generalMargin //generalMargin*2 + Math.max(regel1.implicitWidth, regel2.implicitWidth)
-			height:			rijtje.implicitHeight + 2 * generalMargin  //regel2.y + regel2.height + 2*generalMargin
+			implicitWidth:			rijtje.implicitWidth  + 2 * generalMargin //generalMargin*2 + Math.max(regel1.implicitWidth, regel2.implicitWidth)
+			implicitHeight:			rijtje.implicitHeight + 2 * generalMargin  //regel2.y + regel2.height + 2*generalMargin
+			radius:			40
 			
 			GridLayout
 			{

@@ -1,8 +1,8 @@
 #include "channelconf.h"
 #include "rwrapper.h"
 
-ChannelConf::ChannelConf(int channelID, RWrapper * rWrapper)
-	: QObject{rWrapper}
+ChannelConf::ChannelConf(int channelID, RWrapper * rWrapper, QObject * parent)
+	: QObject{parent}
 	, _channelID(channelID)
 {
 	connect(this, &ChannelConf::getStringFromChannelConf, rWrapper, &RWrapper::getStringFromChannelConf,	Qt::BlockingQueuedConnection);
