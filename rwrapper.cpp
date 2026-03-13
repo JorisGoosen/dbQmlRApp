@@ -26,6 +26,10 @@ RWrapper::RWrapper(QObject *parent)
 	(*R)["respiroGui_poll_delayed_pause"]			= Rcpp::InternalFunction(&respiroGui_poll_delayed_pause);
 	(*R)["respiroGui_poll_control_wanted"]			= Rcpp::InternalFunction(&respiroGui_poll_control_wanted);
 	(*R)["respiroGui_push_loading_feedback"]		= Rcpp::InternalFunction(&respiroGui_push_loading_feedback);
+
+	runRCommand("print(R.home())");
+	runRCommand("source(paste0(getwd(), '/renv/activate.R'))");
+	runRCommand("library(respiro)");
 }
 
 QString RWrapper::runRCommand(QString command)
