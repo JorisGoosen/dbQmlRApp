@@ -27,7 +27,7 @@ signals:
 private:
 	void setQmlsShown(const QStringList & newQmlsShown);
 
-	QStringList _qmlsShown = { "Init" }; //, "Hardware"
+    QStringList _qmlsShown = { "Init", "Hardware" }; //, "Hardware"
 };
 
 #endif // MAINMODEL_H
