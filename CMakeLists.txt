@@ -40,7 +40,20 @@ set(NUM_TRUNC_CHARS 2)
 execute_process(COMMAND "Rscript -e \"renv::status()\"" OUTPUT_VARIABLE RENV_STATUS)
 message(STATUS "RENV_STATUS: ${RENV_STATUS}")
 
-execute_process(COMMAND Rscript -e "cat(find.package('Rcpp'))" OUTPUT_VARIABLE RCPP_LOCATION)
+execute_process(COMMAND Rscript -e "renv::init(project='${CMAKE_BINARY_DIR}', force=TRUE)" OUTPUT_VARIABLE RENV_INIT_OUTPUT)
+message(STATUS "Renv init tells us: ${RENV_INIT_OUTPUT}")
+
+set(RESPIRO_SRC_LOCATION "../../respiro" CACHE STRING "Where is the respiro r package?")
+execute_process(COMMAND Rscript -e "renv::install(project='${CMAKE_BINARY_DIR}', prompt=FALSE, packages='${RESPIRO_SRC_LOCATION}')" OUTPUT_VARIABLE RENV_INSTALL_OUTPUT)
+message(STATUS "Renv install on ${RESPIRO_SRC_LOCATION} tells us: ${RENV_INSTALL_OUTPUT}")
+
+
+execute_process(COMMAND Rscript -e "renv::install(project='${CMAKE_BINARY_DIR}', prompt=FALSE, packages=c('Rcpp', 'RInside'))" OUTPUT_VARIABLE RCPP_INSTALL_OUTPUT)
+message(STATUS "Renv install Rcpp tells us: ${RCPP_INSTALL_OUTPUT}")
+
+set(PREAMBLE_R "source('renv/activate.R');\n")
+
+execute_process(COMMAND Rscript -e "${PREAMBLE_R} cat(find.package('Rcpp'))" OUTPUT_VARIABLE RCPP_LOCATION)
 #execute_process(COMMAND "R CMD config --cppflags" OUTPUT_VARIABLE RCPPFLAGS ECHO_OUTPUT_VARIABLE)
 set(RCPPFLAGS -I/Library/Frameworks/R.framework/Resources/include)
 string(SUBSTRING ${RCPPFLAGS} ${NUM_TRUNC_CHARS} -1 RCPPINCLUDE)
@@ -57,13 +70,13 @@ message(STATUS "RCPP_LOCATION: ${RCPP_LOCATION} \nRCPPCPPFLAGS: ${RCPPCPPFLAGS}"
 
 set(RLDFLAGS "-L/opt/R/arm64/lib -F/Library/Frameworks/R.framework/.. -framework R -L/opt/R/arm64/lib -lbz2 -lz -licucore -ldl -lm -liconv")
 
-execute_process(COMMAND Rscript -e "RInside:::CxxFlags()" OUTPUT_VARIABLE RINSIDEINCL)
-			
+execute_process(COMMAND Rscript -e "${PREAMBLE_R} RInside:::CxxFlags()" OUTPUT_VARIABLE RINSIDEINCL)
+
 message(STATUS "RINSIDEINCL: ${RINSIDEINCL}")
 string(SUBSTRING ${RINSIDEINCL} ${NUM_TRUNC_CHARS} -1 RINSIDEINCL)
 include_directories(${RINSIDEINCL})
 
-execute_process(COMMAND Rscript -e "RInside:::LdFlags()" OUTPUT_VARIABLE RINSIDELIBS)
+execute_process(COMMAND Rscript -e "${PREAMBLE_R} RInside:::LdFlags()" OUTPUT_VARIABLE RINSIDELIBS)
 string(STRIP ${RINSIDELIBS} RINSIDELIBS )
 string(REPLACE "\"" "" RINSIDELIBS ${RINSIDELIBS})
 
