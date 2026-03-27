@@ -274,6 +274,32 @@ void RWrapper::initRespiro(QString datafile, QList<int> channels)
 	setRunning(false);
 }
 
+void RWrapper::volumeTestRespiro(int channel)
+{	
+	const QString scriptR =
+			"withCallingHandlers(\n{\n"
+			"  rc$channels[["+QString::number(channel)+"]]$volumeTest()\n"
+			"\n},error=function(error) { print(sys.calls()); print(paste(error)); respiroGui_push_error(paste(error))}\n)"
+			;
+
+	setRunning(true);
+	runRCommand(scriptR); 
+	setRunning(false);
+}
+
+void RWrapper::leakTestRespiro(int channel)
+{	
+	const QString scriptR =
+			"withCallingHandlers(\n{\n"
+			"  rc$channels[["+QString::number(channel)+"]]$leakTest()\n"
+			"\n},error=function(error) { print(sys.calls()); print(paste(error)); respiroGui_push_error(paste(error))}\n)"
+			;
+
+	setRunning(true);
+	runRCommand(scriptR); 
+	setRunning(false);
+}
+
 void RWrapper::startRespiro(int runtimeSec, int channelRuntimeSec, bool calibrateCO2, bool internalLeakTest, bool initialHsFlush)
 {
 	std::cout << "Starting respiro with runtimeSec=" << runtimeSec <<", channelRuntimeSec=" << channelRuntimeSec << ", calibrateCO2=" << (calibrateCO2 ? "yes":"no") <<

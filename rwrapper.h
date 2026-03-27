@@ -84,6 +84,9 @@ public slots:
 			bool		initialHsFlush
 	);
 
+	void volumeTestRespiro(int channel);
+	void leakTestRespiro(int channel);
+
 	void exitR();
 	
 	QString		getStringFromChannelConf(int channelID, const QString & confName);

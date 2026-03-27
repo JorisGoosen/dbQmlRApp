@@ -147,6 +147,7 @@ qt_add_qml_module(qmlR
 		MyText.qml
 		Loading.qml
 		Hardware.qml
+		FlowChart.qml
 		LastValues.qml
 		RectButton.qml
 		ChannelConf.qml
