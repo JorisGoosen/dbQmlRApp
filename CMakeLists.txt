@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.21)
 
 project(qmlR)
 find_package(Qt6 REQUIRED)
-find_package(Qt6 REQUIRED COMPONENTS Core Quick Gui QuickControls2)
+find_package(Qt6 REQUIRED COMPONENTS Core Quick Gui QuickControls2 WebEngineQuick)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_MESSAGE_CONTEXT_SHOW ON)
@@ -144,6 +144,7 @@ qt_add_qml_module(qmlR
 		Init.qml
 		Data.qml
 		Tafel.qml
+		Plots.qml
 		MyText.qml
 		Loading.qml
 		Hardware.qml
@@ -178,6 +179,7 @@ target_link_libraries(
 	Qt6::Quick
 	Qt6::QuickControls2
 	Qt6::Gui
+	Qt6::WebEngineQuick
 	${BLAS_LIBS}
 	${LAPACK_LIBS}
 	${RINSIDELIBS_l}

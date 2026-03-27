@@ -18,7 +18,9 @@ RWrapper::RWrapper(QObject *parent)
 	(*R)["respiroGui_push_co2_state"]				= Rcpp::InternalFunction(&respiroGui_push_co2_state);
 	(*R)["respiroGui_push_ch4_state"]				= Rcpp::InternalFunction(&respiroGui_push_ch4_state);
 	(*R)["respiroGui_push_o2_state"]				= Rcpp::InternalFunction(&respiroGui_push_o2_state);
+	(*R)["respiroGui_push_status"]					= Rcpp::InternalFunction(&respiroGui_push_status);
 	(*R)["respiroGui_push_error"]					= Rcpp::InternalFunction(&respiroGui_push_error);
+	(*R)["respiroGui_push_plot"]					= Rcpp::InternalFunction(&respiroGui_push_plot);
 	(*R)["respiroGui_push_info"]					= Rcpp::InternalFunction(&respiroGui_push_info);
 	(*R)["respiroGui_push_warning"]					= Rcpp::InternalFunction(&respiroGui_push_warning);
 	(*R)["respiroGui_push_datafilepath"]			= Rcpp::InternalFunction(&respiroGui_push_datafilepath);
@@ -394,4 +396,59 @@ void RWrapper::setOutputFolder(const QString & newOutputFolder)
 		return;
 	_outputFolder = newOutputFolder;
 	emit outputFolderChanged();
+}
+
+void respiroGui_push_status(std::string status)
+{
+	RWrapper::singleton()->setStatus(QString::fromStdString(status));
+}
+
+void respiroGui_push_plot(std::string plotJson, std::string plotType)
+{
+	RWrapper::singleton()->plotUpdated(plotJson, plotType);
+}
+
+void RWrapper::plotUpdated(const std::string & plotJson, const std::string & plotType)
+{
+	if(_plots.contains(plotType) && _plots.at(plotType) == plotJson) //Then we need to do nothing
+		return;
+	
+	_plots[plotType] = plotJson;
+	
+	emit plotChanged(QString::fromStdString(plotType));
+	
+	if(		plotType == "allchan")		emit allChanPlotChanged();
+	else if(plotType == "groupchan")	emit groupChanPlotChanged();
+	else if(plotType == "meastimeline")	emit measTimePlotChanged();
+}
+
+QString RWrapper::status() const
+{
+	return _status;
+}
+
+void RWrapper::setStatus(const QString &newStatus)
+{
+	if (_status == newStatus)
+		return;
+	
+	_status = newStatus;
+	emit statusChanged();
+}
+
+QString RWrapper::allChanPlot() const
+{
+	return QString::fromStdString(_plots.at("allchan"));
+}
+
+
+QString RWrapper::groupChanPlot() const
+{
+	return QString::fromStdString(_plots.at("groupchan"));
+}
+
+
+QString RWrapper::measTimePlot() const
+{
+	return QString::fromStdString(_plots.at("meastimeline"));
 }

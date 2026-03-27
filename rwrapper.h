@@ -17,11 +17,15 @@ void respiroGui_push_ch4_state(			bool		ch4_on);
 void respiroGui_push_error(				std::string	error);
 void respiroGui_push_warning(			std::string	warning);
 void respiroGui_push_info(				std::string	info);
+void respiroGui_push_status(			std::string	status);
+void respiroGui_push_plot(				std::string	plotJson, std::string plotType);
 bool respiroGui_poll_instant_pause();
 bool respiroGui_poll_delayed_pause();
 bool respiroGui_poll_control_wanted();
 void respiroGui_push_datafilepath(std::string datafile);
 void respiroGui_push_loading_feedback(	std::string feedback, bool finished, std::string errorMsg);
+
+typedef std::map<std::string,std::string> strMap;
 
 class RWrapper : public QObject
 {
@@ -36,8 +40,11 @@ class RWrapper : public QObject
 	Q_PROPERTY(bool			controlWanted		READ controlWanted		WRITE setControlWanted	NOTIFY controlWantedChanged	)
 	Q_PROPERTY(bool			running				READ running			WRITE setRunning		NOTIFY runningChanged		)
 	Q_PROPERTY(QString		outputFolder		READ outputFolder		WRITE setOutputFolder	NOTIFY outputFolderChanged	)
-
-
+	Q_PROPERTY(QString		status				READ status				WRITE setStatus			NOTIFY statusChanged		)
+	Q_PROPERTY(QString		allChanPlot			READ allChanPlot								NOTIFY allChanPlotChanged	)
+	Q_PROPERTY(QString		measTimePlot		READ measTimePlot								NOTIFY measTimePlotChanged	)
+	Q_PROPERTY(QString		groupChanPlot		READ groupChanPlot								NOTIFY groupChanPlotChanged	)
+	
 
 public:
     explicit RWrapper(QObject *parent = nullptr);
@@ -70,6 +77,15 @@ public:
 	void setOutputFolder(const QString & newOutputFolder);
 
 	
+	QString status() const;
+	void setStatus(const QString &newStatus);
+	
+	QString allChanPlot() const;
+	
+	QString measTimePlot() const;
+	
+	QString groupChanPlot() const;
+	
 public slots:
 	void initRespiro(
 			QString		datafile,
@@ -94,6 +110,8 @@ public slots:
 	
 	double		getDoubleFromChannelConf(int channelID, const QString & confName);
 	void		setDoubleIntoChannelConf(int channelID, const QString & confName, const double setting);
+	
+	void		plotUpdated(const std::string & plotJson, const std::string & plotType);
 	
 
 signals:	
@@ -121,6 +139,14 @@ signals:
 	void controlWantedChanged();
 	void runningChanged();
 	void outputFolderChanged();
+	void statusChanged();
+	void plotChanged(QString);
+	
+	void allChanPlotChanged();
+	
+	void measTimePlotChanged();
+	
+	void groupChanPlotChanged();
 	
 private:
 	RInside			*	R				= nullptr;
@@ -132,7 +158,13 @@ private:
 						_delayedPause	= false,
 						_controlWanted	= false,
 						_running		= false;
-	QString				_outputFolder;
+	QString				_outputFolder,
+						_status;
+	strMap				_plots;
+	
+	QString m_allChanPlot;
+	QString m_measTimePlot;
+	QString m_groupChanPlot;
 };
 
 #endif // RWRAPPER_H
