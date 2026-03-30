@@ -26,8 +26,8 @@ class Respiro : public QObject
 	Q_PROPERTY(float		CH4					READ CH4				WRITE setCh4						NOTIFY CH4Changed				)
 	Q_PROPERTY(float		CO2					READ CO2				WRITE setCO2						NOTIFY CO2Changed				)
 	Q_PROPERTY(float		pressure			READ pressure			WRITE setPressure					NOTIFY pressureChanged			)
-	Q_PROPERTY(float		tempRespiro			READ tempRespiro				WRITE seTemperatureRespirometer		NOTIFY temp1Changed				)
-	Q_PROPERTY(float		tempSample			READ tempSample				WRITE setTemperatureSample			NOTIFY temp2Changed				)
+    Q_PROPERTY(float		tempRespiro			READ tempRespiro		WRITE seTemperatureRespirometer		NOTIFY temp1Changed				)
+    Q_PROPERTY(float		tempSample			READ tempSample			WRITE setTemperatureSample			NOTIFY temp2Changed				)
 	Q_PROPERTY(QString		error				READ error				WRITE setError						NOTIFY errorChanged				)
 	Q_PROPERTY(QString		warning				READ warning			WRITE setWarning					NOTIFY warningChanged			)
 	
@@ -58,7 +58,12 @@ class Respiro : public QObject
 	
 	Q_PROPERTY(QStringList	backlog				READ backlog												NOTIFY backlogChanged			)
 	Q_PROPERTY(QVariantList	channelConfs		READ channelConfs											NOTIFY channelConfsChanged		)
-	
+
+    Q_PROPERTY(QString		allChanPlot			READ allChanPlot		WRITE setAllChanPlot				NOTIFY allChanPlotChanged	)
+    Q_PROPERTY(QString		measTimePlot		READ measTimePlot		WRITE setMeasTimePlot				NOTIFY measTimePlotChanged	)
+    Q_PROPERTY(QString		groupChanPlot		READ groupChanPlot		WRITE setGroupChanPlot				NOTIFY groupChanPlotChanged	)
+    Q_PROPERTY(QString		channelStatus		READ channelStatus		WRITE setChannelStatus				NOTIFY channelStatusChanged	)
+
 
 public:
 	explicit Respiro();
@@ -132,12 +137,24 @@ public:
 	void				setVent0(				bool					newVent0);
 	void				setVent1(				bool					newVent1);
 	void				setVent2(				bool					newVent2);
+	void				setAllChanPlot(			const QString		&	newAllChanPlot);
+	void				setMeasTimePlot(		const QString		&	newMeasTimePlot);
+	void				setGroupChanPlot(		const QString		&	newGroupChanPlot);
+	void				setChannelStatus(		const QString		&	newChannelStatus);	
 
 	QStringList backlog() const;
 
 	
 	QVariantList channelConfs() const;
-	
+
+    QString allChanPlot() const;
+
+    QString measTimePlot() const;
+
+    QString groupChanPlot() const;
+
+    QString channelStatus() const;
+
 public slots:
 	void				setChannelInit(		int index, bool checked);
 	void				push_meas_data();
@@ -208,7 +225,15 @@ signals:
 	);
 	
 	void channelConfsChanged();
-	
+
+    void allChanPlotChanged();
+
+    void measTimePlotChanged();
+
+    void groupChanPlotChanged();
+
+    void channelStatusChanged();
+
 private:
 	void				loadModels();
 
@@ -228,6 +253,10 @@ private:
 						_temp2;
 	QString				_error,
 						_warning,
+						_allChanPlot,
+						_measTimePlot,
+						_groupChanPlot,
+						_channelStatus,
 						_outputFolder,
 						_dataFilePath;
 	std::vector<bool>	_valvesOpened;
@@ -253,6 +282,7 @@ private:
 	QVariantList		_channelInit		= QVariantList(13, false);
 	QStringList			_backlog;
 	ChannelConfs		_channelConfs;
+  
 };
 
 #endif // RESPIRO_H

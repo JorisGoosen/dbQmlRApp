@@ -12,7 +12,26 @@ SplitView
 	
 	WebEngineView
 	{
-		url: "file://dummy.png"
+		id:		channelStatusView
+		url:	"qrc:/plotly.html"
+
+		SplitView.fillHeight: true
+
+		Connections
+		{
+			target:	respiro
+			function onChannelStatusChanged(channelPlot)
+			{
+				channelStatusView.runJavaScript("Plotly.newPlot('het_plot', %1)".arg(channelPlot))
+			}
+
+		}
+
+		onLoadingChanged: (loadRequest)=>
+		{
+			if(loadRequest.status === WebEngineView.LoadSucceededStatus)
+				channelStatusView.runJavaScript("Plotly.newPlot('het_plot', %1)".arg(respiro.channelStatus))
+		}
 	}
 	
 	//Image

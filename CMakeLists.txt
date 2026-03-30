@@ -160,6 +160,8 @@ qt_add_qml_module(qmlR
 	    dummy.png
 		images/logo_biont_research.png
 		images/logo_biont_research.svg
+		plotly.html
+		plotly-3.4.0.js
 )
 
 qt_add_resources(qmlR "R"

@@ -419,9 +419,12 @@ void RWrapper::plotUpdated(const std::string & plotJson, const std::string & plo
 	
 	emit plotChanged(QString::fromStdString(plotType));
 	
-	if(		plotType == "allchan")		emit allChanPlotChanged();
-	else if(plotType == "groupchan")	emit groupChanPlotChanged();
-	else if(plotType == "meastimeline")	emit measTimePlotChanged();
+	if(		plotType == "allchan")			emit allChanPlotChanged(QString::fromStdString(plotJson));
+	else if(plotType == "groupchan")		emit groupChanPlotChanged(QString::fromStdString(plotJson));
+	else if(plotType == "meastimeline")		emit measTimePlotChanged(QString::fromStdString(plotJson));
+    else if(plotType == "channel_status")	emit channelStatusChanged(QString::fromStdString(plotJson));
+
+
 }
 
 QString RWrapper::status() const
@@ -455,4 +458,9 @@ QString RWrapper::groupChanPlot() const
 QString RWrapper::measTimePlot() const
 {
 	return QString::fromStdString(_plots.at("meastimeline"));
+}
+
+QString RWrapper::channelStatus() const
+{
+	return QString::fromStdString(_plots.at("channel_status"));
 }

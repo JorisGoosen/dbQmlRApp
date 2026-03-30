@@ -57,6 +57,11 @@ void Respiro::loadModels()
 	//_msgs		= new TableModel(	_db, "RespiroMsgs",				_msgsDefs);
 
 	emit modelsLoaded();
+
+    connect(RWrapper::singleton(), &RWrapper::allChanPlotChanged,	this, &Respiro::setAllChanPlot     , Qt::BlockingQueuedConnection );
+    connect(RWrapper::singleton(), &RWrapper::measTimePlotChanged,	this, &Respiro::setMeasTimePlot    , Qt::BlockingQueuedConnection );
+    connect(RWrapper::singleton(), &RWrapper::groupChanPlotChanged,	this, &Respiro::setGroupChanPlot   , Qt::BlockingQueuedConnection );
+    connect(RWrapper::singleton(), &RWrapper::channelStatusChanged,	this, &Respiro::setChannelStatus   , Qt::BlockingQueuedConnection );
 }
 
 void Respiro::startSession()
@@ -729,4 +734,59 @@ QVariantList Respiro::channelConfs() const
 		out.append(QVariant::fromValue(c));
 	
 	return out;
+}
+
+QString Respiro::allChanPlot() const
+{
+    return _allChanPlot;
+}
+
+QString Respiro::measTimePlot() const
+{
+    return _measTimePlot;
+}
+
+QString Respiro::groupChanPlot() const
+{
+    return _groupChanPlot;
+}
+
+QString Respiro::channelStatus() const
+{
+    return _channelStatus;
+}
+
+void Respiro::setAllChanPlot(const QString & newAllChanPlot)
+{
+	if (_allChanPlot == newAllChanPlot)
+		return;
+	_allChanPlot = newAllChanPlot;
+	emit allChanPlotChanged();
+}
+
+void Respiro::setMeasTimePlot(const QString & newMeasTimePlot)
+{
+	if (_measTimePlot == newMeasTimePlot)
+		return;
+	_measTimePlot = newMeasTimePlot;
+	emit measTimePlotChanged();
+}
+
+void Respiro::setGroupChanPlot(const QString & newGroupChanPlot)
+{
+	if (_groupChanPlot == newGroupChanPlot)
+		return;
+	_groupChanPlot = newGroupChanPlot;
+	emit groupChanPlotChanged();
+}
+
+void Respiro::setChannelStatus(const QString & newChannelStatus)
+{
+	if (_channelStatus == newChannelStatus)
+		return;
+
+    std::cerr << "Channel status plot is now: " << _channelStatus.toStdString() << std::endl;
+
+	_channelStatus = newChannelStatus;
+	emit channelStatusChanged();
 }

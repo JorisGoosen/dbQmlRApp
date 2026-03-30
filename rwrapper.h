@@ -44,6 +44,7 @@ class RWrapper : public QObject
 	Q_PROPERTY(QString		allChanPlot			READ allChanPlot								NOTIFY allChanPlotChanged	)
 	Q_PROPERTY(QString		measTimePlot		READ measTimePlot								NOTIFY measTimePlotChanged	)
 	Q_PROPERTY(QString		groupChanPlot		READ groupChanPlot								NOTIFY groupChanPlotChanged	)
+	Q_PROPERTY(QString		channelStatus		READ channelStatus								NOTIFY channelStatusChanged	)
 	
 
 public:
@@ -85,6 +86,7 @@ public:
 	QString measTimePlot() const;
 	
 	QString groupChanPlot() const;
+	QString channelStatus() const;
 	
 public slots:
 	void initRespiro(
@@ -141,13 +143,11 @@ signals:
 	void outputFolderChanged();
 	void statusChanged();
 	void plotChanged(QString);
-	
-	void allChanPlotChanged();
-	
-	void measTimePlotChanged();
-	
-	void groupChanPlotChanged();
-	
+	void allChanPlotChanged(QString allChanPlot);
+	void measTimePlotChanged(QString measTimePlot);
+	void groupChanPlotChanged(QString groupChanPlot);
+	void channelStatusChanged(QString channelStatus);
+
 private:
 	RInside			*	R				= nullptr;
 	QStringList			_prevOutput		= { };
