@@ -150,6 +150,13 @@ void Database::_runStatements(const std::string & statements, bindParametersType
 		ret	= sqlite3_prepare_v2(_db, current, total - (current - start), &dbStmt, &tail);
 		row = 0;
 
+		if(ret == SQLITE_READONLY)
+		{
+			std::string errorMsg = "Creating ```\n"+statements.substr(current - start)+"\n``` failed because the database is readonly...  because of: `" + sqlite3_errmsg(_db);
+			std::cout << errorMsg << std::endl;
+			
+		}
+
 		if(bindParameters)
 			(*bindParameters)(dbStmt);
 
@@ -187,6 +194,8 @@ void Database::_runStatements(const std::string & statements, bindParametersType
 			ret = sqlite3_finalize(dbStmt);
 			dbStmt = nullptr;
 		}
+		
+		
 
 		remain	= total - (tail - start);
 		//std::cout << "Just ran `" + std::string(current, tail) + "` which returned " << ret << " and " << remain << " remaining." << std::endl;
@@ -204,7 +213,7 @@ void Database::_runStatements(const std::string & statements, bindParametersType
 
 	if(ret == SQLITE_READONLY)
 	{
-		std::string errorMsg = "Running ```\n"+statements+"\n``` failed because the database is readonly...";
+		std::string errorMsg = "Running ```\n"+statements+"\n``` failed because the database is readonly...  because of: `" + sqlite3_errmsg(_db);
 		std::cerr << errorMsg << std::endl;
 		throw std::runtime_error(errorMsg);
 	}

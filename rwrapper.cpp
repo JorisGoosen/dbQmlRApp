@@ -267,7 +267,7 @@ void RWrapper::initRespiro(QString datafile, QList<int> channels)
 			"rc = NULL\n"
 			".channels = " + channelsStr  + "\n"
 			"withCallingHandlers(\n{\n"
-			"  rc = RespiroControl$new(.channels" + QString(datafile != "" ? ", dataFile=.dataFile" : "")+")\n"
+			"  rc = RespiroControl$new(channels=.channels" + QString(datafile != "" ? ", dataFile=.dataFile" : "")+")\n"
 			"\n},error=function(error) { print(sys.calls()); print(paste(error)); respiroGui_push_error(paste(error))}\n)"
 			;
 
@@ -412,6 +412,8 @@ void RWrapper::plotUpdated(const std::string & plotJson, const std::string & plo
 {
 	if(_plots.contains(plotType) && _plots.at(plotType) == plotJson) //Then we need to do nothing
 		return;
+
+	std::cerr << "Plot updated: " << plotType << ": json: " << plotJson << std::endl;
 	
 	_plots[plotType] = plotJson;
 	
@@ -432,6 +434,8 @@ void RWrapper::setStatus(const QString &newStatus)
 	if (_status == newStatus)
 		return;
 	
+	std::cerr << "Status updated: " << newStatus.toStdString() << std::endl; 
+
 	_status = newStatus;
 	emit statusChanged();
 }
