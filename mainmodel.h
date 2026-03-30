@@ -14,10 +14,10 @@ public:
 	QStringList qmlsShown() const;
 
 public slots:
-	void inited()			{ setQmlsShown( {"ChannelConf"					}); }
-	void dbLoaded()			{ setQmlsShown( {"Loading"						}); }
-	void modelsLoaded()		{ setQmlsShown( {"Loading", "Data"				}); }
-	void respiroInited()	{ setQmlsShown( {			"Data"				}); }
+	void inited()			{ setQmlsShown( {"ChannelConf"						}); }
+	void dbLoaded()			{ setQmlsShown( {"Loading"				, "Plots"	}); }
+	void modelsLoaded()		{ setQmlsShown( {"Loading",	 	"Data"	, "Plots"	}); }
+	void respiroInited()	{ setQmlsShown( {				"Data"	, "Plots"	}); }
 	void closing();
 
 signals:

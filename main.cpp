@@ -14,6 +14,7 @@
 #include "database.h"
 #include "settings.h"
 #include "plotrenderer.h"
+#include <QtWebEngineQuick/QtWebEngineQuick>
 #include "mainmodel.h"
 #include "respiro.h"
 #include <QDir>
@@ -29,6 +30,8 @@ int main(int argc, char *argv[])
 	QCoreApplication::setOrganizationName(	"Biont Research");
 	QCoreApplication::setOrganizationDomain("biontresearch.nl");
 	QCoreApplication::setApplicationName(	"Respirometer");
+	
+	QtWebEngineQuick::initialize();
 
 	QQmlApplicationEngine		mainEng;
 
