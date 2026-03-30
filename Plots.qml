@@ -18,7 +18,7 @@ SplitView
 			channelStatusView.runJavaScript("Plotly.newPlot('het_plot', %1)".arg(respiro.channelStatus))
 		}
 
-		function onAllChanPlotStatusChanged()
+		function onAllChanPlotChanged()
 		{
 			allChanPlotView.runJavaScript("Plotly.newPlot('het_plot', %1)".arg(respiro.allChanPlot))
 		}
@@ -40,7 +40,7 @@ SplitView
 		id:		channelStatusView
 		url:	"qrc:/plotly.html"
 
-		
+		SplitView.minimumHeight:		100
 
 
 		onLoadingChanged: (loadRequest)=>
@@ -57,7 +57,7 @@ SplitView
 		url:	"qrc:/plotly.html"
 
 		SplitView.fillHeight: true
-		SplitView.minimumnHeight:		100
+		SplitView.minimumHeight:		100
 
 		onLoadingChanged: (loadRequest)=>
 		{
@@ -71,7 +71,7 @@ SplitView
 		id:		measTimePlotView
 		url:	"qrc:/plotly.html"
 
-		SplitView.minimumnHeight:		100
+		SplitView.minimumHeight:		100
 
 
 		onLoadingChanged: (loadRequest)=>
@@ -86,7 +86,7 @@ SplitView
 		id:		groupChanPlotView
 		url:	"qrc:/plotly.html"
 
-		SplitView.minimumnHeight:		100
+		SplitView.minimumHeight:		100
 
 		onLoadingChanged: (loadRequest)=>
 		{
