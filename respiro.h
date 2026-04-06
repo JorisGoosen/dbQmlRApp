@@ -69,6 +69,7 @@ public:
 	explicit Respiro();
 
 	Q_INVOKABLE	void	startSession();
+	Q_INVOKABLE	void	initSession();
 	Q_INVOKABLE	void	loadOldSession(const QString & oldOutputFolder);
 
 	Q_INVOKABLE	bool	feedbackFinished(	const QString & feedbackMsg);

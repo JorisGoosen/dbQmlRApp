@@ -298,7 +298,7 @@ Item
 		{
 			text:				"Start Session"
 			toolTip:			"Creates a folder with the datafiles etc for a respiro measurement cycle."
-			onClicked:			respiro.startSession()
+			onClicked:			respiro.initSession()
 			Layout.alignment:	Qt.AlignHCenter
 			implicitWidth:		parent.width
 		}

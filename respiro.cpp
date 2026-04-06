@@ -64,7 +64,7 @@ void Respiro::loadModels()
     connect(RWrapper::singleton(), &RWrapper::channelStatusChanged,	this, &Respiro::setChannelStatus   , Qt::BlockingQueuedConnection );
 }
 
-void Respiro::startSession()
+void Respiro::initSession()
 {
 	QDir	newOutputFolder = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation).at(0); //should be related somehow to datafilepath but isnt
 	QString	newFolder		= QDateTime::currentDateTimeUtc().toString("yyyy.MM.dd_hhmm");
@@ -76,6 +76,13 @@ void Respiro::startSession()
 	init();
 
 	//loadModels(); //Instead we will wait until respiro creates a database file!
+}
+
+void Respiro::startSession()
+{
+	initSession();
+
+	start();
 }
 
 

@@ -268,7 +268,7 @@ void RWrapper::initRespiro(QString datafile, QList<int> channels)
 			".channels = " + channelsStr  + "\n"
 			"withCallingHandlers(\n{\n"
 			"  rc = RespiroControl$new(channels=.channels" + QString(datafile != "" ? ", dataFile=.dataFile" : "")+", connectControllino=" + (datafile == "" ? "TRUE" : "FALSE") +")\n"
-			"\n},error=function(error) { print(sys.calls()); print(paste(error)); respiroGui_push_error(paste(error))}\n)"
+			"\n},error=function(error) { print(sys.calls()); print(paste0(error)); respiroGui_push_error(paste0(error))}\n)"
 			;
 
 	setRunning(true);
@@ -281,7 +281,7 @@ void RWrapper::volumeTestRespiro(int channel)
 	const QString scriptR =
 			"withCallingHandlers(\n{\n"
 			"  rc$channels[["+QString::number(channel)+"]]$volumeTest()\n"
-			"\n},error=function(error) { print(sys.calls()); print(paste(error)); respiroGui_push_error(paste(error))}\n)"
+			"\n},error=function(error) { print(sys.calls()); print(paste0(error)); respiroGui_push_error(paste0(error))}\n)"
 			;
 
 	setRunning(true);
@@ -294,7 +294,7 @@ void RWrapper::leakTestRespiro(int channel)
 	const QString scriptR =
 			"withCallingHandlers(\n{\n"
 			"  rc$channels[["+QString::number(channel)+"]]$leakTest()\n"
-			"\n},error=function(error) { print(sys.calls()); print(paste(error)); respiroGui_push_error(paste(error))}\n)"
+			"\n},error=function(error) { print(sys.calls()); print(paste0(error)); respiroGui_push_error(paste0(error))}\n)"
 			;
 
 	setRunning(true);
@@ -324,7 +324,7 @@ void RWrapper::startRespiro(int runtimeSec, int channelRuntimeSec, bool calibrat
 			"    internalLeakTest     = .internalLeakTest,\n"
 			"    monitorCycleDuration = .channelRuntimeSec,\n"
 			"    initialHsFlush       = .initialHsFlush\n)"
-			"\n},error=function(error) { print(sys.calls()); print(paste(error)); respiroGui_push_error(paste(error))}\n)"
+			"\n},error=function(error) { print(sys.calls()); print(paste0(error)); respiroGui_push_error(paste0(error))}\n)"
 			;
 
 	setRunning(true);
