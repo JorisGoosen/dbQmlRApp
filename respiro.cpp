@@ -508,7 +508,7 @@ void Respiro::push_loading_feedback(QString feedback, bool finished, QString err
 	_hardResetFeedback = false;
 	emit feedbackChanged();
 
-	if(feedback == "Warming up respirometer")
+	if(feedback == "Initialising respirometer")
 	{
 		bool allSucces = true;
 

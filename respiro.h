@@ -227,11 +227,8 @@ signals:
 	void channelConfsChanged();
 
     void allChanPlotChanged();
-
     void measTimePlotChanged();
-
     void groupChanPlotChanged();
-
     void channelStatusChanged();
 
 private:

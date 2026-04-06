@@ -267,7 +267,7 @@ void RWrapper::initRespiro(QString datafile, QList<int> channels)
 			"rc = NULL\n"
 			".channels = " + channelsStr  + "\n"
 			"withCallingHandlers(\n{\n"
-			"  rc = RespiroControl$new(channels=.channels" + QString(datafile != "" ? ", dataFile=.dataFile" : "")+")\n"
+			"  rc = RespiroControl$new(channels=.channels" + QString(datafile != "" ? ", dataFile=.dataFile" : "")+", connectControllino=" + (datafile == "" ? "TRUE" : "FALSE") +")\n"
 			"\n},error=function(error) { print(sys.calls()); print(paste(error)); respiroGui_push_error(paste(error))}\n)"
 			;
 

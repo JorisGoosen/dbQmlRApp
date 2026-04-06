@@ -76,6 +76,11 @@ int main(int argc, char *argv[])
 	QObject::connect(&respiro,		&Respiro::showLoading,				&mainModel,	&MainModel::modelsLoaded,		Qt::QueuedConnection);
 	QObject::connect(&respiro,		&Respiro::respiroInited,			&mainModel,	&MainModel::respiroInited,		Qt::QueuedConnection);
 
+	QObject::connect(&respiro,		&Respiro::allChanPlotChanged,		&mainModel,	&MainModel::enableHasPlot,		Qt::QueuedConnection);
+	QObject::connect(&respiro,		&Respiro::measTimePlotChanged,		&mainModel,	&MainModel::enableHasPlot,		Qt::QueuedConnection);
+	QObject::connect(&respiro,		&Respiro::groupChanPlotChanged,		&mainModel,	&MainModel::enableHasPlot,		Qt::QueuedConnection);
+	QObject::connect(&respiro,		&Respiro::channelStatusChanged,		&mainModel,	&MainModel::enableHasPlot,		Qt::QueuedConnection);
+
 	QObject::connect(&mainModel,	&MainModel::exitR,					&rWrapper,	&RWrapper::exitR,				Qt::DirectConnection);
 
 

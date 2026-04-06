@@ -26,3 +26,21 @@ void MainModel::setQmlsShown(const QStringList & newQmlsShown)
 	_qmlsShown = newQmlsShown;
 	emit qmlsShownChanged();
 }
+
+bool MainModel::hasPlots() const
+{
+	return _hasPlots;
+}
+
+void MainModel::setHasPlots(bool newHasPlots)
+{
+	if (_hasPlots == newHasPlots)
+		return;
+	_hasPlots = newHasPlots;
+	emit hasPlotsChanged();
+	
+	if(!_qmlsShown.contains("Plots"))
+		_qmlsShown.append("Plots");
+	
+	emit qmlsShownChanged();
+}
