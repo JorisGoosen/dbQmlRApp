@@ -162,6 +162,7 @@ qt_add_qml_module(qmlR
 		images/logo_biont_research.svg
 		plotly.html
 		plotly-3.4.0.js
+		utils.js
 )
 
 qt_add_resources(qmlR "R"

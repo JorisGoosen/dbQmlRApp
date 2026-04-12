@@ -47,8 +47,14 @@ SplitView
 		onLoadingChanged: (loadRequest)=>
 		{
 			if(loadRequest.status === WebEngineView.LoadSucceededStatus)
-				channelStatusView.runJavaScript("Plotly.newPlot('het_plot', %1)".arg(respiro.channelStatus))
+			{					  
+				runJavaScript("Plotly.newPlot('het_plot', %1)".arg(respiro.channelStatus))
+				runJavaScript("resizePlot(%1,%2)".arg(width).arg(height))
+			}
 		}
+		
+		onWidthChanged:				runJavaScript("resizePlot(%1,%2)".arg(width).arg(height))
+		onHeightChanged:			runJavaScript("resizePlot(%1,%2)".arg(width).arg(height))
 	}
 	
 	Image
@@ -76,8 +82,14 @@ SplitView
 			onLoadingChanged: (loadRequest)=>
 			{
 				if(loadRequest.status === WebEngineView.LoadSucceededStatus)
-					allChanPlotView.runJavaScript("Plotly.newPlot('het_plot', %1)".arg(respiro.allChanPlot))
+				{
+					runJavaScript("Plotly.newPlot('het_plot', %1)".arg(respiro.allChanPlot))
+					runJavaScript("resizePlot(%1,%2)".arg(width).arg(height))
+				}
 			}
+			
+			onWidthChanged:				runJavaScript("resizePlot(%1,%2)".arg(width).arg(height))
+			onHeightChanged:			runJavaScript("resizePlot(%1,%2)".arg(width).arg(height))
 		}
 	
 		WebEngineView
@@ -88,8 +100,14 @@ SplitView
 			onLoadingChanged: (loadRequest)=>
 			{
 				if(loadRequest.status === WebEngineView.LoadSucceededStatus)
-					measTimePlotView.runJavaScript("Plotly.newPlot('het_plot', %1)".arg(respiro.measTimePlot))
+				{
+					runJavaScript("Plotly.newPlot('het_plot', %1)".arg(respiro.measTimePlot))
+					runJavaScript("resizePlot(%1,%2)".arg(width).arg(height))
+				}
 			}
+			
+			onWidthChanged:				runJavaScript("resizePlot(%1,%2)".arg(width).arg(height))
+			onHeightChanged:			runJavaScript("resizePlot(%1,%2)".arg(width).arg(height))
 		}
 	
 		WebEngineView
@@ -100,8 +118,14 @@ SplitView
 			onLoadingChanged: (loadRequest)=>
 			{
 				if(loadRequest.status === WebEngineView.LoadSucceededStatus)
-					groupChanPlotView.runJavaScript("Plotly.newPlot('het_plot', %1)".arg(respiro.groupChanPlot))
+				{
+					runJavaScript("Plotly.newPlot('het_plot', %1)".arg(respiro.groupChanPlot))
+					runJavaScript("resizePlot(%1,%2)".arg(width).arg(height))
+				}										   
 			}
+			
+			onWidthChanged:				runJavaScript("resizePlot(%1,%2)".arg(width).arg(height))
+			onHeightChanged:			runJavaScript("resizePlot(%1,%2)".arg(width).arg(height))
 		}
 	}
 	
