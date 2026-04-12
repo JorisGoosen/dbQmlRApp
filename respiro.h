@@ -274,7 +274,8 @@ private:
 						_groupChanPlot,
 						_channelStatus,
 						_outputFolder,
-						_dataFilePath;
+						_dataFilePath,
+						_chosenPort;
 	std::vector<bool>	_valvesOpened;
 	bool				_pumpOn,
 						_O2On,
@@ -296,11 +297,10 @@ private:
 	Feedbacks			_feedbacks;
 	FeedbackMap			_feedbackMap;
 	QVariantList		_channelInit		= QVariantList(13, false);
-	QStringList			_backlog;
+	QStringList			_backlog,	
+						_availablePorts;
 	ChannelConfs		_channelConfs;
 	QUrl				_flowChartFile;
-	QStringList _availablePorts;
-	QString _chosenPort;
 };
 
 #endif // RESPIRO_H

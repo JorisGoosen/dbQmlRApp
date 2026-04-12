@@ -15,18 +15,59 @@ Window
 	
 	Popup
 	{
-		id:		portSelector
+		id:				portSelector
 		
-		anchors
+		x:				absoluteRoot.width  / 2 - (width  / 2)
+		y:				absoluteRoot.height / 2 - (height / 2)
+		width:			600
+		padding:		generalMargin
+		z:				50
+		modal:			true
+		focus:			true
+		visible:		respiro.availablePorts.length > 0 && respiro.chosenPort === ""
+		closePolicy:	Popup.NoAutoClose
+		
+		onVisibleChanged:
 		{
-			centerIn:		absoluteRoot	
+			console.log("port selector became " + (visible ? "" : "not ") + "visible")	
 		}
-		width:		200
-		height:		200
 		
-		modal:		true
-		focus:		true
-		visible:	respiro.availablePorts.size > 0 && respiro.chosenPort == ""
+		background:		Rectangle
+		{
+			color:			backgroundColor
+			width:			portSelector.width
+			height:			portSelector.height
+			border.color:	foregroundColor
+			border.width:	1
+			radius:			8
+		}
+		
+		contentItem: Column
+		{
+			id:				columnPorts
+			z:				100
+			width:			portSelector.width - generalMargin
+			spacing:		generalMargin
+			
+			MyText
+			{
+				text:			"Please select the port to use below:"	
+				implicitWidth:	columnPorts.width
+			}
+			
+			Repeater
+			{
+				model:		respiro.availablePorts
+				
+				RectButton
+				{
+					implicitWidth:	columnPorts.width
+					text:			modelData
+					onClicked:		respiro.chosenPort = modelData
+				}
+				
+			}
+		}
 	}
 
 	SplitView

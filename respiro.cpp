@@ -847,6 +847,7 @@ QString Respiro::chosenPort() const
 
 void Respiro::setChosenPort(const QString &newChosenPort)
 {
+	std::cerr<< "setChosenPort " << newChosenPort.toStdString() << std::endl;
 	if (_chosenPort == newChosenPort)
 		return;
 	_chosenPort = newChosenPort;
