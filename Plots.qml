@@ -40,7 +40,8 @@ SplitView
 		id:		channelStatusView
 		url:	"qrc:/plotly.html"
 
-		SplitView.minimumHeight:		100
+		SplitView.minimumHeight:		150
+		SplitView.maximumHeight:		150
 
 
 		onLoadingChanged: (loadRequest)=>
@@ -49,62 +50,81 @@ SplitView
 				channelStatusView.runJavaScript("Plotly.newPlot('het_plot', %1)".arg(respiro.channelStatus))
 		}
 	}
-
-
-	WebEngineView
-	{
-		id:		allChanPlotView
-		url:	"qrc:/plotly.html"
-
-		SplitView.fillHeight: true
-		SplitView.minimumHeight:		100
-
-		onLoadingChanged: (loadRequest)=>
-		{
-			if(loadRequest.status === WebEngineView.LoadSucceededStatus)
-				allChanPlotView.runJavaScript("Plotly.newPlot('het_plot', %1)".arg(respiro.allChanPlot))
-		}
-	}
-
-	WebEngineView
-	{
-		id:		measTimePlotView
-		url:	"qrc:/plotly.html"
-
-		SplitView.minimumHeight:		100
-
-
-		onLoadingChanged: (loadRequest)=>
-		{
-			if(loadRequest.status === WebEngineView.LoadSucceededStatus)
-				measTimePlotView.runJavaScript("Plotly.newPlot('het_plot', %1)".arg(respiro.measTimePlot))
-		}
-	}
-
-	WebEngineView
-	{
-		id:		groupChanPlotView
-		url:	"qrc:/plotly.html"
-
-		SplitView.minimumHeight:		100
-
-		onLoadingChanged: (loadRequest)=>
-		{
-			if(loadRequest.status === WebEngineView.LoadSucceededStatus)
-				groupChanPlotView.runJavaScript("Plotly.newPlot('het_plot', %1)".arg(respiro.groupChanPlot))
-		}
-	}
-
 	
 	Image
 	{
 		cache:						false
 		source:						respiro.flowChartFile
-		SplitView.preferredHeight:	parent.height * 0.666667
+		SplitView.preferredHeight:	parent.height * 0.5
+		fillMode:					Image.PreserveAspectFit
 
 		onWidthChanged:				R.plotWidth		= width
 		onHeightChanged:			R.plotHeight	= height
 	}
 
+
+	StackLayout
+	{
+		id:						stack
+		SplitView.fillHeight:	true
+		
+		WebEngineView
+		{
+			id:		allChanPlotView
+			url:	"qrc:/plotly.html"
+	
+			onLoadingChanged: (loadRequest)=>
+			{
+				if(loadRequest.status === WebEngineView.LoadSucceededStatus)
+					allChanPlotView.runJavaScript("Plotly.newPlot('het_plot', %1)".arg(respiro.allChanPlot))
+			}
+		}
+	
+		WebEngineView
+		{
+			id:		measTimePlotView
+			url:	"qrc:/plotly.html"
+
+			onLoadingChanged: (loadRequest)=>
+			{
+				if(loadRequest.status === WebEngineView.LoadSucceededStatus)
+					measTimePlotView.runJavaScript("Plotly.newPlot('het_plot', %1)".arg(respiro.measTimePlot))
+			}
+		}
+	
+		WebEngineView
+		{
+			id:		groupChanPlotView
+			url:	"qrc:/plotly.html"
+	
+			onLoadingChanged: (loadRequest)=>
+			{
+				if(loadRequest.status === WebEngineView.LoadSucceededStatus)
+					groupChanPlotView.runJavaScript("Plotly.newPlot('het_plot', %1)".arg(respiro.groupChanPlot))
+			}
+		}
+	}
+	
+	Row
+	{
+		id:							rijtje
+		SplitView.minimumHeight:	40
+		SplitView.maximumHeight:	40
+		
+		Repeater
+		{
+			model:		["All channels", "Measurements over time", "Grouped channels" ]
+			
+			RectButton
+			{
+				text:				modelData
+				implicitWidth:		rijtje.width / 3
+				onClicked:			stack.currentIndex = index
+				enabled:			stack.currentIndex !== index
+			}
+		}
+		
+		
+	}
 }
 

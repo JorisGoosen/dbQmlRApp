@@ -13,8 +13,8 @@ Rectangle
 	implicitWidth:	buttonText.contentWidth  + generalMargin
 	implicitHeight:	buttonText.contentHeight + generalMargin
 
-	color:			buttonMouseArea.pressed ? controlBackgroundPressed : buttonMouseArea.containsMouse ? controlBackgroundFocus : controlBackgroundNeutral
-	border.color:	buttonMouseArea.pressed ? controlForegroundPressed : buttonMouseArea.containsMouse ? controlForegroundFocus : controlForegroundNeutral
+	color:			!enabled ?	controlForegroundNeutral	: buttonMouseArea.pressed ? controlBackgroundPressed : buttonMouseArea.containsMouse ? controlBackgroundFocus : controlBackgroundNeutral
+	border.color:	!enabled ?	controlBackgroundNeutral	: buttonMouseArea.pressed ? controlForegroundPressed : buttonMouseArea.containsMouse ? controlForegroundFocus : controlForegroundNeutral
 	border.width:	1
 	radius:			8
 
@@ -36,5 +36,6 @@ Rectangle
 		anchors.fill:	parent
 		onPressed:		buttonRoot.clicked()
 		hoverEnabled:	true
+		cursorShape:	Qt.PointingHandCursor		
 	}
 }

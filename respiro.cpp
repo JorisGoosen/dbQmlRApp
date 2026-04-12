@@ -812,8 +812,12 @@ QUrl Respiro::flowChartFile() const
 
 void Respiro::setFlowChartFile(const QUrl &newFlowChartFile)
 {
+	static int letsMakeThisVerySimple = 0;
+	
 	std::cerr << "Flowchart plot '" << newFlowChartFile.toString().toStdString() << "' updated!" << std::endl;
 	
 	_flowChartFile = newFlowChartFile;
+	_flowChartFile.setQuery("?" + QString::number(letsMakeThisVerySimple++));
+	
 	emit flowChartFileChanged();
 }
