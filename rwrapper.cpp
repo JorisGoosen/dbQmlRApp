@@ -29,6 +29,9 @@ RWrapper::RWrapper(QObject *parent)
 	(*R)["respiroGui_poll_control_wanted"]			= Rcpp::InternalFunction(&respiroGui_poll_control_wanted);
 	(*R)["respiroGui_push_loading_feedback"]		= Rcpp::InternalFunction(&respiroGui_push_loading_feedback);
 	(*R)["respiroGui_update_flow_diagram"]			= Rcpp::InternalFunction(&respiroGui_update_flow_diagram);
+	(*R)["respiroGui_ask_which_port"]				= Rcpp::InternalFunction(&respiroGui_ask_which_port);
+
+	
 	
 
 	runRCommand("print(R.home())");
@@ -222,6 +225,16 @@ void respiroGui_update_flow_diagram(std::string png)
 	emit RWrapper::singleton()->flowChartPlotUpdated(QString::fromStdString(png));
 }
 
+std::string respiroGui_ask_which_port(Rcpp::CharacterVector ports)
+{
+	auto		stdports = Rcpp::as<std::vector<std::string>>(ports);
+	QStringList qports;
+
+	for(auto & p : stdports)
+		qports.append(QString::fromStdString(p));
+
+	return (RWrapper::singleton()->waitForPortChoice(qports)).toStdString();
+}
 
 bool RWrapper::instantPause() const
 {
@@ -435,6 +448,23 @@ void RWrapper::plotUpdated(const std::string & plotJson, const std::string & plo
 
 }
 
+QString RWrapper::waitForPlotChoice(QStringList ports)
+{
+	emit choosePort(ports);
+	
+	while(true)
+	{
+		_portMutex.lock();
+		QString p = _chosenPort;
+		_portMutex.unlock();
+		
+		if(p != "")
+			return p;
+		
+		QThread::sleep(200);
+	}
+}
+
 QString RWrapper::status() const
 {
 	return _status;
@@ -471,4 +501,22 @@ QString RWrapper::measTimePlot() const
 QString RWrapper::channelStatus() const
 {
 	return QString::fromStdString(_plots.at("channel_status"));
+}
+
+QString RWrapper::chosenPort() const
+{
+	return _chosenPort;
+}
+
+void RWrapper::setChosenPort(const QString &newChosenPort)
+{
+	_portMutex.lock();
+	
+	if (_chosenPort == newChosenPort)
+		return;
+	
+	_chosenPort = newChosenPort;
+	_portMutex.unlock();
+	
+	emit chosenPortChanged();
 }

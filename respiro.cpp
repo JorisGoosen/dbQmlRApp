@@ -821,3 +821,34 @@ void Respiro::setFlowChartFile(const QUrl &newFlowChartFile)
 	
 	emit flowChartFileChanged();
 }
+
+QString	Respiro::choosePort(QStringList available)
+{
+	setAvailabePorts(available);
+}
+
+QStringList Respiro::availablePorts() const
+{
+	return _availablePorts;
+}
+
+void Respiro::setAvailabePorts(const QStringList &newAvailablePorts)
+{
+	if (_availablePorts == newAvailablePorts)
+		return;
+	_availablePorts = newAvailablePorts;
+	emit availablePortsChanged();
+}
+
+QString Respiro::chosenPort() const
+{
+	return _chosenPort;
+}
+
+void Respiro::setChosenPort(const QString &newChosenPort)
+{
+	if (_chosenPort == newChosenPort)
+		return;
+	_chosenPort = newChosenPort;
+	emit chosenPortChanged(_chosenPort);
+}

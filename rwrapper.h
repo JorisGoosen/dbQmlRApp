@@ -1,30 +1,32 @@
 #ifndef RWRAPPER_H
 #define RWRAPPER_H
 
+#include <QMutex>
 #include <QObject>
 #include <RInside.h>
 
-void respiroGui_push_meas_data();
-void respiroGui_push_proc_data();
-void respiroGui_push_last_values( int relTime, int measuring_channel, float pressure, float flow, float temperatureRespirometer, float temperatureSample, float CO2_ADC, float O2_raw, float CH4_raw, float CO2_raw);
-void respiroGui_push_current_channel(	int			channel);
-void respiroGui_push_valve_state(		int			channel,	bool valve_open);
-void respiroGui_push_vent_state(		int			id,			bool vent_open);
-void respiroGui_push_pump_state(		bool		pump_on);
-void respiroGui_push_o2_state(			bool		o2_on);
-void respiroGui_push_co2_state(			bool		co2_on);
-void respiroGui_push_ch4_state(			bool		ch4_on);
-void respiroGui_push_error(				std::string	error);
-void respiroGui_push_warning(			std::string	warning);
-void respiroGui_push_info(				std::string	info);
-void respiroGui_push_status(			std::string	status);
-void respiroGui_push_plot(				std::string	plotJson, std::string plotType);
-void respiroGui_update_flow_diagram(	std::string png);
-bool respiroGui_poll_instant_pause();
-bool respiroGui_poll_delayed_pause();
-bool respiroGui_poll_control_wanted();
-void respiroGui_push_datafilepath(std::string datafile);
-void respiroGui_push_loading_feedback(	std::string feedback, bool finished, std::string errorMsg);
+void		respiroGui_push_meas_data();
+void		respiroGui_push_proc_data();
+void		respiroGui_push_last_values( int relTime, int measuring_channel, float pressure, float flow, float temperatureRespirometer, float temperatureSample, float CO2_ADC, float O2_raw, float CH4_raw, float CO2_raw);
+void		respiroGui_push_current_channel(	int			channel);
+void		respiroGui_push_valve_state(		int			channel,	bool valve_open);
+void		respiroGui_push_vent_state(		int			id,			bool vent_open);
+void		respiroGui_push_pump_state(		bool		pump_on);
+void		respiroGui_push_o2_state(			bool		o2_on);
+void		respiroGui_push_co2_state(			bool		co2_on);
+void		respiroGui_push_ch4_state(			bool		ch4_on);
+void		respiroGui_push_error(				std::string	error);
+void		respiroGui_push_warning(			std::string	warning);
+void		respiroGui_push_info(				std::string	info);
+void		respiroGui_push_status(			std::string	status);
+void		respiroGui_push_plot(				std::string	plotJson, std::string plotType);
+void		respiroGui_update_flow_diagram(	std::string png);
+void		respiroGui_push_datafilepath(std::string datafile);
+void		respiroGui_push_loading_feedback(	std::string feedback, bool finished, std::string errorMsg);
+std::string respiroGui_ask_which_port(			Rcpp::CharacterVector);
+bool		respiroGui_poll_instant_pause();
+bool		respiroGui_poll_delayed_pause();
+bool		respiroGui_poll_control_wanted();
 
 typedef std::map<std::string,std::string> strMap;
 
@@ -46,6 +48,7 @@ class RWrapper : public QObject
 	Q_PROPERTY(QString		measTimePlot		READ measTimePlot								NOTIFY measTimePlotChanged	)
 	Q_PROPERTY(QString		groupChanPlot		READ groupChanPlot								NOTIFY groupChanPlotChanged	)
 	Q_PROPERTY(QString		channelStatus		READ channelStatus								NOTIFY channelStatusChanged	)
+	Q_PROPERTY(QString  	chosenPort			READ chosenPort			WRITE setChosenPort					NOTIFY chosenPortChanged		)
 	
 
 public:
@@ -89,6 +92,9 @@ public:
 	QString groupChanPlot() const;
 	QString channelStatus() const;
 	
+	QString chosenPort() const;
+	void setChosenPort(const QString &newChosenPort);
+	
 public slots:
 	void initRespiro(
 			QString		datafile,
@@ -115,7 +121,7 @@ public slots:
 	void		setDoubleIntoChannelConf(int channelID, const QString & confName, const double setting);
 	
 	void		plotUpdated(const std::string & plotJson, const std::string & plotType);
-	
+	QString		waitForPlotChoice(QStringList ports);
 
 signals:	
 	void prevOutputChanged();
@@ -136,6 +142,7 @@ signals:
 	void push_loading_feedback(	QString feedback, bool finished, QString error);
 	void push_vent_state(		int		vent, bool valve_open);
 	void push_datafilepath(		QString datafile);
+	QString choosePort(			QStringList ports);
 
 	void instantPauseChanged();
 	void delayedPauseChanged();
@@ -150,6 +157,8 @@ signals:
 	void channelStatusChanged(QString channelStatus);
 	void flowChartPlotUpdated(QString fileName);
 
+	void chosenPortChanged();
+	
 private:
 	RInside			*	R				= nullptr;
 	QStringList			_prevOutput		= { };
@@ -161,12 +170,11 @@ private:
 						_controlWanted	= false,
 						_running		= false;
 	QString				_outputFolder,
-						_status;
+						_status,
+						_chosenPort		= "";
 	strMap				_plots;
 	
-	QString m_allChanPlot;
-	QString m_measTimePlot;
-	QString m_groupChanPlot;
+	QMutex				_portMutex;
 };
 
 #endif // RWRAPPER_H

@@ -66,6 +66,9 @@ class Respiro : public QObject
     Q_PROPERTY(QString		channelStatus		READ channelStatus		WRITE setChannelStatus				NOTIFY channelStatusChanged	)
 	Q_PROPERTY(QUrl			flowChartFile		READ flowChartFile		WRITE setFlowChartFile				NOTIFY flowChartFileChanged )
 
+	Q_PROPERTY(QStringList	availablePorts		READ availablePorts		WRITE setAvailabePorts				NOTIFY availablePortsChanged 	)
+	Q_PROPERTY(QString  	chosenPort			READ chosenPort			WRITE setChosenPort					NOTIFY chosenPortChanged		)
+
 public:
 	explicit Respiro();
 
@@ -161,6 +164,12 @@ public:
 	void setFlowChartFile(const QUrl &newFlowChartFile);
 	void setFlowChartLocalFile(const QString &newFlowChartFile);
 	
+	QStringList availablePorts() const;
+	void setAvailabePorts(const QStringList &newAvailablePorts);
+	
+	QString chosenPort() const;
+	void setChosenPort(const QString &newChosenPort);
+	
 public slots:
 	void				setChannelInit(		int index, bool checked);
 	void				push_meas_data();
@@ -181,6 +190,8 @@ public slots:
 	void				start();
 	void				init();
 	void				receive_last_values( int relTime, int measuring_channel, float pressure, float flow, float temperatureRespirometer, float temperatureSample, float CO2_ADC, float O2_raw, float CH4_raw, float CO2_raw);
+
+	QString				choosePort(QStringList);
 
 signals:
 	void				O2Changed();
@@ -231,13 +242,13 @@ signals:
 	);
 	
 	void channelConfsChanged();
-
     void allChanPlotChanged();
     void measTimePlotChanged();
     void groupChanPlotChanged();
     void channelStatusChanged();
-
 	void flowChartFileChanged();
+	void availablePortsChanged();
+	void chosenPortChanged(QString);
 	
 private:
 	void				loadModels();
@@ -288,6 +299,8 @@ private:
 	QStringList			_backlog;
 	ChannelConfs		_channelConfs;
 	QUrl				_flowChartFile;
+	QStringList _availablePorts;
+	QString _chosenPort;
 };
 
 #endif // RESPIRO_H
