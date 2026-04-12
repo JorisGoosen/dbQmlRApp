@@ -40,8 +40,9 @@ SplitView
 		id:		channelStatusView
 		url:	"qrc:/plotly.html"
 
-		SplitView.minimumHeight:		150
-		SplitView.maximumHeight:		150
+		SplitView.minimumHeight:		130
+		SplitView.preferredHeight:		150
+		SplitView.maximumHeight:		180
 
 
 		onLoadingChanged: (loadRequest)=>
@@ -63,9 +64,13 @@ SplitView
 		source:						respiro.flowChartFile
 		SplitView.preferredHeight:	parent.height * 0.5
 		fillMode:					Image.PreserveAspectFit
+		sourceSize.width:			width * 2
+		sourceSize.height:			height * 2
 
 		onWidthChanged:				R.plotWidth		= width
 		onHeightChanged:			R.plotHeight	= height
+		
+		SplitView.minimumHeight:		130
 	}
 
 
@@ -73,6 +78,8 @@ SplitView
 	{
 		id:						stack
 		SplitView.fillHeight:	true
+		
+		SplitView.minimumHeight:		200
 		
 		WebEngineView
 		{
