@@ -34,7 +34,7 @@ signals:
 private:
 	void setQmlsShown(const QStringList & newQmlsShown);
 
-    QStringList _qmlsShown = { "Init", "Hardware" }; //, "Hardware"
+    QStringList _qmlsShown = { "Init"}; //, "Hardware"
 	bool _hasPlots = false;
 };
 

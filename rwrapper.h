@@ -19,6 +19,7 @@ void respiroGui_push_warning(			std::string	warning);
 void respiroGui_push_info(				std::string	info);
 void respiroGui_push_status(			std::string	status);
 void respiroGui_push_plot(				std::string	plotJson, std::string plotType);
+void respiroGui_update_flow_diagram(	std::string png);
 bool respiroGui_poll_instant_pause();
 bool respiroGui_poll_delayed_pause();
 bool respiroGui_poll_control_wanted();
@@ -147,6 +148,7 @@ signals:
 	void measTimePlotChanged(QString measTimePlot);
 	void groupChanPlotChanged(QString groupChanPlot);
 	void channelStatusChanged(QString channelStatus);
+	void flowChartPlotUpdated(QString fileName);
 
 private:
 	RInside			*	R				= nullptr;

@@ -96,14 +96,15 @@ SplitView
 	}
 
 	
-	//Image
-	//{
-	//	source: "dummy.png"
-	//	SplitView.preferredHeight: parent.height * 0.666667
+	Image
+	{
+		cache:						false
+		source:						respiro.flowChartFile
+		SplitView.preferredHeight:	parent.height * 0.666667
 
-	//	onWidthChanged:			R.plotWidth		= width
-	//	onHeightChanged:		R.plotHeight	= height
-	//}
+		onWidthChanged:				R.plotWidth		= width
+		onHeightChanged:			R.plotHeight	= height
+	}
 
 }
 

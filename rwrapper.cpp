@@ -28,6 +28,8 @@ RWrapper::RWrapper(QObject *parent)
 	(*R)["respiroGui_poll_delayed_pause"]			= Rcpp::InternalFunction(&respiroGui_poll_delayed_pause);
 	(*R)["respiroGui_poll_control_wanted"]			= Rcpp::InternalFunction(&respiroGui_poll_control_wanted);
 	(*R)["respiroGui_push_loading_feedback"]		= Rcpp::InternalFunction(&respiroGui_push_loading_feedback);
+	(*R)["respiroGui_update_flow_diagram"]			= Rcpp::InternalFunction(&respiroGui_update_flow_diagram);
+	
 
 	runRCommand("print(R.home())");
 	runRCommand("source(paste0(getwd(), '/renv/activate.R'))");
@@ -214,6 +216,12 @@ void respiroGui_push_loading_feedback(std::string feedback, bool finished, std::
 {
 	emit RWrapper::singleton()->push_loading_feedback(QString::fromStdString(feedback), finished, QString::fromStdString(errorMsg));
 }
+
+void respiroGui_update_flow_diagram(std::string png)
+{
+	emit RWrapper::singleton()->flowChartPlotUpdated(QString::fromStdString(png));
+}
+
 
 bool RWrapper::instantPause() const
 {
@@ -413,7 +421,7 @@ void RWrapper::plotUpdated(const std::string & plotJson, const std::string & plo
 	if(_plots.contains(plotType) && _plots.at(plotType) == plotJson) //Then we need to do nothing
 		return;
 
-	std::cerr << "Plot updated: " << plotType << ": json: " << plotJson << std::endl;
+	std::cerr << "Plot updated: " << plotType << /*": json: " << plotJson << */ std::endl;
 	
 	_plots[plotType] = plotJson;
 	

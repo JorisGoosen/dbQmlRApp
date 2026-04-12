@@ -763,6 +763,11 @@ QString Respiro::channelStatus() const
     return _channelStatus;
 }
 
+void Respiro::setFlowChartLocalFile(const QString &newFlowChartFile)
+{
+	setFlowChartFile(QUrl::fromLocalFile(newFlowChartFile));
+}
+
 void Respiro::setAllChanPlot(const QString & newAllChanPlot)
 {
 	if (_allChanPlot == newAllChanPlot)
@@ -775,6 +780,7 @@ void Respiro::setMeasTimePlot(const QString & newMeasTimePlot)
 {
 	if (_measTimePlot == newMeasTimePlot)
 		return;
+	
 	_measTimePlot = newMeasTimePlot;
 	emit measTimePlotChanged();
 }
@@ -783,6 +789,7 @@ void Respiro::setGroupChanPlot(const QString & newGroupChanPlot)
 {
 	if (_groupChanPlot == newGroupChanPlot)
 		return;
+	
 	_groupChanPlot = newGroupChanPlot;
 	emit groupChanPlotChanged();
 }
@@ -792,8 +799,21 @@ void Respiro::setChannelStatus(const QString & newChannelStatus)
 	if (_channelStatus == newChannelStatus)
 		return;
 
-    std::cerr << "Channel status plot is now: " << _channelStatus.toStdString() << std::endl;
+    std::cerr << "Channel status plot updated!" << std::endl; //is now: " << _channelStatus.toStdString() << std::endl;
 
 	_channelStatus = newChannelStatus;
 	emit channelStatusChanged();
+}
+
+QUrl Respiro::flowChartFile() const
+{
+	return _flowChartFile;
+}
+
+void Respiro::setFlowChartFile(const QUrl &newFlowChartFile)
+{
+	std::cerr << "Flowchart plot '" << newFlowChartFile.toString().toStdString() << "' updated!" << std::endl;
+	
+	_flowChartFile = newFlowChartFile;
+	emit flowChartFileChanged();
 }

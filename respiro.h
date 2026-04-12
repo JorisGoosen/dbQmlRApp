@@ -1,9 +1,10 @@
 #ifndef RESPIRO_H
 #define RESPIRO_H
 
+#include "channelconf.h"
 #include "tablemodel.h"
 #include <QObject>
-#include "channelconf.h"
+#include <QUrl>
 
 struct Feedback
 {
@@ -63,7 +64,7 @@ class Respiro : public QObject
     Q_PROPERTY(QString		measTimePlot		READ measTimePlot		WRITE setMeasTimePlot				NOTIFY measTimePlotChanged	)
     Q_PROPERTY(QString		groupChanPlot		READ groupChanPlot		WRITE setGroupChanPlot				NOTIFY groupChanPlotChanged	)
     Q_PROPERTY(QString		channelStatus		READ channelStatus		WRITE setChannelStatus				NOTIFY channelStatusChanged	)
-
+	Q_PROPERTY(QUrl			flowChartFile		READ flowChartFile		WRITE setFlowChartFile				NOTIFY flowChartFileChanged )
 
 public:
 	explicit Respiro();
@@ -156,6 +157,10 @@ public:
 
     QString channelStatus() const;
 
+	QUrl flowChartFile() const;
+	void setFlowChartFile(const QUrl &newFlowChartFile);
+	void setFlowChartLocalFile(const QString &newFlowChartFile);
+	
 public slots:
 	void				setChannelInit(		int index, bool checked);
 	void				push_meas_data();
@@ -232,6 +237,8 @@ signals:
     void groupChanPlotChanged();
     void channelStatusChanged();
 
+	void flowChartFileChanged();
+	
 private:
 	void				loadModels();
 
@@ -280,7 +287,7 @@ private:
 	QVariantList		_channelInit		= QVariantList(13, false);
 	QStringList			_backlog;
 	ChannelConfs		_channelConfs;
-  
+	QUrl				_flowChartFile;
 };
 
 #endif // RESPIRO_H
