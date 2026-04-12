@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
 	QObject::connect(&rWrapper,		&RWrapper::push_datafilepath,		&respiro,	&Respiro::push_datafilepath		);
 	QObject::connect(&rWrapper,		&RWrapper::push_loading_feedback,	&respiro,	&Respiro::push_loading_feedback	);
 	QObject::connect(&rWrapper,		&RWrapper::flowChartPlotUpdated,	&respiro,	&Respiro::setFlowChartLocalFile	);
-	QObject::connect(&rWrapper,		&RWrapper::choosePort,				&respiro,	&Respiro::choosePort			);
+	QObject::connect(&rWrapper,		&RWrapper::choosePort,				&respiro,	&Respiro::choosePort,			Qt::DirectConnection);
 
 	QObject::connect(&respiro,		&Respiro::outputFolderChanged,		&rWrapper,	&RWrapper::setOutputFolder		);
 	QObject::connect(&respiro,		&Respiro::instantPauseChanged,		&rWrapper,	&RWrapper::setInstantPause		);
@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
 	QObject::connect(&respiro,		&Respiro::controlWantedChanged,		&rWrapper,	&RWrapper::setControlWanted		);
 	QObject::connect(&respiro,		&Respiro::startSignal,				&rWrapper,	&RWrapper::startRespiro			);
 	QObject::connect(&respiro,		&Respiro::initSignal,				&rWrapper,	&RWrapper::initRespiro			);
-	QObject::connect(&respiro,		&Respiro::chosenPortChanged,		&rWrapper,	&RWrapper::setChosenPort			);
+	QObject::connect(&respiro,		&Respiro::chosenPortChanged,		&rWrapper,	&RWrapper::setChosenPort,		Qt::DirectConnection);
 	
 	
 	

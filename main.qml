@@ -22,7 +22,7 @@ Window
 		width:			600
 		padding:		generalMargin
 		z:				50
-		modal:			true
+		modal:			false
 		focus:			true
 		visible:		respiro.availablePorts.length > 0 && respiro.chosenPort === ""
 		closePolicy:	Popup.NoAutoClose

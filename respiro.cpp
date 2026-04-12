@@ -824,6 +824,7 @@ void Respiro::setFlowChartFile(const QUrl &newFlowChartFile)
 
 QString	Respiro::choosePort(QStringList available)
 {
+	std::cerr<< "Respiro knows about available ports: " << available.join(", ").toStdString() << std::endl;
 	setAvailabePorts(available);
 }
 
@@ -836,6 +837,7 @@ void Respiro::setAvailabePorts(const QStringList &newAvailablePorts)
 {
 	if (_availablePorts == newAvailablePorts)
 		return;
+
 	_availablePorts = newAvailablePorts;
 	emit availablePortsChanged();
 }

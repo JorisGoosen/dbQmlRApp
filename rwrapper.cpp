@@ -375,21 +375,33 @@ void RWrapper::exitR()
 
 QString RWrapper::getStringFromChannelConf(int channelID, const QString & confName)
 {
+	if(_portWait)
+		return "";
+
 	return QString::fromStdString(R->parseEvalNT("rc$channelConf(col='"+confName.toStdString()+"', channelID="+std::to_string(channelID)+")"));
 }
 
 void RWrapper::setStringIntoChannelConf(int channelID, const QString &confName, const QString &setting)
 {
+	if(_portWait)
+		return;
+		
 	R->parseEvalQNT("rc$channelConf(col='"+confName.toStdString()+"', newValue='"+setting.toStdString()+"', channelID="+std::to_string(channelID)+")");
 }
 
 double RWrapper::getDoubleFromChannelConf(int channelID, const QString &confName)
 {
+	if(_portWait)
+		return 0.0;
+		
 	return R->parseEvalNT("rc$channelConf(col='"+confName.toStdString()+"', channelID="+std::to_string(channelID)+")");
 }
 
 void RWrapper::setDoubleIntoChannelConf(int channelID, const QString &confName, const double setting)
 {
+	if(_portWait)
+		return;
+		
 	R->parseEvalQNT("rc$channelConf(col='"+confName.toStdString()+"', newValue="+std::to_string(setting)+", channelID="+std::to_string(channelID)+")");
 }
 
@@ -450,7 +462,15 @@ void RWrapper::plotUpdated(const std::string & plotJson, const std::string & plo
 
 QString RWrapper::waitForPortChoice(QStringList ports)
 {
+	std::cerr << "Asking for port choice among: " << ports.join(", ").toStdString() << std::endl;
+
+	return ports.last();
+
+	std::cerr << "Waiting for port choice..." << std::endl;
+	
 	emit choosePort(ports);
+
+	_portWait = true;
 	
 	while(true)
 	{
@@ -459,7 +479,10 @@ QString RWrapper::waitForPortChoice(QStringList ports)
 		_portMutex.unlock();
 		
 		if(p != "")
+		{
+			_portWait = false;
 			return p;
+		}
 		
 		QThread::sleep(200);
 	}
@@ -512,6 +535,8 @@ void RWrapper::setChosenPort(const QString &newChosenPort)
 {
 	_portMutex.lock();
 	
+	std::cerr << "Chosen port updated in RWrapper: " << newChosenPort.toStdString() << std::endl;
+
 	if (_chosenPort == newChosenPort)
 		return;
 	

@@ -168,7 +168,8 @@ private:
 	bool				_instantPause	= false,
 						_delayedPause	= false,
 						_controlWanted	= false,
-						_running		= false;
+						_running		= false,
+						_portWait		= false;
 	QString				_outputFolder,
 						_status,
 						_chosenPort		= "";
