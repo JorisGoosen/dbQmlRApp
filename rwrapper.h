@@ -121,7 +121,7 @@ public slots:
 	void		setDoubleIntoChannelConf(int channelID, const QString & confName, const double setting);
 	
 	void		plotUpdated(const std::string & plotJson, const std::string & plotType);
-	QString		waitForPlotChoice(QStringList ports);
+	QString		waitForPortChoice(QStringList ports);
 
 signals:	
 	void prevOutputChanged();

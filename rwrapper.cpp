@@ -448,7 +448,7 @@ void RWrapper::plotUpdated(const std::string & plotJson, const std::string & plo
 
 }
 
-QString RWrapper::waitForPlotChoice(QStringList ports)
+QString RWrapper::waitForPortChoice(QStringList ports)
 {
 	emit choosePort(ports);
 	

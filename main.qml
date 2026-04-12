@@ -12,6 +12,22 @@ Window
 
 	onClosing:	mainModel.closing();
 	visibility:	Window.FullScreen
+	
+	Popup
+	{
+		id:		portSelector
+		
+		anchors
+		{
+			centerIn:		absoluteRoot	
+		}
+		width:		200
+		height:		200
+		
+		modal:		true
+		focus:		true
+		visible:	respiro.availablePorts.size > 0 && respiro.chosenPort == ""
+	}
 
 	SplitView
 	{
