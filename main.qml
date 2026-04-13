@@ -70,8 +70,18 @@ Window
 		}
 	}
 
+	Rectangle
+	{
+		z:				25
+		color:			portSelector.visible ? "#000000"	: "transparent"
+		opacity:		portSelector.visible ? 0.75			: 1.0
+		visible:		portSelector.visible
+		anchors.fill:	mainSplit
+	}
+
 	MySplitView
 	{
+		id:				mainSplit
 		orientation:	Qt.Horizontal
 		anchors.fill:	parent
 		
