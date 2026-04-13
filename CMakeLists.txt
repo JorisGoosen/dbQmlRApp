@@ -163,6 +163,7 @@ qt_add_qml_module(qmlR
 		plotly.html
 		plotly-3.4.0.js
 		utils.js
+		QML_FILES MySplitView.qml
 )
 
 qt_add_resources(qmlR "R"

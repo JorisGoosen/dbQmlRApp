@@ -70,7 +70,7 @@ Window
 		}
 	}
 
-	SplitView
+	MySplitView
 	{
 		orientation:	Qt.Horizontal
 		anchors.fill:	parent

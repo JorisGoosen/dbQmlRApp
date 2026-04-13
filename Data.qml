@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 
-SplitView
+MySplitView
 {
 	orientation:			Qt.Vertical
 	SplitView.fillWidth:	true

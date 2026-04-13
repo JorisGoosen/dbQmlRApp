@@ -4,10 +4,12 @@ import QtQuick.Layouts
 import QtWebEngine
 
 
-SplitView
+MySplitView
 {
+
 	orientation:			Qt.Vertical
 	SplitView.fillWidth:	true
+
 
 	Connections
 	{
@@ -135,27 +137,42 @@ SplitView
 			onHeightChanged:			runJavaScript("resizePlot(%1,%2)".arg(width).arg(height))
 		}
 	}
-	
-	Row
+
+	TabBar
 	{
-		id:							rijtje
+		id:							tabBar
+
 		SplitView.minimumHeight:	40
 		SplitView.maximumHeight:	40
-		
+
+		onCurrentIndexChanged:		stack.currentIndex = currentIndex
+
 		Repeater
 		{
-			model:		["All channels", "Measurements over time", "Grouped channels" ]
-			
-			RectButton
+			model:	["All channels", "Measurements over time", "Grouped channels" ]
+
+			TabButton
 			{
-				text:				modelData
-				implicitWidth:		rijtje.width / 3
-				onClicked:			stack.currentIndex = index
-				enabled:			stack.currentIndex !== index
+				id:		tabButton
+				text:	modelData
+
+				property bool selected: index === tabBar.currentIndex
+
+				contentItem:	Text
+				{
+					color:				tabButton.selected ? controlBackgroundPressed : controlBackgroundNeutral
+					text:				tabButton.text
+					anchors.centerIn:	parent
+				}
+
+				background: Rectangle
+				{
+						color:	tabButton.selected ? controlForegroundPressed : controlForegroundNeutral
+				}
 			}
 		}
-		
-		
 	}
+	
+	
 }
 
