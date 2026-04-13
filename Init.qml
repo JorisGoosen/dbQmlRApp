@@ -6,7 +6,6 @@ import QtCore
 
 Item
 {	
-	
 	ColumnLayout
 	{
 		id:					column
@@ -39,7 +38,10 @@ Item
 			target:		respiro
 			function	onCantFindOldDatabase() { selectedOldFolderWrong.open(); }
 		}
-		
+		Item
+		{
+			Layout.fillHeight: true	
+		}
 		Item
 		{
 			Layout.fillHeight:	true	
@@ -54,7 +56,10 @@ Item
 			}
 			
 		}
-	
+	Item
+		{
+			Layout.fillHeight: true	
+		}
 		ChannelsSelector
 		{
 			id:				channels
@@ -229,12 +234,12 @@ Item
 			TextField
 			{
 				id:				runtimeSec
-				text:			respiro.runtimeSec
+				text:			respiro.runtimeSec / 2600
 				validator:		IntValidator { bottom: 0;}
-				onTextChanged:
+				onEditingFinished:
 				{
 					if(text !== "")
-						respiro.runtimeSec = text
+						respiro.runtimeSec = text * 3600
 				}
 				
 				anchors
@@ -249,7 +254,7 @@ Item
 			Text
 			{
 				id:					runtimeSecSec
-				text:				"sec"
+				text:				"hours"
 				color:				controlBackgroundNeutral
 				
 				anchors
@@ -262,13 +267,13 @@ Item
 	
 			TextField
 			{
-				id:				runtimeHour
-				text:			respiro.runtimeSec / 3600
+				id:				runtimeDays
+				text:			respiro.runtimeSec / (3600*24)
 				validator:		DoubleValidator { bottom: 0;}
-				onTextChanged:
+				onEditingFinished:
 				{
 					if(text !== "")
-						respiro.runtimeSec = text * 3600
+						respiro.runtimeSec = text * (3600*24)
 				}
 				
 				anchors
@@ -282,12 +287,12 @@ Item
 	
 			Text
 			{
-				text:					"hour"
+				text:					"days"
 				color:					controlBackgroundNeutral
 				Layout.alignment:		Qt.AlignVCenter
 				anchors
 				{
-					left:			runtimeHour.right
+					left:			runtimeDays.right
 					verticalCenter:	parent.verticalCenter
 					leftMargin:		generalMargin
 				}

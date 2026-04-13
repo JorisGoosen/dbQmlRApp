@@ -11,7 +11,7 @@ Window
 	color:		windowBackgroundColor
 
 	onClosing:	mainModel.closing();
-	visibility:	Window.FullScreen
+	//visibility:	Window.FullScreen
 	
 	Popup
 	{
