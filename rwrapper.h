@@ -24,6 +24,7 @@ void		respiroGui_update_flow_diagram(	std::string png);
 void		respiroGui_push_datafilepath(std::string datafile);
 void		respiroGui_push_loading_feedback(	std::string feedback, bool finished, std::string errorMsg);
 std::string respiroGui_ask_which_port(			Rcpp::CharacterVector);
+void		respiroGui_share_ports(				Rcpp::CharacterVector);	
 bool		respiroGui_poll_instant_pause();
 bool		respiroGui_poll_delayed_pause();
 bool		respiroGui_poll_control_wanted();
@@ -122,42 +123,44 @@ public slots:
 	
 	void		plotUpdated(const std::string & plotJson, const std::string & plotType);
 	QString		waitForPortChoice(QStringList ports);
+	
 
 signals:	
-	void prevOutputChanged();
-	void plotWidthChanged(int w);
-	void plotHeightChanged(int h);
-	void push_last_values( int relTime, int measuring_channel, float pressure, float flow, float temperatureRespirometer, float temperatureSample, float CO2_ADC, float O2_raw, float CH4_raw, float CO2_raw);
-	void push_meas_data();
-	void push_proc_data();
-	void push_current_channel(	int		channel);
-	void push_valve_state(		int		channel, bool valve_open);
-	void push_pump_state(		bool	pump_on);
-	void push_O2_state(			bool	O2_on);
-	void push_CO2_state(		bool	CO2_on);
-	void push_CH4_state(		bool	CH4_on);
-	void push_error(			QString	error);
-	void push_warning(			QString	warning);
-	void push_info(				QString	warning);
-	void push_loading_feedback(	QString feedback, bool finished, QString error);
-	void push_vent_state(		int		vent, bool valve_open);
-	void push_datafilepath(		QString datafile);
-	QString choosePort(			QStringList ports);
+	void 		prevOutputChanged();
+	void 		plotWidthChanged(int w);
+	void 		plotHeightChanged(int h);
+	void 		push_last_values( int relTime, int measuring_channel, float pressure, float flow, float temperatureRespirometer, float temperatureSample, float CO2_ADC, float O2_raw, float CH4_raw, float CO2_raw);
+	void 		push_meas_data();
+	void 		push_proc_data();
+	void 		push_current_channel(	int		channel);
+	void 		push_valve_state(		int		channel, bool valve_open);
+	void 		push_pump_state(		bool	pump_on);
+	void 		push_O2_state(			bool	O2_on);
+	void 		push_CO2_state(		bool	CO2_on);
+	void 		push_CH4_state(		bool	CH4_on);
+	void 		push_error(			QString	error);
+	void 		push_warning(			QString	warning);
+	void 		push_info(				QString	warning);
+	void 		push_loading_feedback(	QString feedback, bool finished, QString error);
+	void 		push_vent_state(		int		vent, bool valve_open);
+	void 		push_datafilepath(		QString datafile);
+	QString 	choosePort(			QStringList ports);
+	void		setAvailablePorts(QStringList ports);
 
-	void instantPauseChanged();
-	void delayedPauseChanged();
-	void controlWantedChanged();
-	void runningChanged();
-	void outputFolderChanged();
-	void statusChanged();
-	void plotChanged(QString);
-	void allChanPlotChanged(QString allChanPlot);
-	void measTimePlotChanged(QString measTimePlot);
-	void groupChanPlotChanged(QString groupChanPlot);
-	void channelStatusChanged(QString channelStatus);
-	void flowChartPlotUpdated(QString fileName);
+	void 		instantPauseChanged();
+	void 		delayedPauseChanged();
+	void 		controlWantedChanged();
+	void 		runningChanged();
+	void 		outputFolderChanged();
+	void 		statusChanged();
+	void 		plotChanged(QString);
+	void 		allChanPlotChanged(QString allChanPlot);
+	void 		measTimePlotChanged(QString measTimePlot);
+	void 		groupChanPlotChanged(QString groupChanPlot);
+	void 		channelStatusChanged(QString channelStatus);
+	void 		flowChartPlotUpdated(QString fileName);
 
-	void chosenPortChanged();
+	void 		chosenPortChanged();
 	
 private:
 	RInside			*	R				= nullptr;
@@ -172,7 +175,7 @@ private:
 						_portWait		= false;
 	QString				_outputFolder,
 						_status,
-						_chosenPort		= "";
+						_chosenPort;
 	strMap				_plots;
 	
 	QMutex				_portMutex;

@@ -42,7 +42,7 @@ MySplitView
 		id:		channelStatusView
 		url:	"qrc:/plotly.html"
 
-		SplitView.minimumHeight:		130
+		SplitView.minimumHeight:		110
 		SplitView.preferredHeight:		150
 		SplitView.maximumHeight:		180
 
@@ -66,11 +66,11 @@ MySplitView
 		source:						respiro.flowChartFile
 		SplitView.preferredHeight:	parent.height * 0.5
 		fillMode:					Image.PreserveAspectFit
-		sourceSize.width:			width * 2
-		sourceSize.height:			height * 2
+		sourceSize.width:			width 
+		sourceSize.height:			height
 
-		onWidthChanged:				R.plotWidth		= width
-		onHeightChanged:			R.plotHeight	= height
+		//onWidthChanged:				R.plotWidth		= width
+		//onHeightChanged:			R.plotHeight	= height
 		
 		SplitView.minimumHeight:		130
 	}
@@ -155,6 +155,7 @@ MySplitView
 			{
 				id:		tabButton
 				text:	modelData
+				height:	40
 
 				property bool selected: index === tabBar.currentIndex
 

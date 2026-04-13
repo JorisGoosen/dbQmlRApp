@@ -30,9 +30,7 @@ RWrapper::RWrapper(QObject *parent)
 	(*R)["respiroGui_push_loading_feedback"]		= Rcpp::InternalFunction(&respiroGui_push_loading_feedback);
 	(*R)["respiroGui_update_flow_diagram"]			= Rcpp::InternalFunction(&respiroGui_update_flow_diagram);
 	(*R)["respiroGui_ask_which_port"]				= Rcpp::InternalFunction(&respiroGui_ask_which_port);
-
-	
-	
+	(*R)["respiroGui_share_ports"]					= Rcpp::InternalFunction(&respiroGui_share_ports);
 
 	runRCommand("print(R.home())");
 	runRCommand("source(paste0(getwd(), '/renv/activate.R'))");
@@ -234,6 +232,18 @@ std::string respiroGui_ask_which_port(Rcpp::CharacterVector ports)
 		qports.append(QString::fromStdString(p));
 
 	return (RWrapper::singleton()->waitForPortChoice(qports)).toStdString();
+}
+
+void respiroGui_share_ports(Rcpp::CharacterVector ports)
+{
+	std::cerr << "respiroGui_share_ports" << std::endl;
+	auto		stdports = Rcpp::as<std::vector<std::string>>(ports);
+	QStringList qports;
+
+	for(auto & p : stdports)
+		qports.append(QString::fromStdString(p));
+
+	RWrapper::singleton()->setAvailablePorts(qports);
 }
 
 bool RWrapper::instantPause() const
@@ -453,8 +463,8 @@ void RWrapper::plotUpdated(const std::string & plotJson, const std::string & plo
 	emit plotChanged(QString::fromStdString(plotType));
 	
 	if(		plotType == "allchan")			emit allChanPlotChanged(QString::fromStdString(plotJson));
-	else if(plotType == "groupchan")		emit groupChanPlotChanged(QString::fromStdString(plotJson));
 	else if(plotType == "meastimeline")		emit measTimePlotChanged(QString::fromStdString(plotJson));
+	else if(plotType == "groupchan")		emit groupChanPlotChanged(QString::fromStdString(plotJson));
     else if(plotType == "channel_status")	emit channelStatusChanged(QString::fromStdString(plotJson));
 
 
@@ -464,7 +474,10 @@ QString RWrapper::waitForPortChoice(QStringList ports)
 {
 	std::cerr << "Asking for port choice among: " << ports.join(", ").toStdString() << std::endl;
 
-	return ports.last();
+	if(ports.indexOf(_chosenPort) != -1)
+		return _chosenPort;
+	else if(ports.size() == 1)
+		return ports.last();
 
 	std::cerr << "Waiting for port choice..." << std::endl;
 	
