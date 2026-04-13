@@ -1,4 +1,5 @@
 #include "mainmodel.h"
+#include <QTimer>
 
 MainModel::MainModel(QObject *parent)
 	: QObject{parent}
@@ -42,5 +43,6 @@ void MainModel::setHasPlots(bool newHasPlots)
 	if(!_qmlsShown.contains("Plots"))
 		_qmlsShown.append("Plots");
 	
-	emit qmlsShownChanged();
+	QTimer::singleShot(1000, [&](){ emit qmlsShownChanged(); });
+
 }

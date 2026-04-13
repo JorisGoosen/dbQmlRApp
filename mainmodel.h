@@ -19,9 +19,9 @@ public:
 	
 public slots:
 	void inited()			{ setQmlsShown( {"ChannelConf"						}); }
-	void dbLoaded()			{ setQmlsShown( {"Loading"				, "Plots"	}); }
-	void modelsLoaded()		{ setQmlsShown( {"Loading",	 	"Data"	, "Plots"	}); }
-	void respiroInited()	{ setQmlsShown( {				"Data"	, "Plots"	}); }
+	void dbLoaded()			{ setQmlsShown( {"Loading", 	"Plots"				}); } //Data loads later cause it might cross hairs with db creation in respiro
+	void modelsLoaded()		{ setQmlsShown( {"Loading",	 	"Plots",	"Data"	}); }
+	void respiroInited()	{ setQmlsShown( {				"Plots",	"Data"	}); }
 	void closing();
 	void enableHasPlot()	{ setHasPlots(true); }
 	

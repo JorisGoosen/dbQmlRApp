@@ -155,7 +155,7 @@ MySplitView
 			{
 				id:		tabButton
 				text:	modelData
-				height:	40
+				height:	30
 
 				property bool selected: index === tabBar.currentIndex
 
