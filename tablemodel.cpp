@@ -4,8 +4,8 @@
 TableModel::TableModel(Database * db, const QString & tableName, const ColumnDefinitions & columnDefinitions)
 	: QAbstractTableModel(db), _db(db), _tableName(tableName), _columnDefinitions(columnDefinitions), _metrics(_metricFont)
 {
-	if(!_db->tableExists(_tableName))
-		_db->tableCreate(_tableName, _columnDefinitions);
+	//if(!_db->tableExists(_tableName))
+	//	_db->tableCreate(_tableName, _columnDefinitions);
 }
 
 int TableModel::rowCount(const QModelIndex &) const
@@ -61,6 +61,7 @@ QVariant TableModel::headerData(int section, Qt::Orientation orientation, int ro
 
 void TableModel::appendRows(const std::vector<QVariantList> & values, const ColumnDefinitions * columnDefinitions)
 {
+	assert(false);
 	size_t rowC = rowCount();
 	if(_upsideDown)		beginResetModel();
 	else				beginInsertRows(QModelIndex(), rowC, rowC + values.size());

@@ -321,7 +321,7 @@ void Database::_runStatementsRepeatedly(const std::string & statements, std::fun
 
 void Database::transactionWriteBegin()
 {
-
+assert(false);
   assert(_transactionReadDepth == 0);
 
   if(_transactionWriteDepth++ == 0)
