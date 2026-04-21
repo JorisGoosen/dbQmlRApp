@@ -58,7 +58,7 @@ void Database::load()
   if(!std::filesystem::exists(dbFile()))
     throw std::runtime_error("Trying to load '" + dbFile() + "' but it doesn't exist!");
 
-  int ret = sqlite3_open_v2(dbFile().c_str(), &_db, SQLITE_OPEN_READONLY| SQLITE_OPEN_NOMUTEX, NULL);
+  int ret = sqlite3_open_v2(dbFile().c_str(), &_db, SQLITE_OPEN_READONLY, NULL);
 
   if(ret != SQLITE_OK)
     {

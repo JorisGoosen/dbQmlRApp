@@ -6,6 +6,7 @@
 #include "database.h"
 #include <iostream>
 #include "rwrapper.h"
+#include <QTimer>
 
 Respiro::Respiro()
 	: QObject{}
@@ -335,12 +336,12 @@ void Respiro::setControlWanted(bool newControlWanted)
 
 void Respiro::push_meas_data()
 {
-	dataMeas()->refresh();
+	QTimer::singleShot(2000, [&](){ dataMeas()->refresh(); });
 }
 
 void Respiro::push_proc_data()
 {
-	dataProc()->refresh();
+	QTimer::singleShot(2000, [&](){ dataProc()->refresh(); });
 }
 
 void Respiro::push_current_channel(int channel)
