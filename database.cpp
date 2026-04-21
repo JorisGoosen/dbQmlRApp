@@ -109,8 +109,9 @@ int Database::runStatementsId(	const std::string & statements, std::function<voi
       id = sqlite3_column_int(stmt, 0);
 
   };
-
+  
   _runStatements(statements, &bindParameters, &processId);
+
 
 #ifdef SIR_LOG_A_LOT
   std::cout << "Output for '" << statements << "' returns id:" << id << std::endl;

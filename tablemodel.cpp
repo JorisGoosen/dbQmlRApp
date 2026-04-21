@@ -10,7 +10,11 @@ TableModel::TableModel(Database * db, const QString & tableName, const ColumnDef
 
 int TableModel::rowCount(const QModelIndex &) const
 {
-	return _db->tableRowCount(_tableName);
+	_db->transactionReadBegin();
+	int c = _db->tableRowCount(_tableName);
+	_db->transactionReadEnd();
+	
+	return c;
 }
 
 int TableModel::columnCount(const QModelIndex &) const
@@ -30,7 +34,10 @@ QVariant TableModel::data(const QModelIndex & index, int role) const
 	if(role != Qt::DisplayRole)
 		return QVariant();
 
+	_db->transactionReadBegin();
 	QVariant var = _db->tableValue(_tableName, _columnDefinitions[index.column()], _upsideDown ? rowC - (1+index.row()) : index.row());
+	_db->transactionReadEnd();
+	
 	
 	bool itsAnInt = false;
 	int anInt = var.toInt(&itsAnInt);
@@ -62,6 +69,7 @@ QVariant TableModel::headerData(int section, Qt::Orientation orientation, int ro
 void TableModel::appendRows(const std::vector<QVariantList> & values, const ColumnDefinitions * columnDefinitions)
 {
 	assert(false);
+	
 	size_t rowC = rowCount();
 	if(_upsideDown)		beginResetModel();
 	else				beginInsertRows(QModelIndex(), rowC, rowC + values.size());
