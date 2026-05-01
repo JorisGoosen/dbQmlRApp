@@ -165,6 +165,8 @@ Window
 			id:									hider
 			property bool showMe:				respiro && respiro.backlog.length > 0
 			SplitView.preferredWidth:			!showMe ? 0 : 500
+
+			property real scaler:				width / 500
 			
 			ListView
 			{
@@ -174,7 +176,7 @@ Window
 					left:						parent.left
 					right:						parent.right					
 					bottom:						smallLogoBox.top
-					margins:					2
+					margins:					2 * hider.scaler
 				}
 				spacing:						2
 				clip:							true
@@ -183,7 +185,7 @@ Window
 				delegate:						MyText 
 				{ 
 					text:						modelData;
-					font.pixelSize:				9
+					font.pixelSize:				Math.max(8, Math.round(12 * hider.scaler))
 					width:						ListView.view.width
 					horizontalAlignment:		Text.AlignLeft
 					//rectBack.anchors.margins:	generalMargin
