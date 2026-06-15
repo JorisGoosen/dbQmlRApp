@@ -72,7 +72,7 @@ print(getwd());
 
     if ("jasptools" %in% loadedNamespaces())
 	  return(getFromNamespace(name, asNamespace("jasptools")))
-	return(get(name, .GlobalEnv)) # works for both JASP and jaspTools
+	return(base::get(name, .GlobalEnv)) # works for both JASP and jaspTools
   }
 
   if (!is.function(obj))

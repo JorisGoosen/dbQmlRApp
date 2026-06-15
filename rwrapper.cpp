@@ -8,6 +8,12 @@ RWrapper::RWrapper(QObject *parent)
 {
 	assert(!_singleton);
 	_singleton = this;
+	
+	runRCommand("print('RWrapper initialized!')");
+	runRCommand("print(R.home())");
+	runRCommand("source('renv/activate.R')");
+	runRCommand("print(.libPaths())");
+	
 
 	(*R)["respiroGui_push_current_channel"]			= Rcpp::InternalFunction(&respiroGui_push_current_channel);
 	(*R)["respiroGui_push_last_values"]				= Rcpp::InternalFunction(&respiroGui_push_last_values);
@@ -32,8 +38,7 @@ RWrapper::RWrapper(QObject *parent)
 	(*R)["respiroGui_ask_which_port"]				= Rcpp::InternalFunction(&respiroGui_ask_which_port);
 	(*R)["respiroGui_share_ports"]					= Rcpp::InternalFunction(&respiroGui_share_ports);
 
-	runRCommand("print(R.home())");
-	runRCommand("source(paste0(getwd(), '/renv/activate.R'))");
+	
 	runRCommand("library(respiro)");
 }
 
@@ -74,7 +79,7 @@ QString RWrapper::runRCommand(QString command)
 
 	QString outQ = f(res);
 
-	std::cout << ": " << outQ.toStdString() << std::endl;
+	//std::cout << ": " << outQ.toStdString() << std::endl;
 
 	_prevOutput.append(outQ);
 	emit prevOutputChanged();
@@ -293,10 +298,11 @@ void RWrapper::initRespiro(QString datafile, QList<int> channels)
 	const QString channelsStr = [channels](){ QStringList l; for(int channel : channels) l.append(QString::number(channel)); return ("c(" + l.join(",") + ")"); }();
 
 	const QString initRespiroR =
-			"setwd(.outputFolder)\n"
-			"library(respiro)\n"
-			"rc = NULL\n"
-			".channels = " + channelsStr  + "\n"
+			"print('RWrapper::initRespiro');\n"
+			"setwd(.outputFolder);\n"
+			"library(respiro);\n"
+			"rc = NULL;\n"
+			".channels = " + channelsStr  + ";\n"
 			"withCallingHandlers(\n{\n"
 			"  rc = RespiroControl$new(channels=.channels" + QString(datafile != "" ? ", dataFile=.dataFile" : "")+", connectControllino=" + (datafile == "" ? "TRUE" : "FALSE") +")\n"
 			"\n},error=function(error) { print(sys.calls()); print(paste0(error)); respiroGui_push_error(paste0(error))}\n)"
@@ -347,6 +353,7 @@ void RWrapper::startRespiro(int runtimeSec, int channelRuntimeSec, bool calibrat
 
 
 	const QString startR =
+			"print('RWrapper::startRespiro');\n"
 			"withCallingHandlers(\n{\n"
 			"  rc$start(\n"
 			"    channels             = .channels,\n"

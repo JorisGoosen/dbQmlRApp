@@ -25,6 +25,9 @@
 
 int main(int argc, char *argv[])
 {
+	putenv("R_HOME=/Library/Frameworks/R.framework/Versions/Current/Resources");
+	putenv("R_LIBS_USER=renv/library/macos/R-4.6/aarch64-apple-darwin23/");
+	
 	QGuiApplication				app(argc, argv);
 
 	QCoreApplication::setOrganizationName(	"Biont Research");
