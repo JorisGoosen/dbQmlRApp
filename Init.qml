@@ -176,7 +176,7 @@ Item
 			TextField
 			{
 				id:				channelRuntimeMin
-				text:			respiro.channelRuntimeSec / 60
+				text:			(respiro.channelRuntimeSec / 60).toFixed(2)
 				validator:		DoubleValidator { bottom: 0;}
 				onTextChanged:
 				{
@@ -234,7 +234,7 @@ Item
 			TextField
 			{
 				id:				runtimeSec
-				text:			respiro.runtimeSec / 2600
+				text:			(respiro.runtimeSec / 3600).toFixed(2)
 				validator:		IntValidator { bottom: 0;}
 				onEditingFinished:
 				{
@@ -268,7 +268,7 @@ Item
 			TextField
 			{
 				id:				runtimeDays
-				text:			respiro.runtimeSec / (3600*24)
+				text:			respiro.runtimeSec / (3600*24).toFixed(2)
 				validator:		DoubleValidator { bottom: 0;}
 				onEditingFinished:
 				{
@@ -298,7 +298,82 @@ Item
 				}
 			}
 		}
+
+		
+		Rectangle
+		{
+			Layout.alignment:	Qt.AlignHCenter
 	
+			color:				"#222222"
+			border.color:		controlBackgroundNeutral
+			border.width:		1
+			
+			implicitHeight:		outputFolderTextField.implicitHeight + generalMargin*2
+			implicitWidth:		parent.width
+	
+			Text
+			{
+				id:					outputFolderLabel
+				text:				"Outputfolder: "
+				color:				controlBackgroundNeutral
+				
+				anchors
+				{
+					verticalCenter:	parent.verticalCenter
+					left:			parent.left
+					margins:		generalMargin
+				}
+			}
+	
+			TextField
+			{
+				id:							outputFolderTextField
+				text:						respiro.outputFolder
+				placeholderText:			"Replace the default outputfolder"
+
+				onTextChanged:
+				{
+											respiro.outputFolder = text
+				}
+				
+				anchors
+				{
+					top:					parent.top
+					left:					outputFolderLabel.right
+					right:					browseOutputButton.left
+					bottom:					parent.bottom
+					margins:				generalMargin
+				}
+			}
+			
+			RectButton
+			{
+				id:							browseOutputButton
+				text:						"Browse"
+				toolTip:					"Select/create a folder where the logging and database of the measurement will go."
+				onClicked:					browseOutputFolderDialog.open()
+				
+				anchors
+				{
+					top:					parent.top
+					right:					parent.right
+					bottom:					parent.bottom
+					margins:				generalMargin
+				}
+			}
+			
+			FolderDialog
+			{
+				id:							browseOutputFolderDialog
+				currentFolder:				respiro.outputFolder == "" ? StandardPaths.standardLocations(StandardPaths.DocumentsLocation)[0] : respiro.outputFolder
+				onSelectedFolderChanged:	respiro.outputFolder = selectedFolder
+			}
+	
+		}
+		
+		
+		
+		
 		RectButton
 		{
 			text:				"Start Session"

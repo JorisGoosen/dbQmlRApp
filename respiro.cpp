@@ -67,12 +67,25 @@ void Respiro::loadModels()
 
 void Respiro::initSession()
 {
-	QDir	newOutputFolder = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation).at(0); //should be related somehow to datafilepath but isnt
-	QString	newFolder		= QDateTime::currentDateTimeUtc().toString("yyyy.MM.dd_hhmm");
+	
+	QDir	userOutputFolder	= _outputFolder;
+	bool	outputOverride		= _outputFolder != "";
+	
+	if(!outputOverride)
+	{
+		QDir	newOutputDirParent	= QStandardPaths::standardLocations(QStandardPaths::AppDataLocation).at(0);
+		QString	newFolder			= QDateTime::currentDateTimeUtc().toString("yyyy.MM.dd_hhmm");
 
-	newOutputFolder.mkpath(newFolder);
+		newOutputDirParent.mkpath(newFolder);
 
-	setOutputFolder(QDir(newOutputFolder.filePath(newFolder)).absolutePath());
+		setOutputFolder(QDir(newOutputDirParent.filePath(newFolder)).absolutePath());
+	}
+	else
+	{
+		if(!userOutputFolder.exists())
+			userOutputFolder.mkpath(".");
+	}
+
 
 	init();
 
@@ -567,6 +580,8 @@ void Respiro::setOutputFolder(const QString & newOutputFolder)
 {
 	if (_outputFolder == newOutputFolder)
 		return;
+	
+	//std::cerr << "outputFolder changed to: " << newOutputFolder.toStdString() << std::endl;
 
 	_outputFolder = newOutputFolder.startsWith("file:") ? QUrl(newOutputFolder).toLocalFile() : newOutputFolder;
 	emit outputFolderChanged(_outputFolder);
