@@ -339,36 +339,74 @@ void RWrapper::leakTestRespiro(int channel)
 	setRunning(false);
 }
 
-void RWrapper::startRespiro(int runtimeSec, int channelRuntimeSec, bool calibrateCO2, bool internalLeakTest, bool initialHsFlush)
+void RWrapper::leakTestsRespiro()
+{	
+	const QString scriptR =
+			"withCallingHandlers(\n{\n"
+			"  rc$initialLeakTests()\n"
+			"\n},error=function(error) { print(sys.calls()); print(paste0(error)); respiroGui_push_error(paste0(error))}\n)"
+			;
+
+	setRunning(true);
+	runRCommand(scriptR); 
+	setRunning(false);
+}
+
+
+void RWrapper::initTestsRespiro(bool calibrateCO2, bool internalLeakTest, bool initialHsFlush)
 {
-	std::cout << "Starting respiro with runtimeSec=" << runtimeSec <<", channelRuntimeSec=" << channelRuntimeSec << ", calibrateCO2=" << (calibrateCO2 ? "yes":"no") <<
+	std::cout << "Initing respiro with calibrateCO2=" << (calibrateCO2 ? "yes":"no") <<
 				 ", internalLeakTest="<< (internalLeakTest ? "yes":"no") << ", initialHsFlush="<< (initialHsFlush ? "yes":"no") << std::endl;
 	std::cout << "Outputfolder: '" << _outputFolder.toStdString() << std::endl;
 
-	(*R)[".runtimeSec"]			= runtimeSec;
-	(*R)[".channelRuntimeSec"]	= channelRuntimeSec;
 	(*R)[".calibrateCO2"]		= calibrateCO2;
 	(*R)[".internalLeakTest"]	= internalLeakTest;
 	(*R)[".initialHsFlush"]		= initialHsFlush;
 
 
+	const QString initR =
+			"print('RWrapper::startRespiro');\n"
+			"withCallingHandlers(\n{\n"
+			"  rc$respiroinit(\n"
+			"    channels             = .channels,\n"
+			"    calibrateCO2         = .calibrateCO2,\n"
+			"    internalLeakTest     = .internalLeakTest,\n"
+			"    initialHsFlush       = .initialHsFlush\n)"
+			"\n},error=function(error) { print(sys.calls()); print(paste0(error)); respiroGui_push_error(paste0(error))}\n)"
+			;
+
+	setRunning(true);
+	runRCommand(initR);
+	setRunning(false);
+}
+
+void RWrapper::startRespiro(int runtimeSec, int channelRuntimeSec)//, bool calibrateCO2, bool internalLeakTest, bool initialHsFlush)
+{
+	std::cout << "Starting respiro measurement cycle with runtimeSec=" << runtimeSec <<", channelRuntimeSec=" << channelRuntimeSec //<< ", calibrateCO2=" << (calibrateCO2 ? "yes":"no") <<
+				// ", internalLeakTest="<< (internalLeakTest ? "yes":"no") << ", initialHsFlush="<< (initialHsFlush ? "yes":"no") 
+			  << std::endl;
+	std::cout << "Outputfolder: '" << _outputFolder.toStdString() << std::endl;
+
+	(*R)[".runtimeSec"]			= runtimeSec;
+	(*R)[".channelRuntimeSec"]	= channelRuntimeSec;
+	//(*R)[".calibrateCO2"]		= calibrateCO2;
+	//(*R)[".internalLeakTest"]	= internalLeakTest;
+	//(*R)[".initialHsFlush"]		= initialHsFlush;
+
+
 	const QString startR =
 			"print('RWrapper::startRespiro');\n"
 			"withCallingHandlers(\n{\n"
-			"  rc$start(\n"
-			"    channels             = .channels,\n"
-			"    monitorRunTime       = .runtimeSec,\n"
-			"    calibrateCO2         = .calibrateCO2,\n"
-			"    internalLeakTest     = .internalLeakTest,\n"
-			"    monitorCycleDuration = .channelRuntimeSec,\n"
-			"    initialHsFlush       = .initialHsFlush\n)"
+			"  rc$measure(\n"
+			"    monitorRunTime       = .runtimeSec,"
+			"    monitorCycleDuration = .channelRuntimeSec)"
 			"\n},error=function(error) { print(sys.calls()); print(paste0(error)); respiroGui_push_error(paste0(error))}\n)"
 			;
 
 	setRunning(true);
 	runRCommand(startR); //This will probably take a while ;)
 	setRunning(false);
-	runRCommand("rc$basalState(0)");
+	//runRCommand("rc$basalState(0)");
 }
 
 //From a direct connection so running in different thread than RWrapper itself!

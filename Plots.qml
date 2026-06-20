@@ -35,6 +35,34 @@ MySplitView
 			groupChanPlotView.runJavaScript("Plotly.newPlot('het_plot', %1)".arg(respiro.groupChanPlot))
 		}
 	}
+	
+	ChannelStatusses
+	{
+		SplitView.minimumHeight:		110
+		SplitView.preferredHeight:		150
+		SplitView.maximumHeight:		180
+	}
+	
+	RowLayout
+	{
+		visible:				!respiro.running
+	
+		RectButton
+		{
+			text:				"Rerun leaktests"
+			onClicked:			respiro.leakTests();
+			Layout.alignment:	Qt.AlignHCenter
+			Layout.fillWidth:	true
+		}
+		
+		RectButton
+		{
+			text:				"Start measurements"
+			onClicked:			respiro.startMeasuring();
+			Layout.alignment:	Qt.AlignHCenter
+			Layout.fillWidth:	true
+		}
+	}
 
 	
 	WebEngineView

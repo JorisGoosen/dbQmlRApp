@@ -46,11 +46,19 @@ RowLayout
 			
 			RectButton
 			{
-				text:				"Start"
-				onClicked:			respiro.start();
+				text:				"Initial tests"
+				onClicked:			respiro.initialTests();
 				Layout.alignment:	Qt.AlignHCenter
 				implicitWidth:		400
 			}
+			
+			//RectButton
+			//{
+			//	text:				"Start"
+			//	onClicked:			respiro.start();
+			//	Layout.alignment:	Qt.AlignHCenter
+			//	implicitWidth:		400
+			//}
 			
 			Item
 			{
@@ -98,7 +106,7 @@ RowLayout
 			
 				MyText
 				{
-					text:			"Channel #" + modelData.channelID
+					text:			"Ch#" + modelData.channelID
 					implicitWidth:	200
 				}
 				

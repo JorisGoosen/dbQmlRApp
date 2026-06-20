@@ -73,8 +73,13 @@ int main(int argc, char *argv[])
 	QObject::connect(&respiro,		&Respiro::instantPauseChanged,		&rWrapper,	&RWrapper::setInstantPause		);
 	QObject::connect(&respiro,		&Respiro::delayedPauseChanged,		&rWrapper,	&RWrapper::setDelayedPause		);
 	QObject::connect(&respiro,		&Respiro::controlWantedChanged,		&rWrapper,	&RWrapper::setControlWanted		);
+	
+	QObject::connect(&respiro,		&Respiro::leakTestsSignal,			&rWrapper,	&RWrapper::leakTestsRespiro		);
+	QObject::connect(&respiro,		&Respiro::leakTestSignal,			&rWrapper,	&RWrapper::leakTestRespiro		);
 	QObject::connect(&respiro,		&Respiro::startSignal,				&rWrapper,	&RWrapper::startRespiro			);
 	QObject::connect(&respiro,		&Respiro::initSignal,				&rWrapper,	&RWrapper::initRespiro			);
+	QObject::connect(&respiro,		&Respiro::initTestsSignal,			&rWrapper,	&RWrapper::initTestsRespiro		);
+	
 	QObject::connect(&respiro,		&Respiro::chosenPortChanged,		&rWrapper,	&RWrapper::setChosenPort,		Qt::QueuedConnection);
 		
 	QObject::connect(&respiro,		&Respiro::channelConfsChanged,		&mainModel,	&MainModel::inited,				Qt::QueuedConnection);

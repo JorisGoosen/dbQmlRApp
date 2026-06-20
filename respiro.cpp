@@ -9,7 +9,7 @@
 #include <QTimer>
 
 Respiro::Respiro()
-	: QObject{}
+	: QAbstractListModel{}
 {	
 	//Create table, with columnsdefs:
 	typedef ColumnDefinition	CD;
@@ -96,7 +96,7 @@ void Respiro::startSession()
 {
 	initSession();
 
-	start();
+	startMeasuring();
 }
 
 
@@ -123,6 +123,19 @@ bool Respiro::feedbackFinished(const QString & feedbackMsg)
 QString Respiro::feedbackError(const QString & feedbackMsg)
 {
 	return _feedbackMap.contains(feedbackMsg) ? _feedbackMap[feedbackMsg]->error : "???";
+}
+
+int Respiro::rowCount(const QModelIndex &parent) const
+{
+	return _channelConfs.size();
+}
+
+QVariant Respiro::data(const QModelIndex &index, int role) const
+{
+	if(index.row() < 0 || index.row() >= rowCount())
+		return QVariant();
+	
+	return _channelConfs[index.row()]->channelID();
 }
 
 const QString  Respiro::dbPath() const
@@ -544,6 +557,7 @@ void Respiro::push_loading_feedback(QString feedback, bool finished, QString err
 
 void Respiro::init()
 {
+	beginResetModel();
 	auto channelInts = initChannelsInts();
 	emit initSignal(_dataFilePath, channelInts); //Init in R!
 	
@@ -551,12 +565,31 @@ void Respiro::init()
 		_channelConfs.push_back(new ChannelConf(i, RWrapper::singleton(), this));
 	
 	emit channelConfsChanged();
+	endResetModel();
 }
 
-void Respiro::start()
+void Respiro::startMeasuring()
+{
+	setRunning(true);
+	//emit showLoading();
+	emit startSignal(_runtimeSec, _channelRuntimeSec);//, _calibrateCO2, _internalLeakTest, _initialHsFlush);
+}
+
+void Respiro::leakTests()
+{
+	emit leakTestsSignal();
+}
+
+void Respiro::leakTest(int c)
+{
+	emit leakTestSignal(c);
+}
+
+
+void Respiro::initialTests()
 {
 	emit showLoading();
-	emit startSignal(_runtimeSec, _channelRuntimeSec, _calibrateCO2, _internalLeakTest, _initialHsFlush);
+	emit initTestsSignal(_calibrateCO2, _internalLeakTest, _initialHsFlush);
 }
 
 void Respiro::receive_last_values(int relTime, int measuring_channel, float pressure, float flow, float temperatureRespirometer, float temperatureSample, float CO2_ADC, float O2_raw, float CH4_raw, float CO2_raw)
@@ -872,4 +905,17 @@ void Respiro::setChosenPort(const QString &newChosenPort)
 		return;
 	_chosenPort = newChosenPort;
 	emit chosenPortChanged(_chosenPort);
+}
+
+bool Respiro::running() const
+{
+	return _running;
+}
+
+void Respiro::setRunning(bool newRunning)
+{
+	if (_running == newRunning)
+		return;
+	_running = newRunning;
+	emit runningChanged();
 }

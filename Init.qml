@@ -56,10 +56,12 @@ Item
 			}
 			
 		}
-	Item
+		
+		Item
 		{
 			Layout.fillHeight: true	
 		}
+	
 		ChannelsSelector
 		{
 			id:				channels
@@ -376,7 +378,7 @@ Item
 		
 		RectButton
 		{
-			text:				"Start Session"
+			text:				"Initialize Session"
 			toolTip:			"Creates a folder with the datafiles etc for a respiro measurement cycle."
 			onClicked:			respiro.initSession()
 			Layout.alignment:	Qt.AlignHCenter

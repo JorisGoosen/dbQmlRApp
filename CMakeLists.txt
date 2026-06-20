@@ -164,6 +164,8 @@ qt_add_qml_module(qmlR
 		plotly-3.4.0.js
 		utils.js
 		QML_FILES MySplitView.qml
+		QML_FILES ChannelStatus.qml
+		QML_FILES ChannelStatusses.qml
 )
 
 qt_add_resources(qmlR "R"

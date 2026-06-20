@@ -101,17 +101,12 @@ public slots:
 			QString		datafile,
 			QList<int>	channels
 	);
-	
-	void startRespiro(
-			int			runtimeSec,
-			int			channelRuntimeSec,
-			bool		calibrateCO2,
-			bool		internalLeakTest,
-			bool		initialHsFlush
-	);
+	void initTestsRespiro(bool calibrateCO2, bool internalLeakTest, bool initialHsFlush);
+	void startRespiro(	int			runtimeSec,			int			channelRuntimeSec);
 
 	void volumeTestRespiro(int channel);
 	void leakTestRespiro(int channel);
+	void leakTestsRespiro();
 
 	void exitR();
 	

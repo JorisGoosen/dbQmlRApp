@@ -3,7 +3,7 @@
 
 #include "channelconf.h"
 #include "tablemodel.h"
-#include <QObject>
+#include <QAbstractListModel>
 #include <QUrl>
 
 struct Feedback
@@ -20,7 +20,7 @@ struct Feedback
 typedef std::vector<Feedback *>			Feedbacks;
 typedef std::map<QString, Feedback*>	FeedbackMap;
 
-class Respiro : public QObject
+class Respiro : public QAbstractListModel
 {
 	Q_OBJECT
 	Q_PROPERTY(float		O2					READ O2					WRITE setO2							NOTIFY O2Changed				)
@@ -68,6 +68,8 @@ class Respiro : public QObject
 
 	Q_PROPERTY(QStringList	availablePorts		READ availablePorts		WRITE setAvailablePorts				NOTIFY availablePortsChanged 	)
 	Q_PROPERTY(QString  	chosenPort			READ chosenPort			WRITE setChosenPort					NOTIFY chosenPortChanged		)
+	
+	Q_PROPERTY(bool			running				READ running			WRITE setRunning					NOTIFY runningChanged			)
 
 public:
 	explicit Respiro();
@@ -78,7 +80,9 @@ public:
 
 	Q_INVOKABLE	bool	feedbackFinished(	const QString & feedbackMsg);
 	Q_INVOKABLE	QString	feedbackError(		const QString & feedbackMsg);
-
+	
+	int					rowCount(const QModelIndex &parent = QModelIndex())			const override;
+	QVariant			data(const QModelIndex &index, int role = Qt::DisplayRole)	const override;
 
 	Database	*		db()			const	{ return _db;		}
 	TableModel	*		dataMeas()		const	{ return _dataMeas;	}
@@ -170,6 +174,9 @@ public:
 	QString chosenPort() const;
 	void setChosenPort(const QString &newChosenPort);
 	
+	bool running() const;
+	void setRunning(bool newRunning);
+	
 public slots:
 	void				setChannelInit(		int index, bool checked);
 	void				push_meas_data();
@@ -187,7 +194,10 @@ public slots:
 	void				push_info(				QString info);
 	void				push_loading_feedback(	QString feedback, bool finished, QString error);
 	void				push_datafilepath(		QString datafilepath);
-	void				start();
+	void				startMeasuring();
+	void				initialTests();
+	void				leakTests();
+	void				leakTest(int c);
 	void				init();
 	void				receive_last_values( int relTime, int measuring_channel, float pressure, float flow, float temperatureRespirometer, float temperatureSample, float CO2_ADC, float O2_raw, float CH4_raw, float CO2_raw);
 	void				setAvailablePorts(const QStringList &newAvailablePorts);
@@ -232,15 +242,19 @@ signals:
 			QString		dataFilePath,
 			QList<int>	channels
 	);
-
-	void				startSignal(
-			int			runtimeSec,
-			int			channelRuntimeSec,
+	
+	void initTestsSignal(
 			bool		calibrateCO2,
 			bool		internalLeakTest,
 			bool		initialHsFlush
 	);
-	
+
+	void				startSignal(
+			int			runtimeSec,
+			int			channelRuntimeSec
+	);
+	void leakTestSignal(int c);
+	void leakTestsSignal();
 	void channelConfsChanged();
     void allChanPlotChanged();
     void measTimePlotChanged();
@@ -249,6 +263,8 @@ signals:
 	void flowChartFileChanged();
 	void availablePortsChanged();
 	void chosenPortChanged(QString);
+	
+	void runningChanged();
 	
 private:
 	void				loadModels();
@@ -290,7 +306,8 @@ private:
 						_initialHsFlush		= false,
 						_vent0,
 						_vent1,
-						_vent2;
+						_vent2,
+						_running;
 	ColumnDefinitions	_dataMeasuredDefs,
 						_dataProcessedDefs,
 						_msgsDefs;
