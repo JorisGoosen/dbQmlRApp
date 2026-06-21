@@ -100,6 +100,11 @@ void Respiro::startSession()
 	startMeasuring();
 }
 
+void Respiro::continueSession()
+{
+	emit continueSignal();
+}
+
 
 void Respiro::loadOldSession(const QString & oldOutputdatafile)
 {
@@ -641,8 +646,6 @@ void Respiro::init()
 
 void Respiro::startMeasuring()
 {
-	setRunning(true);
-	//emit showLoading();
 	emit startSignal(_runtimeTotalSec, _channelRuntimeSec);//, _calibrateCO2, _internalLeakTest, _initialHsFlush);
 }
 

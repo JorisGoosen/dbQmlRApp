@@ -579,6 +579,19 @@ void RWrapper::startRespiro(int runtimeSec, int channelRuntimeSec)//, bool calib
 	//runRCommand("rc$basalState(0)");
 }
 
+void RWrapper::continueMeasurements()
+{
+	const QString startR =
+			"print('RWrapper::continueMeasurements');\n"
+			"withCallingHandlers(\n{\n"
+			"  rc$measure()\n},error=function(error) { print(sys.calls()); print(paste0(error)); respiroGui_push_error(paste0(error))}\n)"
+			;
+
+	setRunning(true);
+	runRCommand(startR); //This will probably take a while ;)
+	setRunning(false);
+}
+
 void RWrapper::basalState(int state)
 {
 	runRCommand(QString("rc$basalState(%1);\nrc$generateAllPlots()").arg(state));

@@ -17,6 +17,7 @@ Rectangle
 	border.color:	!enabled ?	controlBackgroundNeutral	: buttonMouseArea.pressed ? controlForegroundPressed : buttonMouseArea.containsMouse ? controlForegroundFocus : controlForegroundNeutral
 	border.width:	1
 	radius:			8
+	opacity:		enabled ? 1 : .3
 
 	Text
 	{

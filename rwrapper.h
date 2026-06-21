@@ -109,6 +109,7 @@ public slots:
 	);
 	void initTestsRespiro(bool calibrateCO2, bool internalLeakTest, bool initialHsFlush);
 	void startRespiro(	int			runtimeSec,			int			channelRuntimeSec);
+	void continueMeasurements();
 
 	void volumeTestRespiro(int channel);
 	void leakTestRespiro(int channel);

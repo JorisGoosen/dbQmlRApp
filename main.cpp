@@ -97,6 +97,9 @@ int main(int argc, char *argv[])
 	QObject::connect(&respiro,		&Respiro::startSignal,				&rWrapper,	&RWrapper::startRespiro			);
 	QObject::connect(&respiro,		&Respiro::initSignal,				&rWrapper,	&RWrapper::initRespiro			);
 	QObject::connect(&respiro,		&Respiro::initTestsSignal,			&rWrapper,	&RWrapper::initTestsRespiro		);
+	QObject::connect(&respiro,		&Respiro::continueSignal,			&rWrapper,	&RWrapper::continueMeasurements	);
+	
+	
 	
 	QObject::connect(&respiro,		&Respiro::chosenPortChanged,		&rWrapper,	&RWrapper::setChosenPort,		Qt::QueuedConnection);
 		

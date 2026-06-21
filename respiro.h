@@ -81,6 +81,7 @@ public:
   explicit				Respiro();
 
 	Q_INVOKABLE	void		startSession();
+	Q_INVOKABLE	void		continueSession();
 	Q_INVOKABLE	void		initSession();
 	Q_INVOKABLE	void		loadOldSession(const QString & oldOutputFolder);
 
@@ -276,6 +277,7 @@ signals:
 	void					initSignal(QString dataFilePath, QList<int>	channels);
 	void					initTestsSignal(bool calibrateCO2, bool internalLeakTest, bool initialHsFlush);
 	void					startSignal(int runtimeSec, int channelRuntimeSec);
+	void					continueSignal();
 	void					leakTestSignal(int c);
 	void					leakTestsSignal();
 	void					measureSignal(int c);
