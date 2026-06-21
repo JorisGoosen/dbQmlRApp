@@ -17,7 +17,9 @@
 #include <QtWebEngineQuick/QtWebEngineQuick>
 #include "mainmodel.h"
 #include "respiro.h"
+#include "channel.h"
 #include <QDir>
+#include <QMetaType>
 #include <QTimer>
 #include <QQuickStyle>
 #include <QThread>
@@ -68,14 +70,30 @@ int main(int argc, char *argv[])
 	QObject::connect(&rWrapper,		&RWrapper::flowChartPlotUpdated,	&respiro,	&Respiro::setFlowChartLocalFile	);
 	QObject::connect(&rWrapper,		&RWrapper::choosePort,				&respiro,	&Respiro::choosePort,			Qt::QueuedConnection);
 	QObject::connect(&rWrapper,		&RWrapper::setAvailablePorts,		&respiro,	&Respiro::setAvailablePorts,	Qt::QueuedConnection);
+	QObject::connect(&rWrapper,		&RWrapper::channelConfigUpdated,	&respiro,	&Respiro::updateChannelConfig	);
+	QObject::connect(&rWrapper,		&RWrapper::channelStatusUpdated,	&respiro,	&Respiro::updateChannelStatus	);
+	QObject::connect(&rWrapper,		&RWrapper::channelStatusTextUpdated,&respiro,	&Respiro::updateChannelStatusText	);
+	QObject::connect(&rWrapper,		&RWrapper::channelColorUpdated,		&respiro,	&Respiro::updateChannelColor	);
+	QObject::connect(&rWrapper,		&RWrapper::channelRuntimeUpdated,	&respiro,	&Respiro::updateChannelRuntime	);
+	QObject::connect(&rWrapper,		&RWrapper::runningChanged,			&respiro,	&Respiro::setRunning			);
 
 	QObject::connect(&respiro,		&Respiro::outputFolderChanged,		&rWrapper,	&RWrapper::setOutputFolder		);
-	QObject::connect(&respiro,		&Respiro::instantPauseChanged,		&rWrapper,	&RWrapper::setInstantPause		);
-	QObject::connect(&respiro,		&Respiro::delayedPauseChanged,		&rWrapper,	&RWrapper::setDelayedPause		);
-	QObject::connect(&respiro,		&Respiro::controlWantedChanged,		&rWrapper,	&RWrapper::setControlWanted		);
+	QObject::connect(&respiro,		&Respiro::instantPauseChanged,		&rWrapper,	&RWrapper::setInstantPause,		Qt::DirectConnection);
+	QObject::connect(&respiro,		&Respiro::delayedPauseChanged,		&rWrapper,	&RWrapper::setDelayedPause,		Qt::DirectConnection);
+	QObject::connect(&respiro,		&Respiro::controlWantedChanged,		&rWrapper,	&RWrapper::setControlWanted,	Qt::DirectConnection);
 	
+	QObject::connect(&respiro,		&Respiro::basalState,				&rWrapper,	&RWrapper::basalState			);
 	QObject::connect(&respiro,		&Respiro::leakTestsSignal,			&rWrapper,	&RWrapper::leakTestsRespiro		);
 	QObject::connect(&respiro,		&Respiro::leakTestSignal,			&rWrapper,	&RWrapper::leakTestRespiro		);
+	QObject::connect(&respiro,		&Respiro::measureSignal,			&rWrapper,	&RWrapper::measureRespiro		);
+	QObject::connect(&respiro,		&Respiro::flushSignal,				&rWrapper,	&RWrapper::flushRespiro			);
+	QObject::connect(&respiro,		&Respiro::openedLidSignal,			&rWrapper,	&RWrapper::openedLidRespiro		);
+	QObject::connect(&respiro,		&Respiro::measureHeadspacePostSignal,&rWrapper,	&RWrapper::measureHeadspacePostRespiro);
+	QObject::connect(&respiro,		&Respiro::pumpOnSignal,				&rWrapper,	&RWrapper::setPumpOnRespiro		);
+	QObject::connect(&respiro,		&Respiro::vent0Signal,				&rWrapper,	&RWrapper::setVent0Respiro		);
+	QObject::connect(&respiro,		&Respiro::vent1Signal,				&rWrapper,	&RWrapper::setVent1Respiro		);
+	QObject::connect(&respiro,		&Respiro::vent2Signal,				&rWrapper,	&RWrapper::setVent2Respiro		);
+	QObject::connect(&respiro,		&Respiro::pumpBypassSignal,			&rWrapper,	&RWrapper::setPumpBypassRespiro);
 	QObject::connect(&respiro,		&Respiro::startSignal,				&rWrapper,	&RWrapper::startRespiro			);
 	QObject::connect(&respiro,		&Respiro::initSignal,				&rWrapper,	&RWrapper::initRespiro			);
 	QObject::connect(&respiro,		&Respiro::initTestsSignal,			&rWrapper,	&RWrapper::initTestsRespiro		);

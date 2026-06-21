@@ -24,6 +24,7 @@ Item
 	property alias font:				tekstWortel.font
 	property alias horizontalAlignment:	tekstWortel.horizontalAlignment
 	property alias verticalAlignment:	tekstWortel.verticalAlignment
+	property alias tekstWortel:			tekstWortel
 
 	Text
 	{

@@ -15,10 +15,10 @@ MySplitView
 	{
 		target:	respiro
 		
-		function onChannelStatusChanged()
-		{
-			channelStatusView.runJavaScript("Plotly.newPlot('het_plot', %1)".arg(respiro.channelStatus))
-		}
+		//function onChannelStatusChanged()
+		//{
+		//	channelStatusView.runJavaScript("Plotly.newPlot('het_plot', %1)".arg(respiro.channelStatus))
+		//}
 
 		function onAllChanPlotChanged()
 		{
@@ -38,71 +38,75 @@ MySplitView
 	
 	ChannelStatusses
 	{
-		SplitView.minimumHeight:		110
-		SplitView.preferredHeight:		150
-		SplitView.maximumHeight:		180
+		SplitView.minimumHeight:		90
+		SplitView.preferredHeight:		90
+		SplitView.maximumHeight:		130
+		Layout.fillWidth:				true
 	}
 	
-	RowLayout
-	{
-		visible:				!respiro.running
 	
-		RectButton
-		{
-			text:				"Rerun leaktests"
-			onClicked:			respiro.leakTests();
-			Layout.alignment:	Qt.AlignHCenter
-			Layout.fillWidth:	true
-		}
-		
-		RectButton
-		{
-			text:				"Start measurements"
-			onClicked:			respiro.startMeasuring();
-			Layout.alignment:	Qt.AlignHCenter
-			Layout.fillWidth:	true
-		}
-	}
+	
 
 	
-	WebEngineView
-	{
-		id:		channelStatusView
-		url:	"qrc:/plotly.html"
+	//WebEngineView
+	//{
+	//	id:		channelStatusView
+	//	url:	"qrc:/plotly.html"
 
-		SplitView.minimumHeight:		110
-		SplitView.preferredHeight:		150
-		SplitView.maximumHeight:		180
+	//	SplitView.minimumHeight:		110
+	//	SplitView.preferredHeight:		150
+	//	SplitView.maximumHeight:		180
 
 
-		onLoadingChanged: (loadRequest)=>
-		{
-			if(loadRequest.status === WebEngineView.LoadSucceededStatus)
-			{					  
-				runJavaScript("Plotly.newPlot('het_plot', %1)".arg(respiro.channelStatus))
-				runJavaScript("resizePlot(%1,%2)".arg(width).arg(height))
-			}
-		}
-		
-		onWidthChanged:				runJavaScript("resizePlot(%1,%2)".arg(width).arg(height))
-		onHeightChanged:			runJavaScript("resizePlot(%1,%2)".arg(width).arg(height))
-	}
+	//	onLoadingChanged: (loadRequest)=>
+	//	{
+	//		if(loadRequest.status === WebEngineView.LoadSucceededStatus)
+	//		{					  
+	//			runJavaScript("Plotly.newPlot('het_plot', %1)".arg(respiro.channelStatus))
+	//			runJavaScript("resizePlot(%1,%2)".arg(width).arg(height))
+	//		}
+	//	}
+	//	
+	//	onWidthChanged:				runJavaScript("resizePlot(%1,%2)".arg(width).arg(height))
+	//	onHeightChanged:			runJavaScript("resizePlot(%1,%2)".arg(width).arg(height))
+	//}
 	
-	Image
+	
+	MySplitView
 	{
-		cache:						false
-		source:						respiro.flowChartFile
-		SplitView.preferredHeight:	parent.height * 0.5
-		fillMode:					Image.PreserveAspectFit
-		sourceSize.width:			width 
-		sourceSize.height:			height
-
-		//onWidthChanged:				R.plotWidth		= width
-		//onHeightChanged:			R.plotHeight	= height
+		orientation:	Qt.Horizontal
 		
 		SplitView.minimumHeight:		130
+		SplitView.preferredHeight:		parent.height * 0.5
+		
+		LinkerOverzicht
+		{
+			SplitView.minimumWidth:		30
+			SplitView.preferredWidth:	130
+		}
+		
+		Image
+		{
+			
+			cache:						false
+			source:						respiro.flowChartFile
+			
+			fillMode:					Image.PreserveAspectFit
+			sourceSize.width:			width 
+			sourceSize.height:			height
+	
+			//onWidthChanged:			R.plotWidth		= width
+			//onHeightChanged:			R.plotHeight	= height
+			SplitView.minimumWidth:		100
+			
+		}
+		
+		RechterOverzicht
+		{
+			SplitView.minimumWidth:		80
+			SplitView.preferredWidth:	140
+		}
 	}
-
 
 	StackLayout
 	{

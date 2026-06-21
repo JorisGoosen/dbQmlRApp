@@ -20,6 +20,12 @@ void		respiroGui_push_warning(			std::string	warning);
 void		respiroGui_push_info(				std::string	info);
 void		respiroGui_push_status(			std::string	status);
 void		respiroGui_push_plot(				std::string	plotJson, std::string plotType);
+void		respiroGui_update_channel_config(int channelID, std::string sampleID, double hsVol_ml,
+						double CO2max_ppm, double O2min_perc, double O2max_perc, double CH4max_ppm);
+void		respiroGui_update_channel_status(int channelID, int leakPass, int pressPass, int volPass, int measureStable, int isActive, int inExperiment);
+void		respiroGui_update_channel_status_text(int channelID, std::string statusText);
+void		respiroGui_update_channel_color(int channelID, std::string color);
+void		respiroGui_update_channel_runtime(int channelID, double cycle, double startTime, double completeCycle);
 void		respiroGui_update_flow_diagram(	std::string png);
 void		respiroGui_push_datafilepath(std::string datafile);
 void		respiroGui_push_loading_feedback(	std::string feedback, bool finished, std::string errorMsg);
@@ -107,6 +113,15 @@ public slots:
 	void volumeTestRespiro(int channel);
 	void leakTestRespiro(int channel);
 	void leakTestsRespiro();
+	void measureRespiro(int channel);
+	void flushRespiro(int channel);
+	void openedLidRespiro(int channel);
+	void measureHeadspacePostRespiro(int channel);
+	void setPumpOnRespiro(bool on);
+	void setVent0Respiro(bool open);
+	void setVent1Respiro(bool open);
+	void setVent2Respiro(bool open);
+	void setPumpBypassRespiro(bool bypass);
 
 	void exitR();
 	
@@ -120,8 +135,16 @@ public slots:
 	QString		waitForPortChoice(QStringList ports);
 	
 
+	void		basalState(int state);
+	
 signals:	
 	void 		prevOutputChanged();
+	void		channelConfigUpdated(int channelID, QString sampleID, double hsVol_ml,
+						double CO2max_ppm, double O2min_perc, double O2max_perc, double CH4max_ppm);
+	void		channelStatusUpdated(int channelID, bool leakPass, bool pressPass, bool volPass, bool measureStable, bool isActive, bool inExperiment);
+	void		channelStatusTextUpdated(int channelID, QString statusText);
+	void		channelColorUpdated(int channelID, QString color);
+	void		channelRuntimeUpdated(int channelID, double cycle, double startTime, double completeCycle);
 	void 		plotWidthChanged(int w);
 	void 		plotHeightChanged(int h);
 	void 		push_last_values( int relTime, int measuring_channel, float pressure, float flow, float temperatureRespirometer, float temperatureSample, float CO2_ADC, float O2_raw, float CH4_raw, float CO2_raw);
@@ -145,7 +168,7 @@ signals:
 	void 		instantPauseChanged();
 	void 		delayedPauseChanged();
 	void 		controlWantedChanged();
-	void 		runningChanged();
+	void 		runningChanged(bool);
 	void 		outputFolderChanged();
 	void 		statusChanged();
 	void 		plotChanged(QString);

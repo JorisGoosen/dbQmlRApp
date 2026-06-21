@@ -30,75 +30,113 @@ link_directories(${QT_LIBRARY_DIR})
 
 find_package(SQLite3 3.41.2 REQUIRED)
 
+if(APPLE)
+    set(NUM_TRUNC_CHARS 2)
+    
+    message(STATUS "Collecting R info")
+    execute_process(COMMAND "R RHOME" OUTPUT_VARIABLE R_HOME)
+    message(STATUS "R_HOME: ${R_HOME}")
+    
+    execute_process(COMMAND "Rscript -e \"renv::status()\"" OUTPUT_VARIABLE RENV_STATUS)
+    message(STATUS "RENV_STATUS: ${RENV_STATUS}")
+    
+    execute_process(COMMAND Rscript -e "cat(find.package('Rcpp'))" OUTPUT_VARIABLE RCPP_LOCATION)
+    set(RCPPFLAGS -I/Library/Frameworks/R.framework/Resources/include)
+    string(SUBSTRING ${RCPPFLAGS} ${NUM_TRUNC_CHARS} -1 RCPPINCLUDE)
+    message(STATUS "RCPPFLAGS: ${RCPPFLAGS} RCPPINCLUDE: ${RCPPINCLUDE}")
+    include_directories(${RCPPINCLUDE})
+    
+    set(RCPPCPPFLAGS -I${RCPP_LOCATION}/include)
+    include_directories(${RCPP_LOCATION}/include)
+    message(STATUS "RCPP_LOCATION: ${RCPP_LOCATION} \nRCPPCPPFLAGS: ${RCPPCPPFLAGS}")
+    
+    set(RLDFLAGS "-L/opt/R/arm64/lib -F/Library/Frameworks/R.framework/.. -framework R -L/opt/R/arm64/lib -lbz2 -lz -licucore -ldl -lm -liconv")
+    set(RLDFLAGS_RAW ${RLDFLAGS})
+    
+    #execute_process(COMMAND "R CMD config --ldflags" OUTPUT_VARIABLE RLDFLAGS ECHO_OUTPUT_VARIABLE)
+    #string(LENGTH ${RLDFLAGS} RLDFLAGS_LEN)
+    #string(STRIP ${RLDFLAGS} RLDFLAGS)
+    
+    execute_process(COMMAND Rscript -e "RInside:::CxxFlags()" OUTPUT_VARIABLE RINSIDEINCL)
+    message(STATUS "RINSIDEINCL: ${RINSIDEINCL}")
+    string(SUBSTRING ${RINSIDEINCL} ${NUM_TRUNC_CHARS} -1 RINSIDEINCL)
+    include_directories(${RINSIDEINCL})
+    
+    execute_process(COMMAND Rscript -e "RInside:::LdFlags()" OUTPUT_VARIABLE RINSIDELIBS)
+    string(STRIP ${RINSIDELIBS} RINSIDELIBS )
+    string(REPLACE "\"" "" RINSIDELIBS ${RINSIDELIBS})
+    
+    if (${RINSIDELIBS} MATCHES "[-][L]([^ ;]+)")
+        string(SUBSTRING ${CMAKE_MATCH_0} ${NUM_TRUNC_CHARS} -1 RINSIDELIBS_L)
+        link_directories(${RINSIDELIBS_L})
+    endif()
+    
+    if (${RINSIDELIBS} MATCHES "[-][l][R]([^;]+)")
+        string(SUBSTRING ${CMAKE_MATCH_0} ${NUM_TRUNC_CHARS} -1 RINSIDELIBS_l)
+    endif()
+    
+    if (${RINSIDELIBS} MATCHES ".+\.a$")
+        set(RINSIDELIBS_l ${RINSIDELIBS})
+    endif()
+    
+    execute_process(COMMAND R CMD config CXXFLAGS OUTPUT_VARIABLE RCXXFLAGS)
+    execute_process(COMMAND R CMD config BLAS_LIBS OUTPUT_VARIABLE RBLAS)
+    execute_process(COMMAND R CMD config LAPACK_LIBS OUTPUT_VARIABLE RLAPACK)
+    
+    set(CMAKE_CXX_FLAGS "-W -Wall -pedantic -Wextra ${CMAKE_CXX_FLAGS}")
+    set(CMAKE_LD_FLAGS "${RLDFLAGS}")
+else()
+    execute_process(COMMAND R CMD config --cppflags OUTPUT_VARIABLE RCPPFLAGS_RAW)
+    execute_process(COMMAND R CMD config --ldflags OUTPUT_VARIABLE RLDFLAGS_RAW)
+    
+    string(STRIP ${RCPPFLAGS_RAW} RCPPFLAGS_RAW)
+    string(SUBSTRING ${RCPPFLAGS_RAW} 2 -1 RCPPINCLUDE)
+    string(STRIP ${RLDFLAGS_RAW} RLDFLAGS_RAW)
+    
+    message(STATUS "R cppflags: ${RCPPFLAGS_RAW} -> include: ${RCPPINCLUDE}")
+    message(STATUS "R ldflags: ${RLDFLAGS_RAW}")
+    
+    execute_process(COMMAND Rscript -e "cat(find.package('Rcpp'))" OUTPUT_VARIABLE RCPP_LOCATION)
+    string(STRIP ${RCPP_LOCATION} RCPP_LOCATION)
+    message(STATUS "Rcpp location: ${RCPP_LOCATION}")
+    
+    set(RLDFLAGS ${RLDFLAGS_RAW})
+    
+    execute_process(COMMAND Rscript -e "RInside:::CxxFlags()" OUTPUT_VARIABLE RINSIDEINCL_RAW)
+    string(STRIP ${RINSIDEINCL_RAW} RINSIDEINCL_RAW)
+    string(SUBSTRING ${RINSIDEINCL_RAW} 2 -1 RINSIDEINCL)
+    message(STATUS "RInside CxxFlags: ${RINSIDEINCL_RAW} -> ${RINSIDEINCL}")
+    include_directories(${RINSIDEINCL})
+    
+    execute_process(COMMAND Rscript -e "RInside:::LdFlags()" OUTPUT_VARIABLE RINSIDELIBS)
+    string(STRIP ${RINSIDELIBS} RINSIDELIBS)
+    string(REPLACE "\"" "" RINSIDELIBS ${RINSIDELIBS})
+    message(STATUS "RInside LdFlags: ${RINSIDELIBS}")
+    
+    if (${RINSIDELIBS} MATCHES "[-][L]([^ ;]+)")
+        string(SUBSTRING ${CMAKE_MATCH_0} 2 -1 RINSIDELIBS_L)
+        link_directories(${RINSIDELIBS_L})
+        message(STATUS "RInside link dir: ${RINSIDELIBS_L}")
+    endif()
+    
+    if (${RINSIDELIBS} MATCHES "[-][l][R]([^;]+)")
+        string(SUBSTRING ${CMAKE_MATCH_0} 2 -1 RINSIDELIBS_l)
+    endif()
+    
+    if (${RINSIDELIBS} MATCHES ".+\.a$")
+        set(RINSIDELIBS_l ${RINSIDELIBS})
+    endif()
+    
+    execute_process(COMMAND R CMD config CXXFLAGS OUTPUT_VARIABLE RCXXFLAGS)
+    execute_process(COMMAND R CMD config BLAS_LIBS OUTPUT_VARIABLE RBLAS)
+    execute_process(COMMAND R CMD config LAPACK_LIBS OUTPUT_VARIABLE RLAPACK)
+    
+    set(CMAKE_CXX_FLAGS "-W -Wall -pedantic -Wextra ${CMAKE_CXX_FLAGS}")
+    set(CMAKE_LD_FLAGS "${RLDFLAGS_RAW}")
+endif()
 
-message(STATUS "Collecting R info")
-execute_process(COMMAND "R RHOME" OUTPUT_VARIABLE R_HOME)
-message(STATUS "R_HOME: ${R_HOME}")
-set(NUM_TRUNC_CHARS 2)
-
-
-execute_process(COMMAND "Rscript -e \"renv::status()\"" OUTPUT_VARIABLE RENV_STATUS)
-message(STATUS "RENV_STATUS: ${RENV_STATUS}")
-
-execute_process(COMMAND Rscript -e "renv::init(project='${CMAKE_BINARY_DIR}', force=TRUE)" OUTPUT_VARIABLE RENV_INIT_OUTPUT)
-message(STATUS "Renv init tells us: ${RENV_INIT_OUTPUT}")
-
-set(RESPIRO_SRC_LOCATION "../../respiro" CACHE STRING "Where is the respiro r package?")
-execute_process(COMMAND Rscript -e "renv::install(project='${CMAKE_BINARY_DIR}', prompt=FALSE, packages='${RESPIRO_SRC_LOCATION}')" OUTPUT_VARIABLE RENV_INSTALL_OUTPUT)
-message(STATUS "Renv install on ${RESPIRO_SRC_LOCATION} tells us: ${RENV_INSTALL_OUTPUT}")
-
-
-execute_process(COMMAND Rscript -e "renv::install(project='${CMAKE_BINARY_DIR}', prompt=FALSE, packages=c('Rcpp', 'RInside'))" OUTPUT_VARIABLE RCPP_INSTALL_OUTPUT)
-message(STATUS "Renv install Rcpp tells us: ${RCPP_INSTALL_OUTPUT}")
-
-set(PREAMBLE_R "source('renv/activate.R');\n")
-
-execute_process(COMMAND Rscript -e "${PREAMBLE_R} cat(find.package('Rcpp'))" OUTPUT_VARIABLE RCPP_LOCATION)
-#execute_process(COMMAND "R CMD config --cppflags" OUTPUT_VARIABLE RCPPFLAGS ECHO_OUTPUT_VARIABLE)
-set(RCPPFLAGS -I/Library/Frameworks/R.framework/Resources/include)
-string(SUBSTRING ${RCPPFLAGS} ${NUM_TRUNC_CHARS} -1 RCPPINCLUDE)
-message(STATUS "RCPPFLAGS: ${RCPPFLAGS} RCPPINCLUDE: ${RCPPINCLUDE}")
 include_directories(${RCPPINCLUDE})
-
-set(RCPPCPPFLAGS -I${RCPP_LOCATION}/include)
 include_directories(${RCPP_LOCATION}/include)
-message(STATUS "RCPP_LOCATION: ${RCPP_LOCATION} \nRCPPCPPFLAGS: ${RCPPCPPFLAGS}")
-
-#execute_process(COMMAND "R CMD config --ldflags" OUTPUT_VARIABLE RLDFLAGS ECHO_OUTPUT_VARIABLE)
-#string(LENGTH ${RLDFLAGS} RLDFLAGS_LEN)
-#string(STRIP ${RLDFLAGS} RLDFLAGS)
-
-set(RLDFLAGS "-L/opt/R/arm64/lib -F/Library/Frameworks/R.framework/.. -framework R -L/opt/R/arm64/lib -lbz2 -lz -licucore -ldl -lm -liconv")
-
-execute_process(COMMAND Rscript -e "${PREAMBLE_R} RInside:::CxxFlags()" OUTPUT_VARIABLE RINSIDEINCL)
-
-message(STATUS "RINSIDEINCL: ${RINSIDEINCL}")
-string(SUBSTRING ${RINSIDEINCL} ${NUM_TRUNC_CHARS} -1 RINSIDEINCL)
-include_directories(${RINSIDEINCL})
-
-execute_process(COMMAND Rscript -e "${PREAMBLE_R} RInside:::LdFlags()" OUTPUT_VARIABLE RINSIDELIBS)
-string(STRIP ${RINSIDELIBS} RINSIDELIBS )
-string(REPLACE "\"" "" RINSIDELIBS ${RINSIDELIBS})
-
-if (${RINSIDELIBS} MATCHES "[-][L]([^ ;])+")
-    string(SUBSTRING ${CMAKE_MATCH_0} ${NUM_TRUNC_CHARS} -1 RINSIDELIBS_L)
-    link_directories(${RINSIDELIBS_L})
-endif()
-
-if (${RINSIDELIBS} MATCHES "[-][l][R]([^;])+")
-	string(SUBSTRING ${CMAKE_MATCH_0} ${NUM_TRUNC_CHARS} -1 RINSIDELIBS_l)
-endif()
-
-if (${RINSIDELIBS} MATCHES ".+\.a$")
-	set(RINSIDELIBS_l ${RINSIDELIBS})
-endif()
-
-execute_process(COMMAND R CMD config CXXFLAGS    OUTPUT_VARIABLE RCXXFLAGS)
-execute_process(COMMAND R CMD config BLAS_LIBS   OUTPUT_VARIABLE RBLAS)
-execute_process(COMMAND R CMD config LAPACK_LIBS OUTPUT_VARIABLE RLAPACK)
-
-set(CMAKE_CXX_FLAGS "-W -Wall -pedantic -Wextra ${CMAKE_CXX_FLAGS}")
-set(CMAKE_LD_FLAGS "${RLDFLAGS}")
 
 if (CMAKE_BUILD_TYPE STREQUAL "DEBUG" OR
     CMAKE_BUILD_TYPE STREQUAL "RelWithDebugInfo" )
@@ -107,7 +145,6 @@ elseif ( CMAKE_BUILD_TYPE STREQUAL "RELEASE" )
     add_definitions("-O3")
 endif()
 
-#Set up our actual application
 set(sources
 	main.cpp
 	respiro.cpp
@@ -117,12 +154,16 @@ set(sources
 	mainmodel.cpp
 	tablemodel.cpp
 	channelconf.cpp
+	channel.cpp
+	respirorole.cpp
 	plotrenderer.cpp
 	columndefinition.cpp
 )
 
 set(headers
 	respiro.h
+	respirorole.h
+	channel.h
 	settings.h
 	rwrapper.h
 	database.h
@@ -166,6 +207,9 @@ qt_add_qml_module(qmlR
 		QML_FILES MySplitView.qml
 		QML_FILES ChannelStatus.qml
 		QML_FILES ChannelStatusses.qml
+        QML_FILES LinkerOverzicht.qml
+        QML_FILES RechterOverzicht.qml
+        QML_FILES MyCheckbox.qml
 )
 
 qt_add_resources(qmlR "R"
@@ -176,7 +220,6 @@ qt_add_resources(qmlR "R"
 	   R/pie.R
 	   R/lines.R
 )
-
 
 target_link_libraries(
 	qmlR
@@ -189,6 +232,6 @@ target_link_libraries(
 	${BLAS_LIBS}
 	${LAPACK_LIBS}
 	${RINSIDELIBS_l}
-	${RLDFLAGS}
+	${RLDFLAGS_RAW}
 	SQLite::SQLite3
 )

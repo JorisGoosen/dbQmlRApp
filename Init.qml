@@ -236,12 +236,12 @@ Item
 			TextField
 			{
 				id:				runtimeSec
-				text:			(respiro.runtimeSec / 3600).toFixed(2)
+				text:			(respiro.runtimeTotalSec / 3600).toFixed(2)
 				validator:		IntValidator { bottom: 0;}
 				onEditingFinished:
 				{
 					if(text !== "")
-						respiro.runtimeSec = text * 3600
+						respiro.runtimeTotalSec = text * 3600
 				}
 				
 				anchors
@@ -270,12 +270,12 @@ Item
 			TextField
 			{
 				id:				runtimeDays
-				text:			respiro.runtimeSec / (3600*24).toFixed(2)
+				text:			respiro.runtimeTotalSec / (3600*24).toFixed(2)
 				validator:		DoubleValidator { bottom: 0;}
 				onEditingFinished:
 				{
 					if(text !== "")
-						respiro.runtimeSec = text * (3600*24)
+						respiro.runtimeTotalSec = text * (3600*24)
 				}
 				
 				anchors

@@ -52,14 +52,14 @@ MySplitView
 	//	//visible:					respiroMsgs.rowCount > 0
 	//}
 		
-	LastValues
-	{
-		implicitWidth:			parent.width
-		
-		SplitView.preferredHeight:	implicitHeight
-		SplitView.minimumHeight:	implicitHeight
-		SplitView.maximumHeight:	implicitHeight
-		
-	}
+	//LastValues
+	//{
+	//	implicitWidth:			parent.width
+	//	
+	//	SplitView.preferredHeight:	implicitHeight
+	//	SplitView.minimumHeight:	implicitHeight
+	//	SplitView.maximumHeight:	implicitHeight
+	//	
+	//}
 }
 

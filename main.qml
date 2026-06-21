@@ -164,7 +164,7 @@ Window
 		{
 			id:									hider
 			property bool showMe:				respiro && respiro.backlog.length > 0
-			SplitView.preferredWidth:			!showMe ? 0 : 500
+			SplitView.preferredWidth:			!showMe ? 0 : 350
 
 			property real scaler:				width / 500
 			

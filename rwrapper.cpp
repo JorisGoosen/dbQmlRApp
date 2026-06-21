@@ -37,6 +37,11 @@ RWrapper::RWrapper(QObject *parent)
 	(*R)["respiroGui_update_flow_diagram"]			= Rcpp::InternalFunction(&respiroGui_update_flow_diagram);
 	(*R)["respiroGui_ask_which_port"]				= Rcpp::InternalFunction(&respiroGui_ask_which_port);
 	(*R)["respiroGui_share_ports"]					= Rcpp::InternalFunction(&respiroGui_share_ports);
+	(*R)["respiroGui_update_channel_config"]		= Rcpp::InternalFunction(&respiroGui_update_channel_config);
+	(*R)["respiroGui_update_channel_status"]		= Rcpp::InternalFunction(&respiroGui_update_channel_status);
+	(*R)["respiroGui_update_channel_status_text"]	= Rcpp::InternalFunction(&respiroGui_update_channel_status_text);
+	(*R)["respiroGui_update_channel_color"]			= Rcpp::InternalFunction(&respiroGui_update_channel_color);
+	(*R)["respiroGui_update_channel_runtime"]		= Rcpp::InternalFunction(&respiroGui_update_channel_runtime);
 
 	
 	runRCommand("library(respiro)");
@@ -215,6 +220,7 @@ bool respiroGui_poll_delayed_pause()
 
 bool respiroGui_poll_control_wanted()
 {
+	std::cerr << "respiroGui_poll_control_wanted! " << ( RWrapper::singleton()->controlWanted() ? "control wanted" : "nothing" ) << std::endl;
 	return RWrapper::singleton()->controlWanted();
 }
 
@@ -249,6 +255,39 @@ void respiroGui_share_ports(Rcpp::CharacterVector ports)
 		qports.append(QString::fromStdString(p));
 
 	RWrapper::singleton()->setAvailablePorts(qports);
+}
+
+void respiroGui_update_channel_config(int channelID, std::string sampleID, double hsVol_ml,
+									  double CO2max_ppm, double O2min_perc, double O2max_perc, double CH4max_ppm)
+{
+	emit RWrapper::singleton()->channelConfigUpdated(channelID, QString::fromStdString(sampleID),
+													 hsVol_ml, CO2max_ppm, O2min_perc, O2max_perc, CH4max_ppm);
+}
+
+void respiroGui_update_channel_status(int channelID, int leakPass, int pressPass, int volPass, int measureStable, int isActive, int inExperiment)
+{
+	emit RWrapper::singleton()->channelStatusUpdated(channelID,
+													 leakPass != 0 && leakPass != -1,
+													 pressPass != 0 && pressPass != -1,
+													 volPass != 0 && volPass != -1,
+													 measureStable != 0 && measureStable != -1,
+													 isActive != 0 && isActive != -1,
+													 inExperiment != 0 && inExperiment != -1);
+}
+
+void respiroGui_update_channel_status_text(int channelID, std::string statusText)
+{
+	emit RWrapper::singleton()->channelStatusTextUpdated(channelID, QString::fromStdString(statusText));
+}
+
+void respiroGui_update_channel_color(int channelID, std::string color)
+{
+	emit RWrapper::singleton()->channelColorUpdated(channelID, QString::fromStdString(color));
+}
+
+void respiroGui_update_channel_runtime(int channelID, double cycle, double startTime, double completeCycle)
+{
+	emit RWrapper::singleton()->channelRuntimeUpdated(channelID, cycle, startTime, completeCycle);
 }
 
 bool RWrapper::instantPause() const
@@ -286,6 +325,7 @@ void RWrapper::setControlWanted(bool newControlWanted)
 {
 	if (_controlWanted == newControlWanted)
 		return;
+	
 	_controlWanted = newControlWanted;
 	emit controlWantedChanged();
 }
@@ -317,7 +357,8 @@ void RWrapper::volumeTestRespiro(int channel)
 {	
 	const QString scriptR =
 			"withCallingHandlers(\n{\n"
-			"  rc$channels[["+QString::number(channel)+"]]$volumeTest()\n"
+			"  rc$channels[[1+"+QString::number(channel)+"]]$volumeTest()\n"
+			"  rc$generateAllPlots()\n"
 			"\n},error=function(error) { print(sys.calls()); print(paste0(error)); respiroGui_push_error(paste0(error))}\n)"
 			;
 
@@ -330,7 +371,8 @@ void RWrapper::leakTestRespiro(int channel)
 {	
 	const QString scriptR =
 			"withCallingHandlers(\n{\n"
-			"  rc$channels[["+QString::number(channel)+"]]$leakTest()\n"
+			"  rc$channels[[1+"+QString::number(channel)+"]]$leakTest()\n"
+			"  rc$generateAllPlots()\n"
 			"\n},error=function(error) { print(sys.calls()); print(paste0(error)); respiroGui_push_error(paste0(error))}\n)"
 			;
 
@@ -344,8 +386,135 @@ void RWrapper::leakTestsRespiro()
 	const QString scriptR =
 			"withCallingHandlers(\n{\n"
 			"  rc$initialLeakTests()\n"
+			"  rc$generateAllPlots()\n"
 			"\n},error=function(error) { print(sys.calls()); print(paste0(error)); respiroGui_push_error(paste0(error))}\n)"
 			;
+
+	setRunning(true);
+	runRCommand(scriptR); 
+	setRunning(false);
+}
+
+void RWrapper::measureRespiro(int channel)
+{	
+	const QString scriptR =
+			"withCallingHandlers(\n{\n"
+			"  rc$channels[[1+"+QString::number(channel)+"]]$measure()\n"
+			"  rc$generateAllPlots()\n"
+			"\n},error=function(error) { print(sys.calls()); print(paste0(error)); respiroGui_push_error(paste0(error))}\n)"
+			;
+
+	setRunning(true);
+	runRCommand(scriptR); 
+	setRunning(false);
+}
+
+void RWrapper::flushRespiro(int channel)
+{	
+	const QString scriptR =
+			"withCallingHandlers(\n{\n"
+			"  rc$channels[[1+"+QString::number(channel)+"]]$flush()\n"
+			"  rc$generateAllPlots()\n"
+			"\n},error=function(error) { print(sys.calls()); print(paste0(error)); respiroGui_push_error(paste0(error))}\n)"
+			;
+
+	setRunning(true);
+	runRCommand(scriptR); 
+	setRunning(false);
+}
+
+void RWrapper::openedLidRespiro(int channel)
+{	
+	const QString scriptR =
+			"withCallingHandlers(\n{\n"
+			"  rc$channels[[1+"+QString::number(channel)+"]]$opened_lid()\n"
+			"  rc$generateAllPlots()\n"
+			"\n},error=function(error) { print(sys.calls()); print(paste0(error)); respiroGui_push_error(paste0(error))}\n)"
+			;
+
+	setRunning(true);
+	runRCommand(scriptR); 
+	setRunning(false);
+}
+
+void RWrapper::measureHeadspacePostRespiro(int channel)
+{	
+	const QString scriptR =
+			"withCallingHandlers(\n{\n"
+			"  rc$channels[[1+"+QString::number(channel)+"]]$measure_hspost()\n"
+			"  rc$generateAllPlots()\n"
+			"\n},error=function(error) { print(sys.calls()); print(paste0(error)); respiroGui_push_error(paste0(error))}\n)"
+			;
+
+	setRunning(true);
+	runRCommand(scriptR); 
+	setRunning(false);
+}
+
+void RWrapper::setPumpOnRespiro(bool on)
+{	
+	const QString scriptR =
+			QString("withCallingHandlers(\n{\n"
+			"  rc$pump(1, %1)\n"
+			"  rc$generateAllPlots()\n"
+			"\n},error=function(error) { print(sys.calls()); print(paste0(error)); respiroGui_push_error(paste0(error))}\n)")
+			.arg(on ? 2 : 0);
+
+	setRunning(true);
+	runRCommand(scriptR); 
+	setRunning(false);
+}
+
+void RWrapper::setVent0Respiro(bool open)
+{	
+	const QString scriptR =
+			QString("withCallingHandlers(\n{\n"
+			"  rc$vent(0, %1)\n"
+			"  rc$generateAllPlots()\n"
+			"\n},error=function(error) { print(sys.calls()); print(paste0(error)); respiroGui_push_error(paste0(error))}\n)")
+			.arg(open ? 1 : 0);
+
+	setRunning(true);
+	runRCommand(scriptR); 
+	setRunning(false);
+}
+
+void RWrapper::setVent1Respiro(bool open)
+{	
+	const QString scriptR =
+			QString("withCallingHandlers(\n{\n"
+			"  rc$vent(1, %1)\n"
+			"  rc$generateAllPlots()\n"
+			"\n},error=function(error) { print(sys.calls()); print(paste0(error)); respiroGui_push_error(paste0(error))}\n)")
+			.arg(open ? 1 : 0);
+
+	setRunning(true);
+	runRCommand(scriptR); 
+	setRunning(false);
+}
+
+void RWrapper::setVent2Respiro(bool open)
+{	
+	const QString scriptR =
+			QString("withCallingHandlers(\n{\n"
+			"  rc$vent(2, %1)\n"
+			"  rc$generateAllPlots()\n"
+			"\n},error=function(error) { print(sys.calls()); print(paste0(error)); respiroGui_push_error(paste0(error))}\n)")
+			.arg(open ? 1 : 0);
+
+	setRunning(true);
+	runRCommand(scriptR); 
+	setRunning(false);
+}
+
+void RWrapper::setPumpBypassRespiro(bool bypass)
+{	
+	const QString scriptR =
+			QString("withCallingHandlers(\n{\n"
+			"  rc$sensor(4, %1)\n"
+			"  rc$generateAllPlots()\n"
+			"\n},error=function(error) { print(sys.calls()); print(paste0(error)); respiroGui_push_error(paste0(error))}\n)")
+			.arg(bypass ? 1 : 0);
 
 	setRunning(true);
 	runRCommand(scriptR); 
@@ -366,6 +535,7 @@ void RWrapper::initTestsRespiro(bool calibrateCO2, bool internalLeakTest, bool i
 
 	const QString initR =
 			"print('RWrapper::startRespiro');\n"
+			"print(.channels);\n"
 			"withCallingHandlers(\n{\n"
 			"  rc$respiroinit(\n"
 			"    channels             = .channels,\n"
@@ -407,6 +577,11 @@ void RWrapper::startRespiro(int runtimeSec, int channelRuntimeSec)//, bool calib
 	runRCommand(startR); //This will probably take a while ;)
 	setRunning(false);
 	//runRCommand("rc$basalState(0)");
+}
+
+void RWrapper::basalState(int state)
+{
+	runRCommand(QString("rc$basalState(%1);\nrc$generateAllPlots()").arg(state));
 }
 
 //From a direct connection so running in different thread than RWrapper itself!
@@ -470,7 +645,7 @@ void RWrapper::setRunning(bool newRunning)
 	if (_running == newRunning)
 		return;
 	_running = newRunning;
-	emit runningChanged();
+	emit runningChanged(_running);
 }
 
 QString RWrapper::outputFolder() const

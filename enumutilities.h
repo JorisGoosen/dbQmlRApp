@@ -13,6 +13,7 @@
 #include <vector>
 #include <map>
 #include <QString>
+#include <QEvent>
 
 struct missingEnumVal  : public std::runtime_error
 {
@@ -137,9 +138,12 @@ template <typename T> std::map<T, std::string> generateEnumMap(std::string strMa
 		{
 			std::vector<std::string> enumNameValue(stringUtils::splitString(tokenString, '='));
 			enumName = enumNameValue[0];
-			//inxMap = static_cast<T>(enumNameValue[1]);
-			if (std::is_unsigned<T>::value)		inxMap = static_cast<T>(std::stoull(enumNameValue[1], 0, 0));
-			else								inxMap = static_cast<T>(std::stoll(enumNameValue[1], 0, 0));
+		//inxMap = static_cast<T>(enumNameValue[1]);
+		// Only numeric values supported (not Qt::UserRole etc)
+		if (std::is_unsigned<T>::value)
+			inxMap = static_cast<T>(std::stoull(enumNameValue[1], 0, 0));
+		else
+			inxMap = static_cast<T>(std::stoll(enumNameValue[1], 0, 0));
 		}
 		retMap[inxMap++] = enumName;
 	}

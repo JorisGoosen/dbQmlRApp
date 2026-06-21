@@ -107,7 +107,7 @@ RowLayout
 				MyText
 				{
 					text:			"Ch#" + modelData.channelID
-					implicitWidth:	200
+					implicitWidth:	80
 				}
 				
 				RowLayout

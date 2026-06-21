@@ -7,6 +7,7 @@
 #include <iostream>
 #include "rwrapper.h"
 #include <QTimer>
+#include <QMetaType>
 
 Respiro::Respiro()
 	: QAbstractListModel{}
@@ -111,6 +112,7 @@ void Respiro::loadOldSession(const QString & oldOutputdatafile)
 	
 	setOutputFolder(dataFileInfo.dir().absolutePath());
 	_dataFilePath = dataFileInfo.absoluteFilePath();
+	emit dbPathChanged();
 	
 	init();
 }
@@ -127,7 +129,7 @@ QString Respiro::feedbackError(const QString & feedbackMsg)
 
 int Respiro::rowCount(const QModelIndex &parent) const
 {
-	return _channelConfs.size();
+	return _channels.size();
 }
 
 QVariant Respiro::data(const QModelIndex &index, int role) const
@@ -135,7 +137,64 @@ QVariant Respiro::data(const QModelIndex &index, int role) const
 	if(index.row() < 0 || index.row() >= rowCount())
 		return QVariant();
 	
-	return _channelConfs[index.row()]->channelID();
+	switch(role) {
+	case static_cast<int>(RespiroRole::channel):
+		return QVariant::fromValue(_channels[index.row()]);
+	case static_cast<int>(RespiroRole::channelID):
+		return _channels[index.row()]->channelID();
+	case static_cast<int>(RespiroRole::sampleID):
+		return _channels[index.row()]->sampleID();
+	case static_cast<int>(RespiroRole::hsVolMl):
+		return _channels[index.row()]->hsVol_ml();
+	case static_cast<int>(RespiroRole::co2MaxPpm):
+		return _channels[index.row()]->CO2max_ppm();
+	case static_cast<int>(RespiroRole::o2MinPerc):
+		return _channels[index.row()]->O2min_perc();
+	case static_cast<int>(RespiroRole::o2MaxPerc):
+		return _channels[index.row()]->O2max_perc();
+	case static_cast<int>(RespiroRole::ch4MaxPpm):
+		return _channels[index.row()]->CH4max_ppm();
+	case static_cast<int>(RespiroRole::leakPass):
+		return _channels[index.row()]->leakPass();
+	case static_cast<int>(RespiroRole::pressPass):
+		return _channels[index.row()]->pressPass();
+	case static_cast<int>(RespiroRole::volPass):
+		return _channels[index.row()]->volPass();
+	case static_cast<int>(RespiroRole::measureStable):
+		return _channels[index.row()]->measureStable();
+	case static_cast<int>(RespiroRole::isActive):
+		return _channels[index.row()]->isActive();
+	case static_cast<int>(RespiroRole::inExperiment):
+		return _channels[index.row()]->inExperiment();
+	case static_cast<int>(RespiroRole::cycle):
+		return _channels[index.row()]->cycle();
+	case static_cast<int>(RespiroRole::startTime):
+		return _channels[index.row()]->startTime();
+	case static_cast<int>(RespiroRole::completeCycle):
+		return _channels[index.row()]->completeCycle();
+	case static_cast<int>(RespiroRole::statusText):
+		return _channels[index.row()]->statusText();
+	case static_cast<int>(RespiroRole::statusColor):
+		return _channels[index.row()]->color();
+	default:
+		return _channelConfs[index.row()]->channelID();
+	}
+}
+
+QHash<int, QByteArray> Respiro::roleNames() const
+{
+	static QHash<int, QByteArray> rollen = [&]()
+	{
+		QHash<int, QByteArray> rollen = QAbstractListModel::roleNames();
+		
+		const auto roleMap = RespiroRoleToStringMap();
+	for(const auto &pair : roleMap) {
+		rollen[pair.first] = QByteArray(pair.second.c_str());
+	}
+		
+		return rollen;
+	}();
+	return rollen;
 }
 
 const QString  Respiro::dbPath() const
@@ -278,6 +337,12 @@ void Respiro::setPumpOn(bool newPumpOn)
 {
 	if (_pumpOn == newPumpOn)
 		return;
+	
+	if (_controlWanted && !_running)
+	{
+		sendPumpOn(newPumpOn);
+	}
+	
 	_pumpOn = newPumpOn;
 	emit pumpOnChanged();
 }
@@ -356,6 +421,9 @@ void Respiro::setControlWanted(bool newControlWanted)
 {
 	if (_controlWanted == newControlWanted)
 		return;
+	
+	std::cerr << "setControlWanted(" << (newControlWanted ? "True" : "False") << std::endl;
+	
 	_controlWanted = newControlWanted;
 	emit controlWantedChanged(_controlWanted);
 }
@@ -515,6 +583,7 @@ void Respiro::push_info(QString info)
 void Respiro::push_datafilepath(QString path)
 {
 	_dataFilePath = path;
+	emit dbPathChanged();
 	
 	loadModels();
 	
@@ -561,8 +630,10 @@ void Respiro::init()
 	auto channelInts = initChannelsInts();
 	emit initSignal(_dataFilePath, channelInts); //Init in R!
 	
-	for(int i : channelInts)
+	for(int i : channelInts) {
 		_channelConfs.push_back(new ChannelConf(i, RWrapper::singleton(), this));
+		_channels.push_back(new Channel(i, this));
+	}
 	
 	emit channelConfsChanged();
 	endResetModel();
@@ -572,7 +643,7 @@ void Respiro::startMeasuring()
 {
 	setRunning(true);
 	//emit showLoading();
-	emit startSignal(_runtimeSec, _channelRuntimeSec);//, _calibrateCO2, _internalLeakTest, _initialHsFlush);
+	emit startSignal(_runtimeTotalSec, _channelRuntimeSec);//, _calibrateCO2, _internalLeakTest, _initialHsFlush);
 }
 
 void Respiro::leakTests()
@@ -585,6 +656,50 @@ void Respiro::leakTest(int c)
 	emit leakTestSignal(c);
 }
 
+void Respiro::measure(int c)
+{
+	emit measureSignal(c);
+}
+
+void Respiro::flush(int c)
+{
+	emit flushSignal(c);
+}
+
+void Respiro::openedLid(int c)
+{
+	emit openedLidSignal(c);
+}
+
+void Respiro::measureHeadspacePost(int c)
+{
+	emit measureHeadspacePostSignal(c);
+}
+
+void Respiro::sendPumpOn(bool on)
+{
+	emit pumpOnSignal(on);
+}
+
+void Respiro::sendVent0(bool open)
+{
+	emit vent0Signal(open);
+}
+
+void Respiro::sendVent1(bool open)
+{
+	emit vent1Signal(open);
+}
+
+void Respiro::sendVent2(bool open)
+{
+	emit vent2Signal(open);
+}
+
+void Respiro::sendPumpBypass(bool bypass)
+{
+	emit pumpBypassSignal(bypass);
+}
 
 void Respiro::initialTests()
 {
@@ -599,6 +714,8 @@ void Respiro::receive_last_values(int relTime, int measuring_channel, float pres
 	setRuntimeSec(				relTime						);
 	setCurChannel(				measuring_channel			);
 	setPressure(				pressure					);
+	setCO2ADC(					CO2_ADC						);
+	setFlow(					flow						);
 	setCh4(						CH4_raw						);
 	setCO2(						CO2_raw						);
 	setO2(						O2_raw						);
@@ -728,6 +845,94 @@ void Respiro::setRuntimeSec(int newRuntimeSec)
 	emit runtimeSecChanged();
 }
 
+void Respiro::updateChannelConfig(int channelID, QString sampleID, double hsVol_ml,
+								  double CO2max_ppm, double O2min_perc, double O2max_perc, double CH4max_ppm)
+{
+	for(Channel * c : _channels) {
+		if(c->channelID() == channelID) {
+			c->setSampleID(sampleID);
+			c->setHsVol_ml(hsVol_ml);
+			c->setCO2max_ppm(CO2max_ppm);
+			c->setO2min_perc(O2min_perc);
+			c->setO2max_perc(O2max_perc);
+			c->setCH4max_ppm(CH4max_ppm);
+			
+			int row = static_cast<int>(std::distance(_channels.begin(), std::find_if(_channels.begin(), _channels.end(), [channelID](Channel* ch) { return ch->channelID() == channelID; })));
+			QModelIndex topLeft = index(row, 0);
+			QModelIndex bottomRight = index(row, 0);
+			emit dataChanged(topLeft, bottomRight);
+			break;
+		}
+	}
+}
+
+void Respiro::updateChannelStatus(int channelID, bool leakPass, bool pressPass, bool volPass, bool measureStable, bool isActive, bool inExperiment)
+{
+	for(Channel * c : _channels) {
+		if(c->channelID() == channelID) {
+			c->setLeakPass(leakPass);
+			c->setPressPass(pressPass);
+			c->setVolPass(volPass);
+			c->setMeasureStable(measureStable);
+			c->setActive(isActive);
+			c->setInExperiment(inExperiment);
+			
+			int row = static_cast<int>(std::distance(_channels.begin(), std::find_if(_channels.begin(), _channels.end(), [channelID](Channel* ch) { return ch->channelID() == channelID; })));
+			QModelIndex topLeft = index(row, 0);
+			QModelIndex bottomRight = index(row, 0);
+			emit dataChanged(topLeft, bottomRight);
+			break;
+		}
+	}
+}
+
+void Respiro::updateChannelStatusText(int channelID, QString statusText)
+{
+	for(Channel * c : _channels) {
+		if(c->channelID() == channelID) {
+			c->setStatusText(statusText);
+			
+			int row = static_cast<int>(std::distance(_channels.begin(), std::find_if(_channels.begin(), _channels.end(), [channelID](Channel* ch) { return ch->channelID() == channelID; })));
+			QModelIndex topLeft = index(row, 0);
+			QModelIndex bottomRight = index(row, 0);
+			emit dataChanged(topLeft, bottomRight);
+			break;
+		}
+	}
+}
+
+void Respiro::updateChannelColor(int channelID, QString color)
+{
+	for(Channel * c : _channels) {
+		if(c->channelID() == channelID) {
+			c->setColor(color);
+			
+			int row = static_cast<int>(std::distance(_channels.begin(), std::find_if(_channels.begin(), _channels.end(), [channelID](Channel* ch) { return ch->channelID() == channelID; })));
+			QModelIndex topLeft = index(row, 0);
+			QModelIndex bottomRight = index(row, 0);
+			emit dataChanged(topLeft, bottomRight);
+			break;
+		}
+	}
+}
+
+void Respiro::updateChannelRuntime(int channelID, double cycle, double startTime, double completeCycle)
+{
+	for(Channel * c : _channels) {
+		if(c->channelID() == channelID) {
+			c->setCycle(cycle);
+			c->setStartTime(startTime);
+			c->setCompleteCycle(completeCycle);
+			
+			int row = static_cast<int>(std::distance(_channels.begin(), std::find_if(_channels.begin(), _channels.end(), [channelID](Channel* ch) { return ch->channelID() == channelID; })));
+			QModelIndex topLeft = index(row, 0);
+			QModelIndex bottomRight = index(row, 0);
+			emit dataChanged(topLeft, bottomRight);
+			break;
+		}
+	}
+}
+
 bool Respiro::vent0() const
 {
 	return _vent0;
@@ -737,8 +942,14 @@ void Respiro::setVent0(bool newVent0)
 {
 	if (_vent0 == newVent0)
 		return;
+	
+	if (_controlWanted && !_running)
+	{
+		sendVent0(newVent0);
+	}
+	
 	_vent0 = newVent0;
-	emit vent2Changed();
+	emit vent0Changed();
 }
 
 bool Respiro::vent1() const
@@ -750,6 +961,12 @@ void Respiro::setVent1(bool newVent1)
 {
 	if (_vent1 == newVent1)
 		return;
+	
+	if (_controlWanted && !_running)
+	{
+		sendVent1(newVent1);
+	}
+	
 	_vent1 = newVent1;
 	emit vent1Changed();
 }
@@ -763,6 +980,12 @@ void Respiro::setVent2(bool newVent2)
 {
 	if (_vent2 == newVent2)
 		return;
+	
+	if (_controlWanted && !_running)
+	{
+		sendVent2(newVent2);
+	}
+	
 	_vent2 = newVent2;
 	emit vent2Changed();
 }
@@ -918,4 +1141,62 @@ void Respiro::setRunning(bool newRunning)
 		return;
 	_running = newRunning;
 	emit runningChanged();
+}
+
+float Respiro::CO2ADC() const
+{
+	return _CO2ADC;
+}
+
+void Respiro::setCO2ADC(float newCO2ADC)
+{
+	if (qFuzzyCompare(_CO2ADC, newCO2ADC))
+		return;
+	_CO2ADC = newCO2ADC;
+	emit CO2ADCChanged();
+}
+
+float Respiro::flow() const
+{
+	return _flow;
+}
+
+void Respiro::setFlow(float newFlow)
+{
+	if (qFuzzyCompare(_flow, newFlow))
+		return;
+	_flow = newFlow;
+	emit flowChanged();
+}
+
+bool Respiro::pumpBypass() const
+{
+	return _pumpBypass;
+}
+
+void Respiro::setPumpBypass(bool newPumpBypass)
+{
+	if (_pumpBypass == newPumpBypass)
+		return;
+	
+	if (_controlWanted && !_running)
+	{
+		sendPumpBypass(newPumpBypass);
+	}
+	
+	_pumpBypass = newPumpBypass;
+	emit pumpBypassChanged();
+}
+
+int Respiro::runtimeTotalSec() const
+{
+	return _runtimeTotalSec;
+}
+
+void Respiro::setRuntimeTotalSec(int newRuntimeTotalSec)
+{
+	if (_runtimeTotalSec == newRuntimeTotalSec)
+		return;
+	_runtimeTotalSec = newRuntimeTotalSec;
+	emit runtimeTotalSecChanged();
 }
