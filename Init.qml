@@ -79,8 +79,8 @@ Item
 			implicitWidth:		parent.width
 			Layout.alignment:	Qt.AlignHCenter
 	
-			color:				controlBackgroundNeutral
-			border.color:		controlForegroundNeutral
+			color:				"#222222"
+			border.color:		controlBackgroundNeutral
 			border.width:		1
 	
 			RowLayout
@@ -93,7 +93,7 @@ Item
 					horizontalCenter:	parent.horizontalCenter
 				}
 	
-				CheckBox
+				MyCheckbox
 				{
 					id:					calibrateCO2CheckBox
 					text:				"calibrate CO2"
@@ -101,14 +101,14 @@ Item
 					onCheckedChanged:	if(checked !== respiro.calibrateCO2) respiro.calibrateCO2 = checked;
 				}
 	
-				CheckBox
+				MyCheckbox
 				{
 					text:				"Internal Leak Test"
 					checked:			respiro.internalLeakTest
 					onCheckedChanged:	if(checked !== respiro.internalLeakTest) respiro.internalLeakTest = checked;
 				}
 	
-				CheckBox
+				MyCheckbox
 				{
 					text:				"Initial Hs Flush"
 					checked:			respiro.initialHsFlush

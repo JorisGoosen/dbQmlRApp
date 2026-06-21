@@ -10,8 +10,8 @@ Rectangle
 
 	height:			titleAndMore.height
 	
-	color:			controlBackgroundNeutral
-	border.color:	controlForegroundNeutral
+	color:				"#222222"
+	border.color:		controlBackgroundNeutral
 	border.width:	1
 
 
@@ -33,7 +33,7 @@ Rectangle
 		{
 			id:							titleText
 			text:						"<b>Select channels</b>"
-			color:						controlForegroundNeutral
+			color:						controlBackgroundNeutral
 			wrapMode:					Text.WrapAtWordBoundaryOrAnywhere
 			horizontalAlignment:		Text.AlignHCenter
 			verticalAlignment:			Text.AlignVCenter
@@ -55,7 +55,7 @@ Rectangle
 			{
 				id:		channelRepeater
 
-				CheckBox
+				MyCheckbox
 				{
 					text:				index
 					checked:			modelData
