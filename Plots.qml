@@ -44,10 +44,6 @@ MySplitView
 		Layout.fillWidth:				true
 	}
 	
-	
-	
-
-	
 	//WebEngineView
 	//{
 	//	id:		channelStatusView
@@ -77,12 +73,12 @@ MySplitView
 		orientation:	Qt.Horizontal
 		
 		SplitView.minimumHeight:		130
-		SplitView.preferredHeight:		parent.height * 0.5
+		SplitView.preferredHeight:		parent.height * 0.75
 		
 		LinkerOverzicht
 		{
-			SplitView.minimumWidth:		30
-			SplitView.preferredWidth:	130
+			SplitView.minimumWidth:		100
+			SplitView.preferredWidth:	160
 		}
 		
 		Image
@@ -98,13 +94,13 @@ MySplitView
 			//onWidthChanged:			R.plotWidth		= width
 			//onHeightChanged:			R.plotHeight	= height
 			SplitView.minimumWidth:		100
-			
+			SplitView.fillWidth:		true
 		}
 		
 		RechterOverzicht
 		{
-			SplitView.minimumWidth:		80
-			SplitView.preferredWidth:	140
+			SplitView.minimumWidth:		140
+			SplitView.preferredWidth:	160
 		}
 	}
 
@@ -113,7 +109,7 @@ MySplitView
 		id:						stack
 		SplitView.fillHeight:	true
 		
-		SplitView.minimumHeight:		200
+		SplitView.minimumHeight:		100
 		
 		WebEngineView
 		{

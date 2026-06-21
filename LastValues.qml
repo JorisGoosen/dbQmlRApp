@@ -7,43 +7,18 @@ ColumnLayout
 	id:					infoRow
 	
 
-	ColumnLayout
+	Text
 	{
-		width:		parent.width
-	
-		Text
-		{
-			text:			"<b>DB:"
-			color:			foregroundColor
-			width:	parent.width; leftPadding:	2; rightPadding: 2;
-		}
-		
-		TextArea
-		{
-			text:			respiro.dbPath
-			font:			"monospace"
-			color:			foregroundColor
-			width:			parent.width
-			wrapMode:		Text.WrapAtWordBoundaryOrAnywhere
-			readOnly:		true
-			selectByMouse:	true	
-			leftPadding:	2; 
-			rightPadding:	2;
-		}
-		
-		Text
-		{
-			text:			"<b>Last measurements:"
-			color:			foregroundColor
-			width:	parent.width; leftPadding:	2; rightPadding: 2;
-		}
+		text:			"<b>Last measurements:"
+		color:			foregroundColor
+		width:	parent.width; leftPadding:	2; rightPadding: 2;
 	}
-	
+
 	
 	GridLayout
 	{
-		width:		parent.width
-		columns:	2
+		width:		infoRow.width
+		columns:	3
 	
 		Text
 		{
@@ -59,7 +34,10 @@ ColumnLayout
 			text:					respiro.curChannel
 			color:					foregroundColor
 			leftPadding:			2; rightPadding: 2;
+			horizontalAlignment:	Text.AlignRight
 		}
+		
+		Item{}
 		
 		Text
 		{
@@ -75,6 +53,16 @@ ColumnLayout
 			text:					respiro.CO2.toFixed(2)
 			color:					foregroundColor
 			leftPadding:			2; rightPadding: 2;
+			horizontalAlignment:	Text.AlignRight
+		}
+		
+		Text
+		{
+			Layout.alignment:		Qt.AlignRight
+			text:					"ppm"
+			color:					foregroundColor
+			leftPadding:			2; rightPadding: 2;
+			horizontalAlignment:	Text.AlignRight
 		}
 		
 		Text
@@ -91,6 +79,16 @@ ColumnLayout
 			text:					respiro.CO2ADC.toFixed(2)
 			color:					foregroundColor
 			leftPadding:			2; rightPadding: 2;
+			horizontalAlignment:	Text.AlignRight
+		}
+		
+		Text
+		{
+			Layout.alignment:		Qt.AlignRight
+			text:					"ppm"
+			color:					foregroundColor
+			leftPadding:			2; rightPadding: 2;
+			horizontalAlignment:	Text.AlignRight
 		}
 		
 		Text
@@ -107,6 +105,16 @@ ColumnLayout
 			text:					respiro.CH4.toFixed(2)
 			color:					foregroundColor
 			leftPadding:			2; rightPadding: 2;
+			horizontalAlignment:	Text.AlignRight
+		}
+		
+		Text
+		{
+			Layout.alignment:		Qt.AlignRight
+			text:					"ppm"
+			color:					foregroundColor
+			leftPadding:			2; rightPadding: 2;
+			horizontalAlignment:	Text.AlignRight
 		}
 		
 		Text
@@ -123,6 +131,16 @@ ColumnLayout
 			text:					respiro.O2.toFixed(2)
 			color:					foregroundColor
 			leftPadding:			2; rightPadding: 2;
+			horizontalAlignment:	Text.AlignRight
+		}
+		
+		Text
+		{
+			Layout.alignment:		Qt.AlignRight
+			text:					"ppm"
+			color:					foregroundColor
+			leftPadding:			2; rightPadding: 2;
+			horizontalAlignment:	Text.AlignRight
 		}
 		
 		Text
@@ -136,9 +154,19 @@ ColumnLayout
 		Text
 		{
 			Layout.alignment:		Qt.AlignRight
-			text:					respiro.flow.toFixed(2)  + "<sup>L/min</sup>"
+			text:					respiro.flow.toFixed(2) 
 			color:					foregroundColor
 			leftPadding:			2; rightPadding: 2;
+			horizontalAlignment:	Text.AlignRight
+		}
+		
+		Text
+		{
+			Layout.alignment:		Qt.AlignRight
+			text:					"<sup>L/min</sup>"
+			color:					foregroundColor
+			leftPadding:			2; rightPadding: 2;
+			horizontalAlignment:	Text.AlignRight
 		}
 
 		Text
@@ -152,9 +180,19 @@ ColumnLayout
 		Text
 		{
 			Layout.alignment:		Qt.AlignRight
-			text:					respiro.tempRespiro.toFixed(1) + "<sup>c</sup>"
+			text:					respiro.tempRespiro.toFixed(1)
 			color:					foregroundColor
 			leftPadding:			2; rightPadding: 2;
+			horizontalAlignment:	Text.AlignRight
+		}
+		
+		Text
+		{
+			Layout.alignment:		Qt.AlignRight
+			text:					"<sup>c</sup>"
+			color:					foregroundColor
+			leftPadding:			2; rightPadding: 2;
+			horizontalAlignment:	Text.AlignRight
 		}
 
 		Text
@@ -168,9 +206,19 @@ ColumnLayout
 		Text
 		{
 			Layout.alignment:		Qt.AlignRight
-			text:					respiro.tempSample.toFixed(1) + "<sup>c</sup>"
+			text:					respiro.tempSample.toFixed(1)
 			color:					foregroundColor
 			leftPadding:			2; rightPadding: 2;
+			horizontalAlignment:	Text.AlignRight
+		}
+		
+		Text
+		{
+			Layout.alignment:		Qt.AlignRight
+			text:					"<sup>c</sup>"
+			color:					foregroundColor
+			leftPadding:			2; rightPadding: 2;
+			horizontalAlignment:	Text.AlignRight
 		}
 
 		Text
@@ -184,41 +232,111 @@ ColumnLayout
 		Text
 		{
 			Layout.alignment:		Qt.AlignRight
-			text:					respiro.pressure.toFixed(1)  + " mBar"
+			text:					respiro.pressure.toFixed(1)
+			color:					foregroundColor
+			leftPadding:			2; rightPadding: 2;
+			horizontalAlignment:	Text.AlignRight
+		}
+
+		
+		Text
+		{
+			Layout.alignment:		Qt.AlignRight
+			text:					"mBar"
+			color:					foregroundColor
+			leftPadding:			2; rightPadding: 2;
+			horizontalAlignment:	Text.AlignRight
+		}
+	
+		Item
+		{
+			Layout.fillHeight:	true
+			Layout.columnSpan:	3
+		}
+		
+		
+		
+	//GridLayout
+	//{
+	//	width:		infoRow.width
+	//	columns:	2
+		
+		Text
+		{
+			Layout.alignment:		Qt.AlignLeft
+			text:					"<b>Cycle time:</b>"
 			color:					foregroundColor
 			leftPadding:			2; rightPadding: 2;
 		}
-	}
-	
-	ColumnLayout
-	{
-		width:		parent.width
 		
-		Item
+		Text
 		{
-			Layout.fillHeight:	true	
+			Layout.alignment:		Qt.AlignRight
+			text:					(respiro.channelRuntimeSec / 60).toFixed(2)
+			color:					foregroundColor
+			leftPadding:			2; rightPadding: 2;
+			horizontalAlignment:	Text.AlignRight
 		}
 		
 		Text
 		{
-			text:			"<b>Cycle time:</b>&nbsp;%1 min".arg((respiro.channelRuntimeSec / 60).toFixed(2))
-			
-			color:			foregroundColor
-			width:	parent.width; leftPadding:	2; rightPadding: 2;
+			Layout.alignment:		Qt.AlignRight
+			text:					"min"
+			color:					foregroundColor
+			leftPadding:			2; rightPadding: 2;
+			horizontalAlignment:	Text.AlignRight
 		}
 		
 		Text
 		{
-			text:			"<b>Total runtime:</b>&nbsp;%1 days".arg(respiro.runtimeSec / (3600*24).toFixed(2))
-			color:			foregroundColor
-			width:	parent.width; leftPadding:	2; rightPadding: 2;
+			Layout.alignment:		Qt.AlignLeft
+			text:					"<b>Runtime:</b>"
+			color:					foregroundColor
+			leftPadding:			2; rightPadding: 2;
 		}
 		
 		Text
 		{
-			text:			"<b>Remaining runtime:</b>&nbsp;%1 days".arg((respiro.runtimeTotalSec - respiro.runtimeSec) / (3600*24).toFixed(2))
-			color:			foregroundColor
-			width:	parent.width; leftPadding:	2; rightPadding: 2;
+			Layout.alignment:		Qt.AlignRight
+			text:					(respiro.runtimeSec / (3600*24)).toFixed(2)
+			color:					foregroundColor
+			leftPadding:			2; rightPadding: 2;
+			horizontalAlignment:	Text.AlignRight
+		}
+		
+		Text
+		{
+			Layout.alignment:		Qt.AlignRight
+			text:					"days"
+			color:					foregroundColor
+			leftPadding:			2; rightPadding: 2;
+			horizontalAlignment:	Text.AlignRight
+		}
+		
+		Text
+		{
+			Layout.alignment:		Qt.AlignLeft
+			text:					"<b>Remaining:</b>"
+			color:					foregroundColor
+			leftPadding:			2; rightPadding: 2;
+		}
+		
+		Text
+		{
+			Layout.alignment:		Qt.AlignRight
+			text:					((respiro.runtimeTotalSec - respiro.runtimeSec) / (3600*24)).toFixed(2)
+			color:					foregroundColor
+			leftPadding:			2; rightPadding: 2;
+			horizontalAlignment:	Text.AlignRight
+		}
+		
+		Text
+		{
+			Layout.alignment:		Qt.AlignRight
+			text:					"days"
+			color:					foregroundColor
+			leftPadding:			2; rightPadding: 2;
+			horizontalAlignment:	Text.AlignRight
 		}
 	}
 }
